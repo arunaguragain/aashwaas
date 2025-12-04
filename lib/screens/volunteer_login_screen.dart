@@ -1,17 +1,17 @@
-import 'package:aashwaas/screens/volunteer_login_screen.dart';
+import 'package:aashwaas/screens/donor_login_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
 import 'package:aashwaas/widgets/my_textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class DonorLoginScreen extends StatefulWidget {
-  const DonorLoginScreen({super.key});
+class VolunteerLoginScreen extends StatefulWidget {
+  const VolunteerLoginScreen({super.key});
 
   @override
-  State<DonorLoginScreen> createState() => _DonorLoginScreenState();
+  State<VolunteerLoginScreen> createState() => _VolunteerLoginScreenState();
 }
 
-class _DonorLoginScreenState extends State<DonorLoginScreen> {
+class _VolunteerLoginScreenState extends State<VolunteerLoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -36,8 +36,9 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
                   child: Image.asset("assets/images/logo.png"),
                 ),
 
+                
                 Text(
-                  " Login as Donor",
+                  " Login as Volunteer",
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -125,11 +126,11 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const VolunteerLoginScreen(),
+                            builder: (context) => const DonorLoginScreen(),
                           ),
                         );
                       },
-                      child: Text("Login as Volunteer"),
+                      child: Text("Login as Donor"),
                     ),
                   ],
                 ),
