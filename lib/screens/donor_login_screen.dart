@@ -1,3 +1,4 @@
+import 'package:aashwaas/screens/donor_register_screen.dart';
 import 'package:aashwaas/screens/volunteer_login_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
 import 'package:aashwaas/widgets/my_textformfield.dart';
@@ -31,10 +32,12 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
             child: Column(
               children: [
                 Container(
-                  height: 250,
+                  height: 150,
                   width: double.infinity,
                   child: Image.asset("assets/images/logo.png"),
                 ),
+
+                _gap,
 
                 Text(
                   " Login as Donor",
@@ -45,7 +48,6 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
                   ),
                 ),
 
-                _gap,
                 _gap,
 
                 MyTextformfield(
@@ -86,7 +88,6 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
                   color: Colors.blueAccent,
                 ),
 
-                SizedBox(height: 7),
 
                 Row(
                   children: [
@@ -99,7 +100,6 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
                   ],
                 ),
 
-                SizedBox(height: 7),
 
                 MyButton(
                   onPressed: () {},
@@ -113,7 +113,14 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Don't have an account?"),
-                    TextButton(onPressed: () {}, child: Text("Sign Up")),
+                    TextButton(onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (context) => const DonorRegisterScreen(),
+                          ),
+                        );
+                    }, child: Text("Sign Up")),
                   ],
                 ),
 
