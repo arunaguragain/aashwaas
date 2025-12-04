@@ -1,10 +1,9 @@
 import 'package:aashwaas/screens/splash_screen.dart';
-import 'package:aashwaas/screens/third_onboarding_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 
-class SecondOnboadingScreen extends StatelessWidget {
-  const SecondOnboadingScreen({super.key});
+class ThirdOnboardingScreen extends StatelessWidget {
+  const ThirdOnboardingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +45,11 @@ class SecondOnboadingScreen extends StatelessWidget {
               Container(
                 height: 290,
                 width: double.infinity,
-                child: Image.asset("assets/icons/icon_giftbox.png"),
+                child: Image.asset("assets/icons/icon_volunteer.png"),
               ),
 
               Text(
-                " Donate with Purpose",
+                "Volunteer and Connect",
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -62,7 +61,7 @@ class SecondOnboadingScreen extends StatelessWidget {
               _gap,
 
               Text(
-                "Give Items That Matter ",
+                "Be Part of the Change",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -74,11 +73,8 @@ class SecondOnboadingScreen extends StatelessWidget {
               _gap,
 
               Text(
-                "Donate clothes ,stationery, toys, and furniture to verified NGOs. Track your donations and see the impact you create.",
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.black87,
-                ),
+                "Join as a volunteer to collect and deliver donations, and help manage NGO operations. Your time can make a real difference!",
+                style: TextStyle(fontSize: 17, color: Colors.black87),
                 textAlign: TextAlign.center,
               ),
 
@@ -88,6 +84,16 @@ class SecondOnboadingScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    width: 20,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     width: 20,
@@ -117,16 +123,6 @@ class SecondOnboadingScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                   ),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    width: 20,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
                 ],
               ),
 
@@ -137,7 +133,7 @@ class SecondOnboadingScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute<void>(
-                      builder: (context) => const ThirdOnboardingScreen(),
+                      builder: (context) => const SplashScreen(),
                     ),
                   );
                 },

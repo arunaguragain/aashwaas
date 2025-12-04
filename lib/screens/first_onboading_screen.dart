@@ -69,7 +69,6 @@ class FirstOnboadingScreen extends StatelessWidget {
                 "Connect donors, volunteers, and NGOs to create meaningful impact through item donations. ",
                 style: TextStyle(
                   fontSize: 17,
-                  // fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
                 textAlign: TextAlign.center,
