@@ -1,10 +1,9 @@
-import 'package:aashwaas/screens/second_onboading_screen.dart';
 import 'package:aashwaas/screens/splash_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 
-class FirstOnboadingScreen extends StatelessWidget {
-  const FirstOnboadingScreen({super.key});
+class SecondOnboadingScreen extends StatelessWidget {
+  const SecondOnboadingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,21 +39,29 @@ class FirstOnboadingScreen extends StatelessWidget {
                 ],
               ),
 
-              Image.asset("assets/images/logo.png"),
+              _gap,
+              _gap,
+
+              Container(
+                height: 290,
+                width: double.infinity,
+                child: Image.asset("assets/icons/icon_giftbox.png"),
+              ),
 
               Text(
-                " Welcome to Aashwaas",
+                " Donate with Purpose",
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
+                textAlign: TextAlign.center,
               ),
 
               _gap,
 
               Text(
-                "Your platform for making a progress",
+                "Give Items That Matter ",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -66,7 +73,7 @@ class FirstOnboadingScreen extends StatelessWidget {
               _gap,
 
               Text(
-                "Connect donors, volunteers, and NGOs to create meaningful impact through item donations. ",
+                "Donate clothes ,stationery, toys, and furniture to verified NGOs. Track your donations and see the impact you create.",
                 style: TextStyle(
                   fontSize: 17,
                   // fontWeight: FontWeight.bold,
@@ -80,13 +87,14 @@ class FirstOnboadingScreen extends StatelessWidget {
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment,
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     width: 20,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent,
+                      color: Colors.grey,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -96,7 +104,7 @@ class FirstOnboadingScreen extends StatelessWidget {
                     width: 20,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: Colors.blueAccent,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -130,7 +138,7 @@ class FirstOnboadingScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute<void>(
-                      builder: (context) => const SecondOnboadingScreen(),
+                      builder: (context) => const SplashScreen(),
                     ),
                   );
                 },
