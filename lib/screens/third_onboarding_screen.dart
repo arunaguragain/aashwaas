@@ -1,3 +1,4 @@
+import 'package:aashwaas/screens/fifth_onboarding_screen.dart';
 import 'package:aashwaas/screens/fouth_onboarding_screen.dart';
 import 'package:aashwaas/screens/splash_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
@@ -28,7 +29,7 @@ class ThirdOnboardingScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const SplashScreen(),
+                            builder: (context) => const FifthOnboardingScreen(),
                           ),
                         );
                       },
