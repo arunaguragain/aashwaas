@@ -1,25 +1,24 @@
-import 'package:aashwaas/screens/donor_login_screen.dart';
-import 'package:aashwaas/screens/volunteer_register_screen.dart';
+import 'package:aashwaas/screens/donor_register_screen.dart';
+import 'package:aashwaas/screens/volunteer_login_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
 import 'package:aashwaas/widgets/my_textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class DonorRegisterScreen extends StatefulWidget {
-  const DonorRegisterScreen({super.key});
+class VolunteerRegisterScreen extends StatefulWidget {
+  const VolunteerRegisterScreen({super.key});
 
   @override
-  State<DonorRegisterScreen> createState() => _DonorRegisterScreenState();
+  State<VolunteerRegisterScreen> createState() => _VolunteerRegisterScreenState();
 }
 
-class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
+class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     final _gap = SizedBox(height: 15);
@@ -43,7 +42,7 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
                 _gap,
 
                 Text(
-                  " Register as Donor",
+                  " Register as Volunteer",
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -132,7 +131,7 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const DonorLoginScreen(),
+                            builder: (context) => const VolunteerLoginScreen(),
                           ),
                         );
                     }, child: Text("Log in")),
@@ -147,11 +146,11 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const VolunteerRegisterScreen(),
+                            builder: (context) => const DonorRegisterScreen(),
                           ),
                         );
                       },
-                      child: Text("Register as Volunteer"),
+                      child: Text("Register as Donor"),
                     ),
                   ],
                 ),
@@ -161,5 +160,6 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
         ),
       ),
     );
+    
   }
 }

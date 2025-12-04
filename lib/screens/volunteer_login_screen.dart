@@ -1,4 +1,5 @@
 import 'package:aashwaas/screens/donor_login_screen.dart';
+import 'package:aashwaas/screens/volunteer_register_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
 import 'package:aashwaas/widgets/my_textformfield.dart';
 import 'package:flutter/material.dart';
@@ -110,17 +111,14 @@ class _VolunteerLoginScreenState extends State<VolunteerLoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Don't have an account?"),
-                    TextButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute<void>(
-                        //       builder: (context) => const DonorRegisterScreen(),
-                        //     ),
-                        //   );
-                      },
-                      child: Text("Sign Up"),
-                    ),
+                    TextButton(onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (context) => const VolunteerRegisterScreen(),
+                          ),
+                        );
+                    }, child: Text("Sign Up")),
                   ],
                 ),
 

@@ -1,4 +1,5 @@
 import 'package:aashwaas/screens/donor_login_screen.dart';
+import 'package:aashwaas/screens/donor_register_screen.dart';
 import 'package:aashwaas/screens/second_onboading_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,7 @@ class _FifthOnboardingScreenState extends State<FifthOnboardingScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute<void>(
-                      builder: (context) => const SecondOnboadingScreen(),
+                      builder: (context) => const DonorRegisterScreen(),
                     ),
                   );
                 },
