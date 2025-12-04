@@ -1,5 +1,4 @@
 import 'package:aashwaas/screens/fifth_onboarding_screen.dart';
-import 'package:aashwaas/screens/splash_screen.dart';
 import 'package:aashwaas/screens/third_onboarding_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
 import 'package:flutter/material.dart';
