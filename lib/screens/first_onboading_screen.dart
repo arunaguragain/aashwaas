@@ -40,7 +40,11 @@ class FirstOnboadingScreen extends StatelessWidget {
                 ],
               ),
 
-              Image.asset("assets/images/logo.png"),
+              Container(
+                height: 320,
+                width: double.infinity,
+                child: Image.asset("assets/images/logo.png"),
+              ),
 
               Text(
                 " Welcome to Aashwaas",
@@ -67,10 +71,7 @@ class FirstOnboadingScreen extends StatelessWidget {
 
               Text(
                 "Connect donors, volunteers, and NGOs to create meaningful impact through item donations. ",
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.black87,
-                ),
+                style: TextStyle(fontSize: 17, color: Colors.black87),
                 textAlign: TextAlign.center,
               ),
 

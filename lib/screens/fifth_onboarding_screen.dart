@@ -1,3 +1,4 @@
+import 'package:aashwaas/screens/donor_login_screen.dart';
 import 'package:aashwaas/screens/second_onboading_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +11,9 @@ class FifthOnboardingScreen extends StatefulWidget {
 }
 
 class _FifthOnboardingScreenState extends State<FifthOnboardingScreen> {
-
   @override
   Widget build(BuildContext context) {
-
-    final _gap = SizedBox(height: 25);
+    final _gap = SizedBox(height: 20);
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 211, 227, 255),
@@ -28,14 +27,14 @@ class _FifthOnboardingScreenState extends State<FifthOnboardingScreen> {
               Text(
                 " Welcome",
                 style: TextStyle(
-                  fontSize: 48,
+                  fontSize: 42,
                   fontWeight: FontWeight.bold,
                   color: Colors.deepPurple,
                 ),
               ),
 
               Container(
-                height: 340,
+                height: 320,
                 width: double.infinity,
                 child: Image.asset("assets/images/logo.png"),
               ),
@@ -45,7 +44,7 @@ class _FifthOnboardingScreenState extends State<FifthOnboardingScreen> {
               Text(
                 "Nurturing Compassion, \n Inspiring Change.",
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: Colors.deepPurple,
                 ),
@@ -55,13 +54,12 @@ class _FifthOnboardingScreenState extends State<FifthOnboardingScreen> {
               _gap,
               _gap,
 
-
               MyButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute<void>(
-                      builder: (context) => const SecondOnboadingScreen(),
+                      builder: (context) => const DonorLoginScreen(),
                     ),
                   );
                 },
