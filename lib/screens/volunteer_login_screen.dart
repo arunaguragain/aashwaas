@@ -1,6 +1,7 @@
 import 'package:aashwaas/common/my_snackbar.dart';
 import 'package:aashwaas/screens/donor_login_screen.dart';
 import 'package:aashwaas/screens/donor_register_screen.dart';
+import 'package:aashwaas/screens/home_screen.dart';
 import 'package:aashwaas/screens/volunteer_register_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
 import 'package:aashwaas/widgets/my_textformfield.dart';
@@ -88,7 +89,7 @@ class _VolunteerLoginScreenState extends State<VolunteerLoginScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const DonorRegisterScreen(),
+                            builder: (context) => const HomeScreen(),
                           ),
                       );
 
