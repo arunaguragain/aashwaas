@@ -1,3 +1,4 @@
+import 'package:aashwaas/common/my_snackbar.dart';
 import 'package:aashwaas/screens/donor_register_screen.dart';
 import 'package:aashwaas/screens/volunteer_login_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
@@ -9,7 +10,8 @@ class VolunteerRegisterScreen extends StatefulWidget {
   const VolunteerRegisterScreen({super.key});
 
   @override
-  State<VolunteerRegisterScreen> createState() => _VolunteerRegisterScreenState();
+  State<VolunteerRegisterScreen> createState() =>
+      _VolunteerRegisterScreenState();
 }
 
 class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
@@ -19,6 +21,7 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
   final TextEditingController _repasswordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final _gap = SizedBox(height: 15);
@@ -98,7 +101,19 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
 
                 MyButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {}
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (context) => const VolunteerLoginScreen(),
+                        ),
+                      );
+
+                      showMySnackBar(
+                        context: context,
+                        message: "Registered as Volunteer",
+                      );
+                    }
                   },
                   text: "Register",
                   color: Colors.blueAccent,
@@ -127,14 +142,17 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Already have an account?"),
-                    TextButton(onPressed: () {
-                      Navigator.push(
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
                           context,
                           MaterialPageRoute<void>(
                             builder: (context) => const VolunteerLoginScreen(),
                           ),
                         );
-                    }, child: Text("Log in")),
+                      },
+                      child: Text("Log in"),
+                    ),
                   ],
                 ),
 
@@ -160,6 +178,5 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
         ),
       ),
     );
-    
   }
 }

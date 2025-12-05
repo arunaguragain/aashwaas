@@ -1,3 +1,4 @@
+import 'package:aashwaas/common/my_snackbar.dart';
 import 'package:aashwaas/screens/donor_register_screen.dart';
 import 'package:aashwaas/screens/volunteer_login_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
@@ -82,12 +83,23 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
 
                 MyButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {}
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (context) => const DonorRegisterScreen(),
+                        ),
+                      );
+
+                      showMySnackBar(
+                        context: context,
+                        message: "Logged in as Donor",
+                      );
+                    }
                   },
                   text: "Login",
                   color: Colors.blueAccent,
                 ),
-
 
                 Row(
                   children: [
@@ -99,7 +111,6 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
                     Expanded(child: Divider()),
                   ],
                 ),
-
 
                 MyButton(
                   onPressed: () {},
@@ -113,14 +124,17 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Don't have an account?"),
-                    TextButton(onPressed: () {
-                      Navigator.push(
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
                           context,
                           MaterialPageRoute<void>(
                             builder: (context) => const DonorRegisterScreen(),
                           ),
                         );
-                    }, child: Text("Sign Up")),
+                      },
+                      child: Text("Sign Up"),
+                    ),
                   ],
                 ),
 

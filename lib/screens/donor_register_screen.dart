@@ -1,3 +1,4 @@
+import 'package:aashwaas/common/my_snackbar.dart';
 import 'package:aashwaas/screens/donor_login_screen.dart';
 import 'package:aashwaas/screens/volunteer_register_screen.dart';
 import 'package:aashwaas/widgets/my_button.dart';
@@ -99,7 +100,19 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
 
                 MyButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {}
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (context) => const DonorLoginScreen(),
+                          ),
+                      );
+
+                     showMySnackBar(
+                          context: context,
+                          message: "Registered as Donor",
+                     );
+                    }
                   },
                   text: "Register",
                   color: Colors.blueAccent,
