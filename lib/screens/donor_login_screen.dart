@@ -24,7 +24,6 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
     final _gap = SizedBox(height: 15);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 211, 227, 255),
       appBar: AppBar(backgroundColor: const Color.fromARGB(255, 211, 227, 255)),
       body: SingleChildScrollView(
         child: Padding(

@@ -10,7 +10,6 @@ class FirstOnboadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final _gap = SizedBox(height: 25);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 211, 227, 255),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
