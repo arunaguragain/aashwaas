@@ -16,5 +16,14 @@ ThemeData getApplicationTheme() {
         color: Colors.black,
       ),
     ),
+
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: Colors.white,
+      selectedItemColor: Colors.blue,
+      unselectedItemColor: Color(0xFF454545),
+      selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
+      unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w400),
+      elevation: 10,
+    ),
   );
 }

@@ -39,9 +39,6 @@ class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.black,
         currentIndex: _selectedIndex,
         onTap: (index) {
           setState(() {

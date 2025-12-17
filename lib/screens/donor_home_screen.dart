@@ -44,12 +44,6 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
             label: 'NGOs',
           ),
           const BottomNavigationBarItem(icon: Icon(Icons.add), label: ''),
-          // BottomNavigationBarItem(icon:Container(
-          //   height: 45,width: 45,decoration:
-          //   const BoxDecoration(
-          //     color: Colors.blue,shape: BoxShape.circle,),
-          //     child: const Icon(Icons.add, color: Colors.white),),
-          //     label: '',),
           const BottomNavigationBarItem(
             icon: Icon(Icons.history),
             label: 'History',
@@ -59,9 +53,6 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
             label: 'Profile',
           ),
         ],
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.black,
         currentIndex: _selectedIndex,
         onTap: (index) {
           setState(() {
