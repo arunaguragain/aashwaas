@@ -24,7 +24,12 @@ class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text(
+        _selectedIndex == 0? ''
+        :_selectedIndex == 1 ? 'My Tasks'
+        :_selectedIndex == 2 ? 'Task History'
+        : 'My Profile'),
+      ),
       body: lstBottomScreen[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
