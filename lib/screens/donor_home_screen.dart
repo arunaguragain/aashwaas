@@ -27,7 +27,13 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text(
+        _selectedIndex == 0? ''
+        :_selectedIndex == 1 ? 'NGOs & Instituitions'
+        :_selectedIndex == 2 ? 'Add Donation'
+        :_selectedIndex == 3 ? 'Donation History'
+        : 'My Profile'),
+      ),
       body: lstBottomScreen[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

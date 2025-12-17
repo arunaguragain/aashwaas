@@ -27,7 +27,7 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
     final _gap = SizedBox(height: 15);
 
     return Scaffold(
-      appBar: AppBar(backgroundColor: const Color.fromARGB(255, 211, 227, 255)),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
