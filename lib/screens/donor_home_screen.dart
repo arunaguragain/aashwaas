@@ -2,6 +2,7 @@ import 'package:aashwaas/screens/bottom_screen_donor/add_donation_screen.dart';
 import 'package:aashwaas/screens/bottom_screen_donor/history_screen.dart';
 import 'package:aashwaas/screens/bottom_screen_donor/home_screen.dart';
 import 'package:aashwaas/screens/bottom_screen_donor/ngo_screen.dart';
+import 'package:aashwaas/widgets/home_header.dart';
 import 'package:flutter/material.dart';
 
 import 'bottom_screen_donor/profile_screen.dart';
@@ -40,7 +41,18 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
               : 'My Profile',
         ),
       ),
-      body: lstBottomScreen[_selectedIndex],
+      body: Column(
+        children: [
+          HomeHeader(
+            userName: 'Aruna',
+            onNotificationPressed: () {},
+            onMenuPressed: () {},
+            isVerified: true,
+            role: 'donor',
+          ),
+          Expanded(child: lstBottomScreen[_selectedIndex]),
+        ],
+      ),
       bottomNavigationBar: Stack(
         clipBehavior: Clip.none,
         children: [

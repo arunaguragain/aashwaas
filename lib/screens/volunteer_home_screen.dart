@@ -2,6 +2,7 @@ import 'package:aashwaas/screens/bottom_screen_donor/history_screen.dart';
 import 'package:aashwaas/screens/bottom_screen_volunteer/home_screen.dart';
 import 'package:aashwaas/screens/bottom_screen_volunteer/profile_screen.dart';
 import 'package:aashwaas/screens/bottom_screen_volunteer/task_screen.dart';
+import 'package:aashwaas/widgets/home_header.dart';
 import 'package:flutter/material.dart';
 
 class VolunteerHomeScreen extends StatefulWidget {
@@ -24,13 +25,29 @@ class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(
-        _selectedIndex == 0? ''
-        :_selectedIndex == 1 ? 'My Tasks'
-        :_selectedIndex == 2 ? 'Task History'
-        : 'My Profile'),
+      appBar: AppBar(
+        title: Text(
+          _selectedIndex == 0
+              ? ''
+              : _selectedIndex == 1
+              ? 'My Tasks'
+              : _selectedIndex == 2
+              ? 'Task History'
+              : 'My Profile',
+        ),
       ),
-      body: lstBottomScreen[_selectedIndex],
+      body: Column(
+        children: [
+          HomeHeader(
+            userName: 'Aruna',
+            onNotificationPressed: () {},
+            onMenuPressed: () {},
+            isVerified: true,
+            role: 'volunteer',
+          ),
+          Expanded(child: lstBottomScreen[_selectedIndex]),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const [
