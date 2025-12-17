@@ -19,21 +19,19 @@ class SecondOnboadingScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    height: 55,
-                    width: 85,
-                    child: MyButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute<void>(
-                            builder: (context) => const FifthOnboardingScreen(),
-                          ),
-                        );
-                      },
-                      text: 'Skip',
-                      textColor: Colors.deepPurple,
-                      color: const Color.fromARGB(255, 211, 227, 255),
+                 TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (context) => const FifthOnboardingScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Skip", 
+                      selectionColor: Colors.deepPurple, 
+                      style: TextStyle(fontSize: 20),
                     ),
                   ),
                 ],
