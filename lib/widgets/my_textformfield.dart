@@ -18,11 +18,7 @@ class MyTextformfield extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        labelText: labelText,
-        hintText: hintText,
-      ),
+      decoration: InputDecoration(labelText: labelText, hintText: hintText),
 
       validator: (value) {
         if (value == null || value.isEmpty) {

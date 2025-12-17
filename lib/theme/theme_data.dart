@@ -25,5 +25,24 @@ ThemeData getApplicationTheme() {
       unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w400),
       elevation: 10,
     ),
+
+    inputDecorationTheme: InputDecorationThemeData(
+      filled: true,
+      fillColor: Colors.white,
+      hintStyle: TextStyle(color: Colors.grey),
+      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(color: Colors.orange),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(color: Colors.deepPurpleAccent, width: 2),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(color: Colors.blue),
+      ),
+    ),
   );
 }
