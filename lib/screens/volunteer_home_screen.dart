@@ -36,18 +36,7 @@ class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> {
               : 'My Profile',
         ),
       ),
-      body: Column(
-        children: [
-          HomeHeader(
-            userName: 'Aruna',
-            onNotificationPressed: () {},
-            onMenuPressed: () {},
-            isVerified: true,
-            role: 'volunteer',
-          ),
-          Expanded(child: lstBottomScreen[_selectedIndex]),
-        ],
-      ),
+      body: lstBottomScreen[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const [
