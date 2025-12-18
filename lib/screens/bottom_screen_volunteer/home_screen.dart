@@ -38,20 +38,60 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            TaskCard(
-              title: "Medical Books Collection",
-              pickup: "Boudha Police Station",
-              drop: "Moonlight Foundation",
-              date: "2024-11-19",
-              phone: "+977 9800000000",
-              status: TaskStatus.pendingReview,
-              onAccept: () {
-              },
-              onDecline: () {
-              },
+            Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Pending Review",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TaskCard(
+                      title: "Medical Books Collection",
+                      pickup: "Boudha Police Station",
+                      drop: "Moonlight Foundation",
+                      date: "2024-11-19",
+                      phone: "+977 9800000000",
+                      status: TaskStatus.pendingReview,
+                      onAccept: () {},
+                      onDecline: () {},
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Text(
+                            "Active Task",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              "View All",
+                              selectionColor: Colors.blue,
+                              style: TextStyle(fontFamily: 'OpenSans Bold'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-
-            
           ],
         ),
       ),
