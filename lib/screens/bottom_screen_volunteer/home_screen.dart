@@ -65,28 +65,30 @@ class HomeScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: Text(
-                            "Active Task",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        Text(
+                          "Active Task",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "View All",
-                              selectionColor: Colors.blue,
-                              style: TextStyle(fontFamily: 'OpenSans Bold'),
-                            ),
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            "View All",
+                            selectionColor: Colors.blue,
+                            style: TextStyle(fontFamily: 'OpenSans Bold'),
                           ),
                         ),
                       ],
+                    ),
+                    TaskCard(
+                      title: "Medical Books Collection",
+                      pickup: "Boudha Police Station",
+                      drop: "Moonlight Foundation",
+                      date: "2024-11-19",
+                      phone: "+977 9800000000",
+                      status: TaskStatus.pending,
                     ),
                   ],
                 ),
