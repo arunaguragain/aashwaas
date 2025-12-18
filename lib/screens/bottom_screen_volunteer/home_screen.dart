@@ -1,5 +1,6 @@
 import 'package:aashwaas/widgets/home_header.dart';
 import 'package:aashwaas/widgets/stats_card.dart';
+import 'package:aashwaas/widgets/task_card.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -36,6 +37,21 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
+
+            TaskCard(
+              title: "Medical Books Collection",
+              pickup: "Boudha Police Station",
+              drop: "Moonlight Foundation",
+              date: "2024-11-19",
+              phone: "+977 9800000000",
+              status: TaskStatus.pendingReview,
+              onAccept: () {
+              },
+              onDecline: () {
+              },
+            ),
+
+            
           ],
         ),
       ),
