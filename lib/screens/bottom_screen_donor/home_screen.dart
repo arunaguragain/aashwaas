@@ -46,7 +46,32 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: 14),
                   QuickActionsSection(),
-                  SizedBox(height: 14),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          "Recent Donations",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            "View All",
+                            selectionColor: Colors.blue,
+                            style: TextStyle(fontFamily: 'OpenSans Bold'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
