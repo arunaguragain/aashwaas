@@ -1,7 +1,7 @@
-import 'package:aashwaas/screens/bottom_screen_donor/add_donation_screen.dart';
-import 'package:aashwaas/screens/bottom_screen_donor/history_screen.dart';
-import 'package:aashwaas/screens/bottom_screen_donor/home_screen.dart';
-import 'package:aashwaas/screens/bottom_screen_donor/ngo_screen.dart';
+import 'package:aashwaas/features/dashboard/screens/bottom_screen_donor/add_donation_screen.dart';
+import 'package:aashwaas/features/dashboard/screens/bottom_screen_donor/history_screen.dart';
+import 'package:aashwaas/features/dashboard/screens/bottom_screen_donor/home_screen.dart';
+import 'package:aashwaas/features/dashboard/screens/bottom_screen_donor/ngo_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'bottom_screen_donor/profile_screen.dart';
