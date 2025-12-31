@@ -3,7 +3,7 @@ import 'package:aashwaas/features/auth/data/datasources/volunteer_auth_datasourc
 import 'package:aashwaas/features/auth/data/models/volunteer_auth_hive_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final authLocalDatasourceProvider = Provider<VolunteerAuthLocalDatasource>((ref) {
+final authVolunteerLocalDatasourceProvider = Provider<VolunteerAuthLocalDatasource>((ref) {
   final hiveService = ref.watch(hiveServiceProvider);
   return VolunteerAuthLocalDatasource(hiveService: hiveService);
 });

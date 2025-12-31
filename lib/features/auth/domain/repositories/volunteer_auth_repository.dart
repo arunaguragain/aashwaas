@@ -3,11 +3,11 @@ import 'package:aashwaas/features/auth/domain/entities/volunteer_auth_entity.dar
 import 'package:dartz/dartz.dart';
 
 abstract interface class IVolunteerAuthRepository {
-  Future<Either<Failure, bool>> register(VolunteerAuthEntity entity);
-  Future<Either<Failure, VolunteerAuthEntity>> login(
+  Future<Either<Failure, bool>> registerVolunteer(VolunteerAuthEntity entity);
+  Future<Either<Failure, VolunteerAuthEntity>> loginVolunteer(
     String email,
     String password,
   );
-  Future<Either<Failure, VolunteerAuthEntity>> getCurrentUser();
+  Future<Either<Failure, VolunteerAuthEntity>> getCurrentVolunteer();
   Future<Either<Failure, bool>> logout();
 }

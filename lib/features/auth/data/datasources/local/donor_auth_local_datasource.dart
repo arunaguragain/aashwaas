@@ -3,7 +3,7 @@ import 'package:aashwaas/features/auth/data/datasources/donor_auth_datasource.da
 import 'package:aashwaas/features/auth/data/models/donor_auth_hive_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final authLocalDatasourceProvider = Provider<DonorAuthLocalDatasource>((ref) {
+final authDonorLocalDatasourceProvider = Provider<DonorAuthLocalDatasource>((ref) {
   final hiveService = ref.watch(hiveServiceProvider);
   return DonorAuthLocalDatasource(hiveService: hiveService);
 });
