@@ -5,6 +5,7 @@ class DonorAuthEntity extends Equatable {
   final String fullName;
   final String email;
   final String? phoneNumber;
+  final String? password;
   final String? profilePicture;
 
   const DonorAuthEntity({
@@ -13,6 +14,7 @@ class DonorAuthEntity extends Equatable {
     required this.email,
     this.phoneNumber,
     this.profilePicture,
+    this.password,
   });
 
   @override
@@ -22,5 +24,6 @@ class DonorAuthEntity extends Equatable {
     email,
     phoneNumber,
     profilePicture,
+    password
   ];
 }

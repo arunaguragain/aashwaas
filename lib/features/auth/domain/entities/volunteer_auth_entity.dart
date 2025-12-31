@@ -5,6 +5,7 @@ class VolunteerAuthEntity extends Equatable {
   final String fullName;
   final String email;
   final String? phoneNumber;
+  final String? password;
   final String? profilePicture;
 
   const VolunteerAuthEntity({
@@ -12,9 +13,10 @@ class VolunteerAuthEntity extends Equatable {
     required this.fullName, 
     required this.email, 
     this.phoneNumber, 
-    this.profilePicture
+    this.profilePicture,
+    this.password,
   });
   
   @override
-  List<Object?> get props => [volunteerAuthId, fullName, email, phoneNumber, profilePicture];
+  List<Object?> get props => [volunteerAuthId, fullName, email, phoneNumber, profilePicture, password];
 }
