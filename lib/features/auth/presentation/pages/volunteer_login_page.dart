@@ -1,24 +1,22 @@
-import 'package:aashwaas/common/my_snackbar.dart';
-import 'package:aashwaas/screens/donor_login_screen.dart';
-import 'package:aashwaas/screens/volunteer_register_screen.dart';
-import 'package:aashwaas/widgets/my_button.dart';
-import 'package:aashwaas/widgets/my_textformfield.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
+import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
+import 'package:aashwaas/screens/volunteer_home_screen.dart';
+import 'package:aashwaas/features/auth/presentation/pages/volunteer_register_page.dart';
+import 'package:aashwaas/core/widgets/my_button.dart';
+import 'package:aashwaas/core/widgets/my_textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class DonorRegisterScreen extends StatefulWidget {
-  const DonorRegisterScreen({super.key});
+class VolunteerLoginScreen extends StatefulWidget {
+  const VolunteerLoginScreen({super.key});
 
   @override
-  State<DonorRegisterScreen> createState() => _DonorRegisterScreenState();
+  State<VolunteerLoginScreen> createState() => _VolunteerLoginScreenState();
 }
 
-class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
+class _VolunteerLoginScreenState extends State<VolunteerLoginScreen> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _repasswordController = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -43,21 +41,12 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
                 _gap,
 
                 Text(
-                  " Register as Donor",
+                  " Login as Volunteer",
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: Colors.deepPurple,
                   ),
-                ),
-
-                _gap,
-
-                MyTextformfield(
-                  hintText: "Enter Username",
-                  controller: _usernameController,
-                  labelText: "Username",
-                  errorMessage: "Username is required",
                 ),
 
                 _gap,
@@ -80,13 +69,6 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
 
                 _gap,
 
-                MyTextformfield(
-                  hintText: "Re-enter your password",
-                  controller: _repasswordController,
-                  labelText: "Confirm Password",
-                  errorMessage: "Password is required",
-                ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -97,23 +79,25 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
                   ],
                 ),
 
+                _gap,
+
                 MyButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const DonorLoginScreen(),
+                            builder: (context) => const VolunteerHomeScreen(),
                           ),
                       );
 
                      showMySnackBar(
                           context: context,
-                          message: "Registered as Donor",
+                          message: "Logged in as Volunteer",
                      );
                     }
                   },
-                  text: "Register",
+                  text: "Login",
                   color: Colors.blueAccent,
                 ),
 
@@ -130,7 +114,7 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
 
                 MyButton(
                   onPressed: () {},
-                  text: "Continue with Google",
+                  text: "Login with Google",
                   color: Colors.white,
                   textColor: Colors.black,
                   icon: Icon(FontAwesomeIcons.google),
@@ -139,15 +123,15 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Already have an account?"),
+                    Text("Don't have an account?"),
                     TextButton(onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const DonorLoginScreen(),
+                            builder: (context) => const VolunteerRegisterScreen(),
                           ),
                         );
-                    }, child: Text("Log in")),
+                    }, child: Text("Sign Up")),
                   ],
                 ),
 
@@ -159,11 +143,11 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const VolunteerRegisterScreen(),
+                            builder: (context) => const DonorLoginScreen(),
                           ),
                         );
                       },
-                      child: Text("Register as Volunteer"),
+                      child: Text("Login as Donor"),
                     ),
                   ],
                 ),

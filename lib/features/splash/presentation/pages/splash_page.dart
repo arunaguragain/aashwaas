@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:aashwaas/screens/first_onboading_screen.dart';
+import 'package:aashwaas/features/onboarding/presentation/pages/first_onboading_page.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {

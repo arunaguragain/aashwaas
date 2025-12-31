@@ -1,9 +1,10 @@
-import 'package:aashwaas/screens/fifth_onboarding_screen.dart';
-import 'package:aashwaas/widgets/my_button.dart';
+import 'package:aashwaas/features/onboarding/presentation/pages/fifth_onboarding_page.dart';
+import 'package:aashwaas/features/onboarding/presentation/pages/second_onboading_page.dart';
+import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 
-class FouthOnboardingScreen extends StatelessWidget {
-  const FouthOnboardingScreen({super.key});
+class FirstOnboadingScreen extends StatelessWidget {
+  const FirstOnboadingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,28 +15,47 @@ class FouthOnboardingScreen extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              SizedBox(height: 100),
+              SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (context) => const FifthOnboardingScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Skip",
+                      selectionColor: Colors.deepPurple,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
 
               Container(
-                height: 290,
+                height: 320,
                 width: double.infinity,
-                child: Image.asset("assets/icons/icon_tick.png"),
+                child: Image.asset("assets/images/logo.png"),
               ),
 
               Text(
-                "Ready to Start?",
+                " Welcome to Aashwaas",
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
-                textAlign: TextAlign.center,
               ),
 
               _gap,
 
               Text(
-                "Choose Your Role",
+                "Your platform for making a progress",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -47,7 +67,7 @@ class FouthOnboardingScreen extends StatelessWidget {
               _gap,
 
               Text(
-                "Whether you're donating items or volunteering your time, we're here to help.",
+                "Connect donors, volunteers, and NGOs to create meaningful impact through item donations. ",
                 style: TextStyle(fontSize: 17, color: Colors.black87),
                 textAlign: TextAlign.center,
               ),
@@ -63,37 +83,37 @@ class FouthOnboardingScreen extends StatelessWidget {
                     width: 20,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    width: 20,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    width: 20,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    width: 20,
-                    height: 12,
-                    decoration: BoxDecoration(
                       color: Colors.blueAccent,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    width: 20,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    width: 20,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    width: 20,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -107,11 +127,11 @@ class FouthOnboardingScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute<void>(
-                      builder: (context) => const FifthOnboardingScreen(),
+                      builder: (context) => const SecondOnboadingScreen(),
                     ),
                   );
                 },
-                text: 'Get Started',
+                text: 'Next',
               ),
             ],
           ),

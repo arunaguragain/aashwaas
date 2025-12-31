@@ -1,6 +1,6 @@
-import 'package:aashwaas/screens/donor_login_screen.dart';
-import 'package:aashwaas/screens/donor_register_screen.dart';
-import 'package:aashwaas/widgets/my_button.dart';
+import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
+import 'package:aashwaas/features/auth/presentation/pages/donor_register_page.dart';
+import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 
 class FifthOnboardingScreen extends StatefulWidget {

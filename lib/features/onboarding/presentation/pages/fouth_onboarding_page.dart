@@ -1,10 +1,9 @@
-import 'package:aashwaas/screens/fifth_onboarding_screen.dart';
-import 'package:aashwaas/screens/fouth_onboarding_screen.dart';
-import 'package:aashwaas/widgets/my_button.dart';
+import 'package:aashwaas/features/onboarding/presentation/pages/fifth_onboarding_page.dart';
+import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 
-class ThirdOnboardingScreen extends StatelessWidget {
-  const ThirdOnboardingScreen({super.key});
+class FouthOnboardingScreen extends StatelessWidget {
+  const FouthOnboardingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,39 +14,16 @@ class ThirdOnboardingScreen extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (context) => const FifthOnboardingScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Skip",
-                      selectionColor: Colors.deepPurple,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ],
-              ),
-
-              _gap,
-              _gap,
+              SizedBox(height: 100),
 
               Container(
                 height: 290,
                 width: double.infinity,
-                child: Image.asset("assets/icons/icon_volunteer.png"),
+                child: Image.asset("assets/icons/icon_tick.png"),
               ),
 
               Text(
-                "Volunteer and Connect",
+                "Ready to Start?",
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -59,7 +35,7 @@ class ThirdOnboardingScreen extends StatelessWidget {
               _gap,
 
               Text(
-                "Be Part of the Change",
+                "Choose Your Role",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -71,7 +47,7 @@ class ThirdOnboardingScreen extends StatelessWidget {
               _gap,
 
               Text(
-                "Join as a volunteer to collect and deliver donations, and help manage NGO operations. Your time can make a real difference!",
+                "Whether you're donating items or volunteering your time, we're here to help.",
                 style: TextStyle(fontSize: 17, color: Colors.black87),
                 textAlign: TextAlign.center,
               ),
@@ -107,7 +83,7 @@ class ThirdOnboardingScreen extends StatelessWidget {
                     width: 20,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent,
+                      color: Colors.grey,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -117,7 +93,7 @@ class ThirdOnboardingScreen extends StatelessWidget {
                     width: 20,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: Colors.blueAccent,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -131,11 +107,11 @@ class ThirdOnboardingScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute<void>(
-                      builder: (context) => const FouthOnboardingScreen(),
+                      builder: (context) => const FifthOnboardingScreen(),
                     ),
                   );
                 },
-                text: 'Next',
+                text: 'Get Started',
               ),
             ],
           ),

@@ -1,5 +1,5 @@
-import 'package:aashwaas/screens/splash_screen.dart';
-import 'package:aashwaas/theme/theme_data.dart';
+import 'package:aashwaas/features/splash/presentation/pages/splash_page.dart';
+import 'package:aashwaas/app/theme/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {

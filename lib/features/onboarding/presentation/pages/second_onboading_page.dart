@@ -1,6 +1,6 @@
-import 'package:aashwaas/screens/fifth_onboarding_screen.dart';
-import 'package:aashwaas/screens/third_onboarding_screen.dart';
-import 'package:aashwaas/widgets/my_button.dart';
+import 'package:aashwaas/features/onboarding/presentation/pages/fifth_onboarding_page.dart';
+import 'package:aashwaas/features/onboarding/presentation/pages/third_onboarding_screen.dart';
+import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 
 class SecondOnboadingScreen extends StatelessWidget {

@@ -1,20 +1,19 @@
-import 'package:aashwaas/common/my_snackbar.dart';
-import 'package:aashwaas/screens/donor_register_screen.dart';
-import 'package:aashwaas/screens/volunteer_login_screen.dart';
-import 'package:aashwaas/widgets/my_button.dart';
-import 'package:aashwaas/widgets/my_textformfield.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
+import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
+import 'package:aashwaas/features/auth/presentation/pages/volunteer_register_page.dart';
+import 'package:aashwaas/core/widgets/my_button.dart';
+import 'package:aashwaas/core/widgets/my_textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class VolunteerRegisterScreen extends StatefulWidget {
-  const VolunteerRegisterScreen({super.key});
+class DonorRegisterScreen extends StatefulWidget {
+  const DonorRegisterScreen({super.key});
 
   @override
-  State<VolunteerRegisterScreen> createState() =>
-      _VolunteerRegisterScreenState();
+  State<DonorRegisterScreen> createState() => _DonorRegisterScreenState();
 }
 
-class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
+class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -44,7 +43,7 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
                 _gap,
 
                 Text(
-                  " Register as Volunteer",
+                  " Register as Donor",
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -102,16 +101,16 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (context) => const VolunteerLoginScreen(),
-                        ),
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (context) => const DonorLoginScreen(),
+                          ),
                       );
 
-                      showMySnackBar(
-                        context: context,
-                        message: "Registered as Volunteer",
-                      );
+                     showMySnackBar(
+                          context: context,
+                          message: "Registered as Donor",
+                     );
                     }
                   },
                   text: "Register",
@@ -141,17 +140,14 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Already have an account?"),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
+                    TextButton(onPressed: () {
+                      Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const VolunteerLoginScreen(),
+                            builder: (context) => const DonorLoginScreen(),
                           ),
                         );
-                      },
-                      child: Text("Log in"),
-                    ),
+                    }, child: Text("Log in")),
                   ],
                 ),
 
@@ -163,11 +159,11 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const DonorRegisterScreen(),
+                            builder: (context) => const VolunteerRegisterScreen(),
                           ),
                         );
                       },
-                      child: Text("Register as Donor"),
+                      child: Text("Register as Volunteer"),
                     ),
                   ],
                 ),

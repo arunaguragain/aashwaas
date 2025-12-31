@@ -1,9 +1,9 @@
-import 'package:aashwaas/common/my_snackbar.dart';
-import 'package:aashwaas/screens/donor_register_screen.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
+import 'package:aashwaas/features/auth/presentation/pages/donor_register_page.dart';
 import 'package:aashwaas/screens/donor_home_screen.dart';
-import 'package:aashwaas/screens/volunteer_login_screen.dart';
-import 'package:aashwaas/widgets/my_button.dart';
-import 'package:aashwaas/widgets/my_textformfield.dart';
+import 'package:aashwaas/features/auth/presentation/pages/volunteer_login_page.dart';
+import 'package:aashwaas/core/widgets/my_button.dart';
+import 'package:aashwaas/core/widgets/my_textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

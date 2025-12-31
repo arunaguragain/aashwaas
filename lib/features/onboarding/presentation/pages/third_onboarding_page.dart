@@ -1,10 +1,10 @@
-import 'package:aashwaas/screens/fifth_onboarding_screen.dart';
-import 'package:aashwaas/screens/second_onboading_screen.dart';
-import 'package:aashwaas/widgets/my_button.dart';
+import 'package:aashwaas/features/onboarding/presentation/pages/fifth_onboarding_page.dart';
+import 'package:aashwaas/features/onboarding/presentation/pages/fouth_onboarding_page.dart';
+import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 
-class FirstOnboadingScreen extends StatelessWidget {
-  const FirstOnboadingScreen({super.key});
+class ThirdOnboardingScreen extends StatelessWidget {
+  const ThirdOnboardingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,33 +29,37 @@ class FirstOnboadingScreen extends StatelessWidget {
                       );
                     },
                     child: Text(
-                      "Skip", 
-                      selectionColor: Colors.deepPurple, 
+                      "Skip",
+                      selectionColor: Colors.deepPurple,
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
                 ],
               ),
 
+              _gap,
+              _gap,
+
               Container(
-                height: 320,
+                height: 290,
                 width: double.infinity,
-                child: Image.asset("assets/images/logo.png"),
+                child: Image.asset("assets/icons/icon_volunteer.png"),
               ),
 
               Text(
-                " Welcome to Aashwaas",
+                "Volunteer and Connect",
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
+                textAlign: TextAlign.center,
               ),
 
               _gap,
 
               Text(
-                "Your platform for making a progress",
+                "Be Part of the Change",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -67,7 +71,7 @@ class FirstOnboadingScreen extends StatelessWidget {
               _gap,
 
               Text(
-                "Connect donors, volunteers, and NGOs to create meaningful impact through item donations. ",
+                "Join as a volunteer to collect and deliver donations, and help manage NGO operations. Your time can make a real difference!",
                 style: TextStyle(fontSize: 17, color: Colors.black87),
                 textAlign: TextAlign.center,
               ),
@@ -83,27 +87,27 @@ class FirstOnboadingScreen extends StatelessWidget {
                     width: 20,
                     height: 12,
                     decoration: BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    width: 20,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    width: 20,
+                    height: 12,
+                    decoration: BoxDecoration(
                       color: Colors.blueAccent,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    width: 20,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    width: 20,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -127,7 +131,7 @@ class FirstOnboadingScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute<void>(
-                      builder: (context) => const SecondOnboadingScreen(),
+                      builder: (context) => const FouthOnboardingScreen(),
                     ),
                   );
                 },
