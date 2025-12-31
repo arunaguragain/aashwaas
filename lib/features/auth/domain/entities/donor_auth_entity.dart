@@ -8,13 +8,19 @@ class DonorAuthEntity extends Equatable {
   final String? profilePicture;
 
   const DonorAuthEntity({
-    this.donorAuthId, 
-    required this.fullName, 
-    required this.email, 
-    this.phoneNumber, 
-    this.profilePicture
+    this.donorAuthId,
+    required this.fullName,
+    required this.email,
+    this.phoneNumber,
+    this.profilePicture,
   });
-  
+
   @override
-  List<Object?> get props => [donorAuthId, fullName, email, phoneNumber, profilePicture];
+  List<Object?> get props => [
+    donorAuthId,
+    fullName,
+    email,
+    phoneNumber,
+    profilePicture,
+  ];
 }
