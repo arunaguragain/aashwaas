@@ -27,7 +27,7 @@ class RegisterUsecaseParams extends Equatable {
 }
 
 //provider
-final registerUsecaseProvider = Provider<RegisterUsecase>((ref) {
+final registerDonorUsecaseProvider = Provider<RegisterUsecase>((ref) {
   final authDonorRepository = ref.read(authDonorRepositoryProvider);
   return RegisterUsecase(authDonorRepository: authDonorRepository);
 });
