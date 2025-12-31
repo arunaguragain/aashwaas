@@ -16,7 +16,7 @@ class VolunteerRegisterScreen extends StatefulWidget {
 
 class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
 
@@ -55,10 +55,10 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
                 _gap,
 
                 MyTextformfield(
-                  hintText: "Enter Username",
-                  controller: _usernameController,
-                  labelText: "Username",
-                  errorMessage: "Username is required",
+                  hintText: "Enter FullName",
+                  controller: _fullNameController,
+                  labelText: "Full Name",
+                  errorMessage: "Full Name is required",
                 ),
 
                 _gap,

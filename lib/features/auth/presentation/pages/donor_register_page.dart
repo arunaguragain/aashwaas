@@ -15,7 +15,7 @@ class DonorRegisterScreen extends StatefulWidget {
 
 class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
 
@@ -54,10 +54,10 @@ class _DonorRegisterScreenState extends State<DonorRegisterScreen> {
                 _gap,
 
                 MyTextformfield(
-                  hintText: "Enter Username",
-                  controller: _usernameController,
-                  labelText: "Username",
-                  errorMessage: "Username is required",
+                  hintText: "Enter Full Name",
+                  controller: _fullNameController,
+                  labelText: "Full Name",
+                  errorMessage: "Full Name is required",
                 ),
 
                 _gap,
