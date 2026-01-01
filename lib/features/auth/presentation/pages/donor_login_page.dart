@@ -1,27 +1,64 @@
 import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/auth/presentation/pages/donor_register_page.dart';
+import 'package:aashwaas/features/auth/presentation/state/donor_auth_state.dart';
+import 'package:aashwaas/features/auth/presentation/view_model/donor_auth_viewmodel.dart';
 import 'package:aashwaas/features/dashboard/screens/donor_home_screen.dart';
 import 'package:aashwaas/features/auth/presentation/pages/volunteer_login_page.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/core/widgets/my_textformfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class DonorLoginScreen extends StatefulWidget {
+class DonorLoginScreen extends ConsumerStatefulWidget {
   const DonorLoginScreen({super.key});
 
   @override
-  State<DonorLoginScreen> createState() => _DonorLoginScreenState();
+  ConsumerState<DonorLoginScreen> createState() => _DonorLoginScreenState();
 }
 
-class _DonorLoginScreenState extends State<DonorLoginScreen> {
+class _DonorLoginScreenState extends ConsumerState<DonorLoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _obscurePassword = true;
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    if (_formKey.currentState!.validate()) {
+      await ref
+          .read(authDonorViewmodelProvider.notifier)
+          .login(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final _gap = SizedBox(height: 15);
+
+    final donorAuthState = ref.watch(authDonorViewmodelProvider);
+    ref.listen<DonorAuthState>(authDonorViewmodelProvider, (previous, next) {
+      if (next.status == AuthStatus.authenticated) {
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (context) => const DonorHomeScreen(),
+          ),
+        );
+      } else if (next.status == AuthStatus.error && next.errorMessage != null) {
+        showMySnackBar(context: context, message: next.errorMessage!);
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(),
@@ -63,6 +100,7 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
                 MyTextformfield(
                   hintText: "Enter your password",
                   controller: _passwordController,
+                  obscureText: _obscurePassword,
                   labelText: "Password",
                   errorMessage: "Password is required",
                 ),
@@ -82,21 +120,23 @@ class _DonorLoginScreenState extends State<DonorLoginScreen> {
                 _gap,
 
                 MyButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (context) => const DonorHomeScreen(),
-                        ),
-                      );
+                  // onPressed: () {
+                  //   if (_formKey.currentState!.validate()) {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute<void>(
+                  //         builder: (context) => const DonorHomeScreen(),
+                  //       ),
+                  //     );
 
-                      showMySnackBar(
-                        context: context,
-                        message: "Logged in as Donor",
-                      );
-                    }
-                  },
+                  //     showMySnackBar(
+                  //       context: context,
+                  //       message: "Logged in as Donor",
+                  //     );
+                  //   }
+                  // },
+                  onPressed:  _handleLogin,
+                  isLoading: donorAuthState.status == AuthStatus.loading,
                   text: "Login",
                   color: Colors.blueAccent,
                 ),

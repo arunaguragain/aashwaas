@@ -7,7 +7,8 @@ class MyButton extends StatelessWidget {
     required this.text,
     this.color,
     this.textColor,
-    this.icon,
+    this.icon, 
+    this.isLoading,
   });
 
   final VoidCallback onPressed;
@@ -15,6 +16,7 @@ class MyButton extends StatelessWidget {
   final Color? color;
   final Color? textColor;
   final Icon? icon;
+  final bool? isLoading;
 
   @override
   Widget build(BuildContext context) {

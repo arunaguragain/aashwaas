@@ -6,13 +6,15 @@ class MyTextformfield extends StatelessWidget {
     required this.hintText,
     required this.controller,
     required this.labelText,
-    required this.errorMessage,
+    required this.errorMessage, 
+    this.obscureText,
   });
 
   final String labelText;
   final String hintText;
   final TextEditingController controller;
   final String errorMessage;
+  final bool? obscureText;
 
   @override
   Widget build(BuildContext context) {
