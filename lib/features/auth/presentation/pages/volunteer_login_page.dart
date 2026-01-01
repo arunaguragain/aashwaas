@@ -1,27 +1,64 @@
 import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
+import 'package:aashwaas/features/auth/presentation/state/volunteer_auth_state.dart';
+import 'package:aashwaas/features/auth/presentation/view_model/volunteer_auth_viewmodel.dart';
 import 'package:aashwaas/features/dashboard/screens/volunteer_home_screen.dart';
 import 'package:aashwaas/features/auth/presentation/pages/volunteer_register_page.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/core/widgets/my_textformfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class VolunteerLoginScreen extends StatefulWidget {
+class VolunteerLoginScreen extends ConsumerStatefulWidget {
   const VolunteerLoginScreen({super.key});
 
   @override
-  State<VolunteerLoginScreen> createState() => _VolunteerLoginScreenState();
+  ConsumerState<VolunteerLoginScreen> createState() => _VolunteerLoginScreenState();
 }
 
-class _VolunteerLoginScreenState extends State<VolunteerLoginScreen> {
+class _VolunteerLoginScreenState extends ConsumerState<VolunteerLoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _obscurePassword = true;
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    if (_formKey.currentState!.validate()) {
+      await ref
+          .read(authVolunteerViewmodelProvider.notifier)
+          .login(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final _gap = SizedBox(height: 15);
+
+    final volunteerAuthState = ref.watch(authVolunteerViewmodelProvider);
+    ref.listen<VolunteerAuthState>(authVolunteerViewmodelProvider, (previous, next) {
+      if (next.status == AuthStatus.authenticated) {
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (context) => const VolunteerHomeScreen(),
+          ),
+        );
+      } else if (next.status == AuthStatus.error && next.errorMessage != null) {
+        showMySnackBar(context: context, message: next.errorMessage!);
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(),
@@ -64,6 +101,7 @@ class _VolunteerLoginScreenState extends State<VolunteerLoginScreen> {
                   hintText: "Enter your password",
                   controller: _passwordController,
                   labelText: "Password",
+                  obscureText: _obscurePassword,
                   errorMessage: "Password is required",
                 ),
 
@@ -82,21 +120,23 @@ class _VolunteerLoginScreenState extends State<VolunteerLoginScreen> {
                 _gap,
 
                 MyButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute<void>(
-                            builder: (context) => const VolunteerHomeScreen(),
-                          ),
-                      );
+                  // onPressed: () {
+                  //   if (_formKey.currentState!.validate()) {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute<void>(
+                  //           builder: (context) => const VolunteerHomeScreen(),
+                  //         ),
+                  //     );
 
-                     showMySnackBar(
-                          context: context,
-                          message: "Logged in as Volunteer",
-                     );
-                    }
-                  },
+                  //    showMySnackBar(
+                  //         context: context,
+                  //         message: "Logged in as Volunteer",
+                  //    );
+                  //   }
+                  // },
+                  onPressed: _handleLogin,
+                  isLoading: volunteerAuthState.status == AuthStatus.loading,
                   text: "Login",
                   color: Colors.blueAccent,
                 ),

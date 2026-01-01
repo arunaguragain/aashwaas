@@ -3,27 +3,69 @@ import 'package:aashwaas/features/auth/presentation/pages/donor_register_page.da
 import 'package:aashwaas/features/auth/presentation/pages/volunteer_login_page.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/core/widgets/my_textformfield.dart';
+import 'package:aashwaas/features/auth/presentation/state/volunteer_auth_state.dart';
+import 'package:aashwaas/features/auth/presentation/view_model/volunteer_auth_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class VolunteerRegisterScreen extends StatefulWidget {
+class VolunteerRegisterScreen extends ConsumerStatefulWidget {
   const VolunteerRegisterScreen({super.key});
 
   @override
-  State<VolunteerRegisterScreen> createState() =>
+  ConsumerState<VolunteerRegisterScreen> createState() =>
       _VolunteerRegisterScreenState();
 }
 
-class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
+class _VolunteerRegisterScreenState extends ConsumerState<VolunteerRegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+  final bool _obscurePassword = true;
+  final bool _obscureConfirmPassword = true;
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _repasswordController.dispose();
+    super.dispose();
+  }
+
+   Future<void> _handleSignup() async {
+    if (_formKey.currentState!.validate()) {
+      ref
+          .read(authVolunteerViewmodelProvider.notifier)
+          .register(
+            fullName: _fullNameController.text,
+            email: _emailController.text,
+            password: _passwordController.text,
+          );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    final volunteerAuthState = ref.watch(authVolunteerViewmodelProvider);
+    ref.listen<VolunteerAuthState>(authVolunteerViewmodelProvider, (previous, next) {
+      if (next.status == AuthStatus.registered) {
+        showMySnackBar(
+          context: context,
+          message: 'Registration successful! Please login',
+        );
+        Navigator.of(context).pop();
+      } else if (next.status == AuthStatus.error) {
+        showMySnackBar(
+          context: context,
+          message: 'Registration failed. Please try again',
+        );
+      }
+    });
     final _gap = SizedBox(height: 15);
 
     return Scaffold(
@@ -77,6 +119,7 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
                   controller: _passwordController,
                   labelText: "Password",
                   errorMessage: "Password is required",
+                  obscureText: _obscurePassword,
                 ),
 
                 _gap,
@@ -85,6 +128,7 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
                   hintText: "Re-enter your password",
                   controller: _repasswordController,
                   labelText: "Confirm Password",
+                  obscureText: _obscureConfirmPassword,
                   errorMessage: "Password is required",
                 ),
 
@@ -99,21 +143,23 @@ class _VolunteerRegisterScreenState extends State<VolunteerRegisterScreen> {
                 ),
 
                 MyButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (context) => const VolunteerLoginScreen(),
-                        ),
-                      );
+                  onPressed: _handleSignup,
+                  // onPressed: () {
+                  //   if (_formKey.currentState!.validate()) {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute<void>(
+                  //         builder: (context) => const VolunteerLoginScreen(),
+                  //       ),
+                  //     );
 
-                      showMySnackBar(
-                        context: context,
-                        message: "Registered as Volunteer",
-                      );
-                    }
-                  },
+                  //     showMySnackBar(
+                  //       context: context,
+                  //       message: "Registered as Volunteer",
+                  //     );
+                  //   }
+                  // },
+                  isLoading: volunteerAuthState.status == AuthStatus.loading,
                   text: "Register",
                   color: Colors.blueAccent,
                 ),
