@@ -79,4 +79,14 @@ class UserSessionService {
   String? getUserProfileImage() {
     return _prefs.getString(_keyUserProfileImage);
   }
+
+   Future<String?> getUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('user_role'); // Get user role (either 'volunteer' or 'donor')
+  }
+
+  Future<void> setUserRole(String role) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('user_role', role); // Save the user role (either 'volunteer' or 'donor')
+  }
 }

@@ -53,6 +53,7 @@ class DonorAuthLocalDatasource implements IDonorAuthDataSource {
           phoneNumber: donor.phoneNumber,
           profileImage: donor.profilePicture ?? '',
         );
+        await _userSessionService.setUserRole('donor');
       }
       return Future.value(donor);
     } catch (e) {

@@ -49,6 +49,7 @@ class VolunteerAuthLocalDatasource implements IVolunteerAuthDataSource {
           phoneNumber: volunteer.phoneNumber,
           profileImage: volunteer.profilePicture ?? '',
         );
+        await _userSessionService.setUserRole('volunteer');
       }
       return Future.value(volunteer);
     } catch (e) {

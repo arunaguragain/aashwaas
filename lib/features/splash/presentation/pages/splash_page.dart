@@ -17,25 +17,65 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 2), () {
+    // Future.delayed(Duration(seconds: 2), () {
+    //   final userSessionService = ref.read(userSessionServiceProvider);
+    //   final isLoggedIn = userSessionService.isLoggedIn();
+    //   if (isLoggedIn) {
+    //     Navigator.push(
+    //     context,
+    //     MaterialPageRoute<void>(
+    //       builder: (context) => const DonorHomeScreen(),
+    //     ),
+    //   );
+    //   } else {
+    //     Navigator.push(
+    //     context,
+    //     MaterialPageRoute<void>(
+    //       builder: (context) => const FirstOnboadingScreen(),
+    //     ),
+    //   );
+    //   }
+    // });
+
+    Future.delayed(Duration(seconds: 2), () async {
       final userSessionService = ref.read(userSessionServiceProvider);
       final isLoggedIn = userSessionService.isLoggedIn();
+      
       if (isLoggedIn) {
-        Navigator.push(
-        context,
-        MaterialPageRoute<void>(
-          builder: (context) => const DonorHomeScreen(),
-        ),
-      );
+        final userRole = await userSessionService.getUserRole(); // Get user role
+        if (userRole == 'volunteer') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute<void>(
+              builder: (context) => const VolunteerHomeScreen(),
+            ),
+          );
+        } else if (userRole == 'donor') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute<void>(
+              builder: (context) => const DonorHomeScreen(),
+            ),
+          );
+        } else {
+          // Fallback: if no role is found or the role is not set
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute<void>(
+              builder: (context) => const FirstOnboadingScreen(),
+            ),
+          );
+        }
       } else {
-        Navigator.push(
-        context,
-        MaterialPageRoute<void>(
-          builder: (context) => const FirstOnboadingScreen(),
-        ),
-      );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (context) => const FirstOnboadingScreen(),
+          ),
+        );
       }
     });
+
 
     final _gap = SizedBox(height: 25);
 
