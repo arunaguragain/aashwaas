@@ -1,18 +1,29 @@
 import 'package:aashwaas/core/services/hive/hive_service.dart';
+import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/features/auth/data/datasources/donor_auth_datasource.dart';
 import 'package:aashwaas/features/auth/data/models/donor_auth_hive_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final authDonorLocalDatasourceProvider = Provider<DonorAuthLocalDatasource>((ref) {
-  final hiveService = ref.watch(hiveServiceProvider);
-  return DonorAuthLocalDatasource(hiveService: hiveService);
+final authDonorLocalDatasourceProvider = Provider<DonorAuthLocalDatasource>((
+  ref,
+) {
+  final hiveService = ref.read(hiveServiceProvider);
+  final userSessionService = ref.read(userSessionServiceProvider);
+  return DonorAuthLocalDatasource(
+    hiveService: hiveService,
+    userSessionService: userSessionService,
+  );
 });
 
 class DonorAuthLocalDatasource implements IDonorAuthDataSource {
   final HiveService _hiveService;
+  final UserSessionService _userSessionService;
 
-  DonorAuthLocalDatasource({required HiveService hiveService})
-    : _hiveService = hiveService;
+  DonorAuthLocalDatasource({
+    required HiveService hiveService,
+    required userSessionService,
+  }) : _hiveService = hiveService,
+       _userSessionService = userSessionService;
 
   @override
   Future<DonorAuthHiveModel?> getCurrentDonor() {
@@ -22,10 +33,10 @@ class DonorAuthLocalDatasource implements IDonorAuthDataSource {
 
   @override
   Future<bool> isEmailExistsD(String email) {
-    try{
-      final exists=  _hiveService.isEmailExistsD(email);
+    try {
+      final exists = _hiveService.isEmailExistsD(email);
       return Future.value(exists);
-    }catch(e){
+    } catch (e) {
       return Future.value(false);
     }
   }
@@ -34,6 +45,15 @@ class DonorAuthLocalDatasource implements IDonorAuthDataSource {
   Future<DonorAuthHiveModel?> loginDonor(String email, String password) async {
     try {
       final donor = await _hiveService.loginDonor(email, password);
+      if (donor != null) {
+        await _userSessionService.saveUserSession(
+          userId: donor.donorAuthId!,
+          email: email,
+          fullName: donor.fullName,
+          phoneNumber: donor.phoneNumber,
+          profileImage: donor.profilePicture ?? '',
+        );
+      }
       return Future.value(donor);
     } catch (e) {
       return Future.value(null);

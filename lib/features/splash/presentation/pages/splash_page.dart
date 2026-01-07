@@ -1,19 +1,40 @@
 import 'dart:async';
+import 'package:aashwaas/core/services/storage/user_session_service.dart';
+import 'package:aashwaas/features/dashboard/screens/donor_home_screen.dart';
+import 'package:aashwaas/features/dashboard/screens/volunteer_home_screen.dart';
 import 'package:aashwaas/features/onboarding/presentation/pages/first_onboading_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  
+  @override
   Widget build(BuildContext context) {
     Future.delayed(Duration(seconds: 2), () {
-      Navigator.push(
+      final userSessionService = ref.read(userSessionServiceProvider);
+      final isLoggedIn = userSessionService.isLoggedIn();
+      if (isLoggedIn) {
+        Navigator.push(
+        context,
+        MaterialPageRoute<void>(
+          builder: (context) => const DonorHomeScreen(),
+        ),
+      );
+      } else {
+        Navigator.push(
         context,
         MaterialPageRoute<void>(
           builder: (context) => const FirstOnboadingScreen(),
         ),
       );
+      }
     });
 
     final _gap = SizedBox(height: 25);
