@@ -8,10 +8,11 @@ abstract interface class IDonorAuthLocalDataSource {
   Future<bool> logout();
   Future<bool> isEmailExistsD(String email);
   Future<DonorAuthHiveModel> getDonorById(String authId);
+  Future<DonorAuthHiveModel?> getDonorByEmail(String email);
 }
 
 abstract interface class IDonorAuthRemoteDataSource{
-  Future<DonorAuthApiModel> registerDonor(DonorAuthApiModel user);
+  Future<DonorAuthApiModel> registerDonor(DonorAuthApiModel donor);
   Future<DonorAuthApiModel?> loginDonor(String email, String password);
   Future<DonorAuthApiModel> getDonorById(String authId);
 }

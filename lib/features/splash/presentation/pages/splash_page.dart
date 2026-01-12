@@ -17,26 +17,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   
   @override
   Widget build(BuildContext context) {
-    // Future.delayed(Duration(seconds: 2), () {
-    //   final userSessionService = ref.read(userSessionServiceProvider);
-    //   final isLoggedIn = userSessionService.isLoggedIn();
-    //   if (isLoggedIn) {
-    //     Navigator.push(
-    //     context,
-    //     MaterialPageRoute<void>(
-    //       builder: (context) => const DonorHomeScreen(),
-    //     ),
-    //   );
-    //   } else {
-    //     Navigator.push(
-    //     context,
-    //     MaterialPageRoute<void>(
-    //       builder: (context) => const FirstOnboadingScreen(),
-    //     ),
-    //   );
-    //   }
-    // });
-
     Future.delayed(Duration(seconds: 2), () async {
       final userSessionService = ref.read(userSessionServiceProvider);
       final isLoggedIn = userSessionService.isLoggedIn();

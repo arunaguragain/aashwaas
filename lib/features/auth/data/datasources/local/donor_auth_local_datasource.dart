@@ -86,4 +86,10 @@ class DonorAuthLocalDatasource implements IDonorAuthLocalDataSource {
     // TODO: implement getDonorById
     throw UnimplementedError();
   }
+  
+  @override
+  Future<DonorAuthHiveModel?> getDonorByEmail(String email) {
+    // TODO: implement getDonorByEmail
+    throw UnimplementedError();
+  }
 }

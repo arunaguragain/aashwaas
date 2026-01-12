@@ -82,4 +82,16 @@ class VolunteerAuthLocalDatasource implements IVolunteerAuthLocalDataSource {
     // TODO: implement getDonorById
     throw UnimplementedError();
   }
+  
+  @override
+  Future<VolunteerAuthHiveModel?> getVolunteerByEmail(String email) {
+    // TODO: implement getVolunteerByEmail
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<VolunteerAuthHiveModel> getVolunteerById(String authId) {
+    // TODO: implement getVolunteerById
+    throw UnimplementedError();
+  }
 }
