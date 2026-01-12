@@ -15,7 +15,7 @@ final authDonorLocalDatasourceProvider = Provider<DonorAuthLocalDatasource>((
   );
 });
 
-class DonorAuthLocalDatasource implements IDonorAuthDataSource {
+class DonorAuthLocalDatasource implements IDonorAuthLocalDataSource {
   final HiveService _hiveService;
   final UserSessionService _userSessionService;
 
@@ -79,5 +79,11 @@ class DonorAuthLocalDatasource implements IDonorAuthDataSource {
     } catch (e) {
       return Future.value(false);
     }
+  }
+  
+  @override
+  Future<DonorAuthHiveModel> getDonorById(String authId) {
+    // TODO: implement getDonorById
+    throw UnimplementedError();
   }
 }

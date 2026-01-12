@@ -8,13 +8,15 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final authDonorRepositoryProvider = Provider<IDonorAuthRepository>((ref) {
-  return DonorAuthRepository(authDonorDataSource: ref.read(authDonorLocalDatasourceProvider));
+  return DonorAuthRepository(
+    authDonorDataSource: ref.read(authDonorLocalDatasourceProvider),
+  );
 });
 
 class DonorAuthRepository implements IDonorAuthRepository {
-  final IDonorAuthDataSource _authDonorDataSource;
+  final IDonorAuthLocalDataSource _authDonorDataSource;
 
-  DonorAuthRepository({required IDonorAuthDataSource authDonorDataSource})
+  DonorAuthRepository({required IDonorAuthLocalDataSource authDonorDataSource})
     : _authDonorDataSource = authDonorDataSource;
   @override
   Future<Either<Failure, DonorAuthEntity>> getCurrentDonor() async {

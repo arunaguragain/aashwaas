@@ -16,10 +16,10 @@ final authVolunteerRepositoryProvider = Provider<IVolunteerAuthRepository>((
 });
 
 class VolunteerAuthRepository implements IVolunteerAuthRepository {
-  final IVolunteerAuthDataSource _authVolunteerDataSource;
+  final IVolunteerAuthLocalDataSource _authVolunteerDataSource;
 
   VolunteerAuthRepository({
-    required IVolunteerAuthDataSource authVolunteerDataSource,
+    required IVolunteerAuthLocalDataSource authVolunteerDataSource,
   }) : _authVolunteerDataSource = authVolunteerDataSource;
   @override
   Future<Either<Failure, VolunteerAuthEntity>> getCurrentVolunteer() async {

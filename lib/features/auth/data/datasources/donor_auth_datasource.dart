@@ -1,9 +1,17 @@
+import 'package:aashwaas/features/auth/data/models/donor_auth_api_model.dart';
 import 'package:aashwaas/features/auth/data/models/donor_auth_hive_model.dart';
 
-abstract interface class IDonorAuthDataSource {
+abstract interface class IDonorAuthLocalDataSource {
   Future<bool> registerDonor(DonorAuthHiveModel model);
   Future<DonorAuthHiveModel?> loginDonor(String email, String password);
   Future<DonorAuthHiveModel?> getCurrentDonor();
   Future<bool> logout();
   Future<bool> isEmailExistsD(String email);
+  Future<DonorAuthHiveModel> getDonorById(String authId);
+}
+
+abstract interface class IDonorAuthRemoteDataSource{
+  Future<DonorAuthApiModel> registerDonor(DonorAuthApiModel user);
+  Future<DonorAuthApiModel?> loginDonor(String email, String password);
+  Future<DonorAuthApiModel> getDonorById(String authId);
 }

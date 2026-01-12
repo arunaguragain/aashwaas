@@ -13,7 +13,7 @@ final authVolunteerLocalDatasourceProvider = Provider<VolunteerAuthLocalDatasour
   );
 });
 
-class VolunteerAuthLocalDatasource implements IVolunteerAuthDataSource {
+class VolunteerAuthLocalDatasource implements IVolunteerAuthLocalDataSource {
   final HiveService _hiveService;
   final UserSessionService _userSessionService;
 
@@ -75,5 +75,11 @@ class VolunteerAuthLocalDatasource implements IVolunteerAuthDataSource {
     } catch (e) {
       return Future.value(false);
     }
+  }
+  
+  @override
+  Future<VolunteerAuthHiveModel> getDonorById(String authId) {
+    // TODO: implement getDonorById
+    throw UnimplementedError();
   }
 }
