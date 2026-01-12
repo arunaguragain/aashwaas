@@ -149,9 +149,11 @@ class _AuthInterceptor extends Interceptor {
   ) async {
     // Skip auth for public endpoints
     final publicEndpoints = [
-      ApiEndpoints.batches,
-      ApiEndpoints.categories,
-      ApiEndpoints.studentLogin,
+      // ApiEndpoints.batches,
+      // ApiEndpoints.categories,
+      // ApiEndpoints.studentLogin,
+      ApiEndpoints.donorLogin,
+      ApiEndpoints.volunteerLogin,
     ];
 
     final isPublicGet =
@@ -159,8 +161,11 @@ class _AuthInterceptor extends Interceptor {
         publicEndpoints.any((endpoint) => options.path.startsWith(endpoint));
 
     final isAuthEndpoint =
-        options.path == ApiEndpoints.studentLogin ||
-        options.path == ApiEndpoints.students;
+        options.path == ApiEndpoints.donorLogin ||
+        options.path == ApiEndpoints.donor;
+
+        options.path == ApiEndpoints.volunteerLogin ||
+        options.path == ApiEndpoints.volunteer;
 
     if (!isPublicGet && !isAuthEndpoint) {
       final token = await _storage.read(key: _tokenKey);
