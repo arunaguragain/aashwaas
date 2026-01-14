@@ -35,8 +35,14 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
     super.dispose();
   }
 
-   Future<void> _handleSignup() async {
+  Future<void> _handleSignup() async {
     if (_formKey.currentState!.validate()) {
+      // validate confirm password
+      if (_passwordController.text != _repasswordController.text) {
+        showMySnackBar(context: context, message: 'Passwords do not match');
+        return;
+      }
+
       ref
           .read(authDonorViewmodelProvider.notifier)
           .register(
@@ -46,7 +52,6 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
           );
     }
   }
- 
 
   final _formKey = GlobalKey<FormState>();
 
@@ -119,7 +124,7 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
                   hintText: "Enter your password",
                   controller: _passwordController,
                   labelText: "Password",
-                  errorMessage: "Password is required", 
+                  errorMessage: "Password is required",
                   obscureText: _obscurePassword,
                 ),
 
@@ -129,7 +134,7 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
                   hintText: "Re-enter your password",
                   controller: _repasswordController,
                   labelText: "Confirm Password",
-                  errorMessage: "Password is required", 
+                  errorMessage: "Password is required",
                   obscureText: _obscureConfirmPassword,
                 ),
 

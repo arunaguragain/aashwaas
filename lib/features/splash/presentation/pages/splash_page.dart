@@ -23,6 +23,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       
       if (isLoggedIn) {
         final userRole = await userSessionService.getUserRole(); // Get user role
+        print('User role: $userRole');
         if (userRole == 'volunteer') {
           Navigator.pushReplacement(
             context,

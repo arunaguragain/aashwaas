@@ -51,7 +51,8 @@ class DonorAuthLocalDatasource implements IDonorAuthLocalDataSource {
           email: email,
           fullName: donor.fullName,
           phoneNumber: donor.phoneNumber,
-          profileImage: donor.profilePicture ?? '',
+          profileImage: donor.profilePicture ?? '', 
+          role: 'donor',
         );
         await _userSessionService.setUserRole('donor');
       }

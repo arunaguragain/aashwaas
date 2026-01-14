@@ -17,7 +17,8 @@ class VolunteerRegisterScreen extends ConsumerStatefulWidget {
       _VolunteerRegisterScreenState();
 }
 
-class _VolunteerRegisterScreenState extends ConsumerState<VolunteerRegisterScreen> {
+class _VolunteerRegisterScreenState
+    extends ConsumerState<VolunteerRegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -36,8 +37,14 @@ class _VolunteerRegisterScreenState extends ConsumerState<VolunteerRegisterScree
     super.dispose();
   }
 
-   Future<void> _handleSignup() async {
+  Future<void> _handleSignup() async {
     if (_formKey.currentState!.validate()) {
+      // validate confirm password
+      if (_passwordController.text != _repasswordController.text) {
+        showMySnackBar(context: context, message: 'Passwords do not match');
+        return;
+      }
+
       ref
           .read(authVolunteerViewmodelProvider.notifier)
           .register(
@@ -50,9 +57,11 @@ class _VolunteerRegisterScreenState extends ConsumerState<VolunteerRegisterScree
 
   @override
   Widget build(BuildContext context) {
-
     final volunteerAuthState = ref.watch(authVolunteerViewmodelProvider);
-    ref.listen<VolunteerAuthState>(authVolunteerViewmodelProvider, (previous, next) {
+    ref.listen<VolunteerAuthState>(authVolunteerViewmodelProvider, (
+      previous,
+      next,
+    ) {
       if (next.status == AuthStatus.registered) {
         showMySnackBar(
           context: context,

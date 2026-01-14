@@ -33,6 +33,7 @@ class UserSessionService {
     required String fullName,
     required String? phoneNumber,
     String? profileImage,
+    required String role,
   }) async {
     await _prefs.setBool(_keysIsLoggedIn, true);
     await _prefs.setString(_keyUserId, userId);
@@ -44,6 +45,7 @@ class UserSessionService {
     if (profileImage != null) {
       await _prefs.setString(_keyUserProfileImage, profileImage);
     }
+    await setUserRole(role); 
   }
 
   //Clear user session data
@@ -80,7 +82,7 @@ class UserSessionService {
     return _prefs.getString(_keyUserProfileImage);
   }
 
-   Future<String?> getUserRole() async {
+  Future<String?> getUserRole() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('user_role'); // Get user role (either 'volunteer' or 'donor')
   }

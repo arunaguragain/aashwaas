@@ -162,8 +162,7 @@ class _AuthInterceptor extends Interceptor {
 
     final isAuthEndpoint =
         options.path == ApiEndpoints.donorLogin ||
-        options.path == ApiEndpoints.donor;
-
+        options.path == ApiEndpoints.donor ||
         options.path == ApiEndpoints.volunteerLogin ||
         options.path == ApiEndpoints.volunteer;
 

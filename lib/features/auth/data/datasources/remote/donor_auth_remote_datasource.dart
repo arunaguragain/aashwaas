@@ -5,7 +5,6 @@ import 'package:aashwaas/features/auth/data/datasources/donor_auth_datasource.da
 import 'package:aashwaas/features/auth/data/models/donor_auth_api_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 //provider
 final authDonorRemoteProvider = Provider<IDonorAuthRemoteDataSource>((ref) {
   return AuthDonorRemoteDatasource(
@@ -23,20 +22,20 @@ class AuthDonorRemoteDatasource implements IDonorAuthRemoteDataSource {
     required UserSessionService userSessionService,
   }) : _apiClient = apiClient,
        _userSessionService = userSessionService;
-  
+
   @override
   Future<DonorAuthApiModel> getDonorById(String authId) {
     // TODO: implement getDonorById
     throw UnimplementedError();
   }
-  
+
   @override
   Future<DonorAuthApiModel?> loginDonor(String email, String password) async {
     final response = await _apiClient.post(
       ApiEndpoints.donorLogin,
-      data: {'email': email, 'password': password},
+      data: {'email': email, 'password': password, 'role': 'donor'},
     );
-    
+
     if (response.data['success'] == true) {
       final data = response.data['data'] as Map<String, dynamic>;
       final user = DonorAuthApiModel.fromJson(data);
@@ -46,18 +45,23 @@ class AuthDonorRemoteDatasource implements IDonorAuthRemoteDataSource {
         userId: user.id!,
         email: user.email,
         fullName: user.fullName,
-        phoneNumber: user.phoneNumber,
+        phoneNumber: user.phoneNumber, 
+        role: 'donor',
       );
       return user;
     }
     return null;
   }
-  
+
   @override
   Future<DonorAuthApiModel> registerDonor(DonorAuthApiModel user) async {
     final response = await _apiClient.post(
       ApiEndpoints.donor,
-      data: user.toJson(),
+      data: {
+        ...user.toJson(),
+        'confirmPassword': user.password,
+        'role': 'donor',
+      },
     );
 
     if (response.data['success'] == true) {

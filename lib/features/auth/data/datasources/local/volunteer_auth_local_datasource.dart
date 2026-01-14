@@ -47,7 +47,8 @@ class VolunteerAuthLocalDatasource implements IVolunteerAuthLocalDataSource {
           email: email,
           fullName: volunteer.fullName,
           phoneNumber: volunteer.phoneNumber,
-          profileImage: volunteer.profilePicture ?? '',
+          profileImage: volunteer.profilePicture ?? '', 
+          role: 'volunteer',
         );
         await _userSessionService.setUserRole('volunteer');
       }

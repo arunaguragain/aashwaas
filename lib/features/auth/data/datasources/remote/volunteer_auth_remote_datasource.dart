@@ -37,7 +37,7 @@ class AuthVolunteerRemoteDatasource implements IVolunteerAuthRemoteDataSource {
   ) async {
     final response = await _apiClient.post(
       ApiEndpoints.volunteerLogin,
-      data: {'email': email, 'password': password},
+      data: {'email': email, 'password': password, 'role': 'volunteer'},
     );
 
     if (response.data['success'] == true) {
@@ -50,6 +50,7 @@ class AuthVolunteerRemoteDatasource implements IVolunteerAuthRemoteDataSource {
         email: user.email,
         fullName: user.fullName,
         phoneNumber: user.phoneNumber,
+        role: 'volunteer',
       );
       return user;
     }
@@ -62,7 +63,11 @@ class AuthVolunteerRemoteDatasource implements IVolunteerAuthRemoteDataSource {
   ) async {
     final response = await _apiClient.post(
       ApiEndpoints.volunteer,
-      data: user.toJson(),
+      data: {
+        ...user.toJson(),
+        'confirmPassword': user.password,
+        'role': 'volunteer',
+      },
     );
 
     if (response.data['success'] == true) {
