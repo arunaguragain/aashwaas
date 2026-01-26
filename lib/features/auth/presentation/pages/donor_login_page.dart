@@ -2,7 +2,7 @@ import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/auth/presentation/pages/donor_register_page.dart';
 import 'package:aashwaas/features/auth/presentation/state/donor_auth_state.dart';
 import 'package:aashwaas/features/auth/presentation/view_model/donor_auth_viewmodel.dart';
-import 'package:aashwaas/features/dashboard/screens/donor_home_screen.dart';
+import 'package:aashwaas/features/dashboard/presentation/pages/donor_home_page.dart';
 import 'package:aashwaas/features/auth/presentation/pages/volunteer_login_page.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/core/widgets/my_textformfield.dart';

@@ -1,7 +1,7 @@
-import 'package:aashwaas/features/dashboard/screens/bottom_screen_donor/add_donation_screen.dart';
-import 'package:aashwaas/features/dashboard/screens/bottom_screen_donor/history_screen.dart';
-import 'package:aashwaas/features/dashboard/screens/bottom_screen_donor/home_screen.dart';
-import 'package:aashwaas/features/dashboard/screens/bottom_screen_donor/ngo_screen.dart';
+import 'package:aashwaas/features/donation/presentation/pages/add_donation_page.dart';
+import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_donor/history_screen.dart';
+import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_donor/home_page.dart';
+import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_donor/ngo_page.dart';
 import 'package:flutter/material.dart';
 
 import 'bottom_screen_donor/profile_screen.dart';
@@ -19,10 +19,19 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
   List<Widget> lstBottomScreen = [
     const HomeScreen(),
     const NgoScreen(),
-    const AddDonationScreen(),
+    // const AddDonationScreen(),
     const HistoryScreen(),
     const ProfileScreen(),
   ];
+
+   void _onDonationPressed() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddDonationScreen(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,11 +93,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                 shape: BoxShape.circle,
               ),
               child: FloatingActionButton(
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 2;
-                  });
-                },
+                onPressed: _onDonationPressed,
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 child: Icon(Icons.add, color: Colors.white),

@@ -1,6 +1,6 @@
-import 'package:aashwaas/core/widgets/home_header.dart';
-import 'package:aashwaas/core/widgets/quick_action_section.dart';
-import 'package:aashwaas/core/widgets/stats_card.dart';
+import 'package:aashwaas/features/dashboard/presentation/widgets/home_header.dart';
+import 'package:aashwaas/features/dashboard/presentation/widgets/quick_action_section.dart';
+import 'package:aashwaas/features/dashboard/presentation/widgets/stats_card.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {

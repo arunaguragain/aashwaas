@@ -1,3 +1,6 @@
+import 'package:aashwaas/app/routes/app_routes.dart';
+import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_donor/ngo_page.dart';
+import 'package:aashwaas/features/donation/presentation/pages/add_donation_page.dart';
 import 'package:flutter/material.dart';
 import 'quick_action_button.dart';
 
@@ -37,12 +40,16 @@ class QuickActionsSection extends StatelessWidget {
                 QuickActionButton(
                   label: 'Donate Item',
                   icon: Icons.add,
-                  onTap: () {},
+                  onTap: () {
+                    AppRoutes.push(context, AddDonationScreen());
+                  },
                 ),
                 QuickActionButton(
                   label: 'Find NGOs',
                   icon: Icons.location_on_outlined,
-                  onTap: () {},
+                  onTap: () {
+                    // AppRoutes.push(context, NgoScreen());
+                  },
                 ),
                 QuickActionButton(
                   label: 'My Wishlist',

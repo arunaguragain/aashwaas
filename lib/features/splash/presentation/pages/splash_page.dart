@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:aashwaas/core/services/storage/user_session_service.dart';
-import 'package:aashwaas/features/dashboard/screens/donor_home_screen.dart';
-import 'package:aashwaas/features/dashboard/screens/volunteer_home_screen.dart';
+import 'package:aashwaas/features/dashboard/presentation/pages/donor_home_page.dart';
+import 'package:aashwaas/features/dashboard/presentation/pages/volunteer_home_page.dart';
 import 'package:aashwaas/features/onboarding/presentation/pages/first_onboading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
