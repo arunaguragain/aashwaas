@@ -1,12 +1,18 @@
 import 'dart:io';
 
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
+import 'package:aashwaas/core/services/storage/user_session_service.dart';
+import 'package:aashwaas/features/donation/presentation/view_model/donation_viewmodel.dart';
+import 'package:aashwaas/features/donation/presentation/state/donation_state.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/donation_form_field.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/category_dropdown.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/condition_dropdown.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/donation_photos_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AddDonationScreen extends ConsumerStatefulWidget {
   const AddDonationScreen({super.key});
@@ -18,14 +24,15 @@ class AddDonationScreen extends ConsumerStatefulWidget {
 class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late TextEditingController _itemNameController;
-  late TextEditingController _descriptionController;
-  late TextEditingController _quantityController;
-  late TextEditingController _locationController;
+  final _itemNameController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _quantityController = TextEditingController();
+  final _locationController = TextEditingController();
 
   String? _selectedCategory;
   String? _selectedCondition;
-  List<File> _selectedMedia = [];
+  final List<File> _selectedMedia = [];
+  final ImagePicker _imagePicker = ImagePicker();
   List<String> categories = [
     'Clothes',
     'Books',
@@ -39,10 +46,6 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
   @override
   void initState() {
     super.initState();
-    _itemNameController = TextEditingController();
-    _descriptionController = TextEditingController();
-    _quantityController = TextEditingController();
-    _locationController = TextEditingController();
   }
 
   @override
@@ -54,8 +57,141 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
     super.dispose();
   }
 
+  Future<bool> _requestPermission(Permission permission) async {
+    final status = await permission.status;
+    if (status.isGranted) return true;
+
+    if (status.isDenied) {
+      final result = await permission.request();
+      return result.isGranted;
+    }
+
+    if (status.isPermanentlyDenied) {
+      _showPermissionDeniedDialog();
+      return false;
+    }
+
+    return false;
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Permission Required"),
+        content: const Text(
+          "This feature requires permission to access your camera or gallery. Please enable it in your device settings.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              openAppSettings();
+            },
+            child: const Text('Open Settings'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickFromCamera() async {
+    final hasPermission = await _requestPermission(Permission.camera);
+    if (!hasPermission) return;
+
+    final XFile? photo = await _imagePicker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 80,
+    );
+
+    if (photo != null) {
+      setState(() {
+        _selectedMedia.clear();
+        _selectedMedia.add(File(photo.path));
+      });
+      await ref
+          .read(donationViewModelProvider.notifier)
+          .uploadPhoto(File(photo.path));
+    }
+  }
+
+  Future<void> _pickFromGallery() async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 80,
+      );
+
+      if (image != null) {
+        setState(() {
+          _selectedMedia.clear();
+          _selectedMedia.add(File(image.path));
+        });
+        await ref
+            .read(donationViewModelProvider.notifier)
+            .uploadPhoto(File(image.path));
+      }
+    } catch (e) {
+      debugPrint('Gallery Error $e');
+      if (mounted) {
+        MySnackbar.showError(
+          context,
+          'Unable to access gallery. Please try using the camera instead.',
+        );
+      }
+    }
+  }
+
+  Future<void> _handleSubmit() async {
+    if (_formKey.currentState!.validate()) {
+      if (_selectedCategory == null || _selectedCategory!.isEmpty) {
+        MySnackbar.showError(context, 'Please select a category');
+        return;
+      }
+
+      if (_selectedCondition == null || _selectedCondition!.isEmpty) {
+        MySnackbar.showError(context, 'Please select condition');
+        return;
+      }
+
+      final userSessionService = ref.read(userSessionServiceProvider);
+      final donorId = userSessionService.getCurrentUserId();
+      final uploadedPhotoUrl = ref.read(donationViewModelProvider).uploadedPhotoUrl;
+
+      await ref.read(donationViewModelProvider.notifier).createDonation(
+            itemName: _itemNameController.text.trim(),
+            category: _selectedCategory!,
+            description: _descriptionController.text.trim().isEmpty
+                ? null
+                : _descriptionController.text.trim(),
+            quantity: _quantityController.text.trim(),
+            condition: _selectedCondition!,
+            pickupLocation: _locationController.text.trim(),
+            media: uploadedPhotoUrl,
+            donorId: donorId,
+          );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final donationState = ref.watch(donationViewModelProvider);
+
+    ref.listen<DonationState>(donationViewModelProvider, (previous, next) {
+      if (next.status == DonationStatus.created) {
+        MySnackbar.showSuccess(context, 'Donation submitted successfully');
+        _clearForm();
+        Navigator.of(context).pop();
+      } else if (next.status == DonationStatus.error &&
+          next.errorMessage != null) {
+        MySnackbar.showError(context, next.errorMessage!);
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(title: const Text('Add Donation')),
       backgroundColor: Colors.white,
@@ -118,7 +254,7 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
                   const SizedBox(height: 16),
                   const DonationPhotosSection(),
                   const SizedBox(height: 30),
-                  MyButton(text: 'Submit Donation', onPressed: () {}),
+                  MyButton(text: 'Submit Donation', onPressed: _handleSubmit),
                   const SizedBox(height: 20),
                 ],
               ),

@@ -14,7 +14,8 @@ class VolunteerLoginScreen extends ConsumerStatefulWidget {
   const VolunteerLoginScreen({super.key});
 
   @override
-  ConsumerState<VolunteerLoginScreen> createState() => _VolunteerLoginScreenState();
+  ConsumerState<VolunteerLoginScreen> createState() =>
+      _VolunteerLoginScreenState();
 }
 
 class _VolunteerLoginScreenState extends ConsumerState<VolunteerLoginScreen> {
@@ -47,7 +48,10 @@ class _VolunteerLoginScreenState extends ConsumerState<VolunteerLoginScreen> {
     final _gap = SizedBox(height: 15);
 
     final volunteerAuthState = ref.watch(authVolunteerViewmodelProvider);
-    ref.listen<VolunteerAuthState>(authVolunteerViewmodelProvider, (previous, next) {
+    ref.listen<VolunteerAuthState>(authVolunteerViewmodelProvider, (
+      previous,
+      next,
+    ) {
       if (next.status == AuthStatus.authenticated) {
         Navigator.push(
           context,
@@ -56,7 +60,7 @@ class _VolunteerLoginScreenState extends ConsumerState<VolunteerLoginScreen> {
           ),
         );
       } else if (next.status == AuthStatus.error && next.errorMessage != null) {
-        showMySnackBar(context: context, message: next.errorMessage!);
+        MySnackbar.showError(context, next.errorMessage!);
       }
     });
 
@@ -164,14 +168,18 @@ class _VolunteerLoginScreenState extends ConsumerState<VolunteerLoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Don't have an account?"),
-                    TextButton(onPressed: () {
-                      Navigator.push(
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (context) => const VolunteerRegisterScreen(),
+                            builder: (context) =>
+                                const VolunteerRegisterScreen(),
                           ),
                         );
-                    }, child: Text("Sign Up")),
+                      },
+                      child: Text("Sign Up"),
+                    ),
                   ],
                 ),
 

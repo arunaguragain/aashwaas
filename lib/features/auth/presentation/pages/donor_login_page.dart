@@ -56,7 +56,7 @@ class _DonorLoginScreenState extends ConsumerState<DonorLoginScreen> {
           ),
         );
       } else if (next.status == AuthStatus.error && next.errorMessage != null) {
-        showMySnackBar(context: context, message: next.errorMessage!);
+        MySnackbar.showError(context, next.errorMessage!);
       }
     });
 
@@ -135,7 +135,7 @@ class _DonorLoginScreenState extends ConsumerState<DonorLoginScreen> {
                   //     );
                   //   }
                   // },
-                  onPressed:  _handleLogin,
+                  onPressed: _handleLogin,
                   isLoading: donorAuthState.status == AuthStatus.loading,
                   text: "Login",
                   color: Colors.blueAccent,

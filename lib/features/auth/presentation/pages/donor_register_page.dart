@@ -39,7 +39,7 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
     if (_formKey.currentState!.validate()) {
       // validate confirm password
       if (_passwordController.text != _repasswordController.text) {
-        showMySnackBar(context: context, message: 'Passwords do not match');
+        MySnackbar.showError(context, 'Passwords do not match');
         return;
       }
 
@@ -60,15 +60,15 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
     final donorAuthState = ref.watch(authDonorViewmodelProvider);
     ref.listen<DonorAuthState>(authDonorViewmodelProvider, (previous, next) {
       if (next.status == AuthStatus.registered) {
-        showMySnackBar(
-          context: context,
-          message: 'Registration successful! Please login',
+        MySnackbar.showSuccess(
+          context,
+          'Registration successful! Please login',
         );
         Navigator.of(context).pop();
       } else if (next.status == AuthStatus.error) {
-        showMySnackBar(
-          context: context,
-          message: 'Registration failed. Please try again',
+        MySnackbar.showError(
+          context,
+          'Registration failed. Please try again',
         );
       }
     });

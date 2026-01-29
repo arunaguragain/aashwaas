@@ -45,7 +45,7 @@ class UserSessionService {
     if (profileImage != null) {
       await _prefs.setString(_keyUserProfileImage, profileImage);
     }
-    await setUserRole(role); 
+    await setUserRole(role);
   }
 
   //Clear user session data
@@ -63,6 +63,10 @@ class UserSessionService {
   }
 
   String? getUserId() {
+    return _prefs.getString(_keyUserId);
+  }
+
+  String? getCurrentUserId() {
     return _prefs.getString(_keyUserId);
   }
 
@@ -84,11 +88,16 @@ class UserSessionService {
 
   Future<String?> getUserRole() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('user_role'); // Get user role (either 'volunteer' or 'donor')
+    return prefs.getString(
+      'user_role',
+    ); // Get user role (either 'volunteer' or 'donor')
   }
 
   Future<void> setUserRole(String role) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('user_role', role); // Save the user role (either 'volunteer' or 'donor')
+    prefs.setString(
+      'user_role',
+      role,
+    ); // Save the user role (either 'volunteer' or 'donor')
   }
 }
