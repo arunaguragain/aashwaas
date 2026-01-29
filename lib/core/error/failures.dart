@@ -24,3 +24,9 @@ class ApiFailure extends Failure {
   @override
   List<Object?> get props => [message, statuscode];
 }
+
+//Network Failure
+class NetworkFailure extends Failure {
+  const NetworkFailure({String message = 'No internet connection'})
+    : super(message);
+}

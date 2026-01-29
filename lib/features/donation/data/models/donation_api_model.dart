@@ -1,3 +1,4 @@
+import 'package:aashwaas/features/donation/data/models/donatioin_hive_model.dart';
 import 'package:aashwaas/features/donation/domain/entities/donation_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -78,6 +79,21 @@ class DonationApiModel {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       status: entity.status,
+    );
+  }
+
+  DonationHiveModel toHiveModel() {
+    return DonationHiveModel(
+      donationId: id,
+      itemName: itemName,
+      category: category,
+      description: description,
+      quantity: quantity,
+      condition: condition,
+      pickupLocation: pickupLocation,
+      media: media,
+      donorId: donorId,
+      status: status,
     );
   }
 
