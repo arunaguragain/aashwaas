@@ -1,7 +1,13 @@
 import 'package:aashwaas/features/auth/domain/entities/volunteer_auth_entity.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'volunteer_auth_api_model.g.dart';
+
+@JsonSerializable()
 class VolunteerAuthApiModel {
+  @JsonKey(name: '_id')
   final String? id;
+  @JsonKey(name: 'name')
   final String fullName;
   final String email;
   final String? phoneNumber;
@@ -19,28 +25,10 @@ class VolunteerAuthApiModel {
     this.profilePicture,
   });
 
-  //toJSON
-  Map<String, dynamic> toJson() {
-    return {
-      "name": fullName,
-      "email": email,
-      "phoneNumber": phoneNumber,
-      "password": password,
-      "role": role,
-      "profilePicture": profilePicture,
-    };
-  }
+  Map<String, dynamic> toJson() => _$VolunteerAuthApiModelToJson(this);
 
-  //fromJson
-  factory VolunteerAuthApiModel.fromJson(Map<String, dynamic> json) {
-    return VolunteerAuthApiModel(
-      id: json['_id'] as String,
-      fullName: json['name'] as String,
-      email: json['email'] as String,
-      phoneNumber: json['phoneNumber'] as String?,
-      profilePicture: json['profilePicture'] as String?,
-    );
-  }
+  factory VolunteerAuthApiModel.fromJson(Map<String, dynamic> json) =>
+      _$VolunteerAuthApiModelFromJson(json);
 
   VolunteerAuthEntity toEntity() {
     return VolunteerAuthEntity(

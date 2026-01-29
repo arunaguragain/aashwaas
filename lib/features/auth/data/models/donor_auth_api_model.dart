@@ -1,7 +1,13 @@
 import 'package:aashwaas/features/auth/domain/entities/donor_auth_entity.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'donor_auth_api_model.g.dart';
+
+@JsonSerializable()
 class DonorAuthApiModel {
+  @JsonKey(name: '_id')
   final String? id;
+  @JsonKey(name: 'name')
   final String fullName;
   final String email;
   final String? phoneNumber;
@@ -10,37 +16,19 @@ class DonorAuthApiModel {
   final String? profilePicture;
 
   DonorAuthApiModel({
-    this.id, 
-    required this.fullName, 
-    required this.email, 
-    this.phoneNumber, 
-    this.password, 
-    this.role, 
-    this.profilePicture
+    this.id,
+    required this.fullName,
+    required this.email,
+    this.phoneNumber,
+    this.password,
+    this.role,
+    this.profilePicture,
   });
 
-   //toJSON
-  Map<String, dynamic> toJson() {
-    return {
-      "name": fullName,
-      "email": email,
-      "phoneNumber": phoneNumber,
-      "password": password,
-      "role": role,
-      "profilePicture": profilePicture,
-    };
-  }
+  Map<String, dynamic> toJson() => _$DonorAuthApiModelToJson(this);
 
-   //fromJson
-  factory DonorAuthApiModel.fromJson(Map<String, dynamic> json) {
-    return DonorAuthApiModel(
-      id: json['_id'] as String,
-      fullName: json['name'] as String,
-      email: json['email'] as String,
-      phoneNumber: json['phoneNumber'] as String?,
-      profilePicture: json['profilePicture'] as String?,
-    );
-  }
+  factory DonorAuthApiModel.fromJson(Map<String, dynamic> json) =>
+      _$DonorAuthApiModelFromJson(json);
 
   DonorAuthEntity toEntity() {
     return DonorAuthEntity(

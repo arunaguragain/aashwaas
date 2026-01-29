@@ -1,18 +1,21 @@
+import 'dart:io';
+
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/donation_form_field.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/category_dropdown.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/condition_dropdown.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/donation_photos_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddDonationScreen extends StatefulWidget {
+class AddDonationScreen extends ConsumerStatefulWidget {
   const AddDonationScreen({super.key});
 
   @override
-  State<AddDonationScreen> createState() => _AddDonationScreenState();
+  ConsumerState<AddDonationScreen> createState() => _AddDonationScreenState();
 }
 
-class _AddDonationScreenState extends State<AddDonationScreen> {
+class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _itemNameController;
@@ -22,6 +25,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
 
   String? _selectedCategory;
   String? _selectedCondition;
+  List<File> _selectedMedia = [];
   List<String> categories = [
     'Clothes',
     'Books',
@@ -114,22 +118,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                   const SizedBox(height: 16),
                   const DonationPhotosSection(),
                   const SizedBox(height: 30),
-                  MyButton(
-                    text: 'Submit Donation',
-                    onPressed: () {
-                      if (_formKey.currentState!.validate() &&
-                          _selectedCategory != null &&
-                          _selectedCondition != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Donation submitted successfully!'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                        _clearForm();
-                      }
-                    },
-                  ),
+                  MyButton(text: 'Submit Donation', onPressed: () {}),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -148,6 +137,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
     setState(() {
       _selectedCategory = null;
       _selectedCondition = null;
+      _selectedMedia.clear();
     });
   }
 }

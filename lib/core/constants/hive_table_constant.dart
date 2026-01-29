@@ -10,4 +10,7 @@ class HiveTableConstant {
 
   static const int volunteerAuthTypeId = 1;
   static const String volunteerAuthTable = 'volunteer_auth_table';
+
+  static const int donationTypeId = 2;
+  static const String donationTable = 'donation_table';
 }
