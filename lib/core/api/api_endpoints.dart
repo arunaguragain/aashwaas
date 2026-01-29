@@ -18,7 +18,7 @@ class ApiEndpoints {
   }
 
   static String get serverUrl => 'http://$_host:$_port';
-  static String get baseUrl => '$serverUrl/api/auth';
+  static String get baseUrl => '$serverUrl/api';
   static String get mediaServerUrl => serverUrl;
 
   // Timeouts
@@ -27,18 +27,18 @@ class ApiEndpoints {
 
 
   // ============ Donor Endpoints ============
-  static const String donor = '/register';
-  static const String donorLogin = '/login';
+  static const String donor = '/auth/register';
+  static const String donorLogin = '/auth/login';
   // static const String donorRegister = '/register';
-  static String donorById(String id) => '/donor/$id';
-  static String donorPhoto(String id) => '/donor/$id/photo';
+  static String donorById(String id) => '/auth/donor/$id';
+  static String donorPhoto(String id) => '/auth/donor/$id/photo';
 
   //volunteer endpoints
-  static const String volunteer = '/register';
-  static const String volunteerLogin = '/login';
+  static const String volunteer = '/auth/register';
+  static const String volunteerLogin = '/auth/login';
   // static const String volunteerRegister = '/register';
-  static String volunteerById(String id) => '/volunteer/$id';
-  static String volunteerPhoto(String id) => '/volunteer/$id/photo';
+  static String volunteerById(String id) => '/auth/volunteer/$id';
+  static String volunteerPhoto(String id) => '/auth/volunteer/$id/photo';
 
   // ============ Donation Endpoints ============
   static const String donations = '/donations';

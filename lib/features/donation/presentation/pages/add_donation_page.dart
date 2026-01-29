@@ -119,6 +119,49 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
     }
   }
 
+  void _showMediaPicker() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Add Photo',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Colors.blue),
+              title: const Text('Take Photo'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickFromCamera();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Colors.green),
+              title: const Text('Choose from Gallery'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickFromGallery();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.close, color: Colors.red),
+              title: const Text('Cancel'),
+              onTap: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _pickFromGallery() async {
     try {
       final XFile? image = await _imagePicker.pickImage(
@@ -160,9 +203,13 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
 
       final userSessionService = ref.read(userSessionServiceProvider);
       final donorId = userSessionService.getCurrentUserId();
-      final uploadedPhotoUrl = ref.read(donationViewModelProvider).uploadedPhotoUrl;
+      final uploadedPhotoUrl = ref
+          .read(donationViewModelProvider)
+          .uploadedPhotoUrl;
 
-      await ref.read(donationViewModelProvider.notifier).createDonation(
+      await ref
+          .read(donationViewModelProvider.notifier)
+          .createDonation(
             itemName: _itemNameController.text.trim(),
             category: _selectedCategory!,
             description: _descriptionController.text.trim().isEmpty
@@ -252,7 +299,13 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
                     controller: _locationController,
                   ),
                   const SizedBox(height: 16),
-                  const DonationPhotosSection(),
+                  DonationPhotosSection(
+                    selectedMedia: _selectedMedia,
+                    onAddPhoto: _showMediaPicker,
+                    onRemovePhoto: () {
+                      setState(() => _selectedMedia.clear());
+                    },
+                  ),
                   const SizedBox(height: 30),
                   MyButton(text: 'Submit Donation', onPressed: _handleSubmit),
                   const SizedBox(height: 20),

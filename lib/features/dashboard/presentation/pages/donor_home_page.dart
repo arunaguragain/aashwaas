@@ -19,17 +19,15 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
   List<Widget> lstBottomScreen = [
     const HomeScreen(),
     const NgoScreen(),
-    // const AddDonationScreen(),
+    const SizedBox.shrink(),
     const HistoryScreen(),
     const ProfileScreen(),
   ];
 
-   void _onDonationPressed() {
+  void _onDonationPressed() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const AddDonationScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const AddDonationScreen()),
     );
   }
 
@@ -43,7 +41,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
               : _selectedIndex == 1
               ? 'NGOs & Instituitions'
               : _selectedIndex == 2
-              ? 'Add Donation'
+              ? ''
               : _selectedIndex == 3
               ? 'Donation History'
               : 'My Profile',
@@ -77,6 +75,10 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
 
             currentIndex: _selectedIndex,
             onTap: (index) {
+              if (index == 2) {
+                _onDonationPressed();
+                return;
+              }
               setState(() {
                 _selectedIndex = index;
               });

@@ -1,26 +1,17 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
-class DonationPhotosSection extends StatefulWidget {
-  const DonationPhotosSection({super.key});
+class DonationPhotosSection extends StatelessWidget {
+  final List<File> selectedMedia;
+  final VoidCallback onAddPhoto;
+  final VoidCallback onRemovePhoto;
 
-  @override
-  State<DonationPhotosSection> createState() => _DonationPhotosSectionState();
-}
-
-class _DonationPhotosSectionState extends State<DonationPhotosSection> {
-  List<String> selectedPhotos = [];
-
-  void _addPhoto() {
-    setState(() {
-      selectedPhotos.add('photo_${selectedPhotos.length + 1}');
-    });
-  }
-
-  void _removePhoto(int index) {
-    setState(() {
-      selectedPhotos.removeAt(index);
-    });
-  }
+  const DonationPhotosSection({
+    super.key,
+    required this.selectedMedia,
+    required this.onAddPhoto,
+    required this.onRemovePhoto,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +32,7 @@ class _DonationPhotosSectionState extends State<DonationPhotosSection> {
           style: TextStyle(fontSize: 12, color: Colors.grey[700]),
         ),
         const SizedBox(height: 12),
-        if (selectedPhotos.isEmpty)
+        if (selectedMedia.isEmpty)
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(30),
@@ -65,44 +56,36 @@ class _DonationPhotosSectionState extends State<DonationPhotosSection> {
               ],
             ),
           ),
-        if (selectedPhotos.isNotEmpty)
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-            ),
-            itemCount: selectedPhotos.length,
-            itemBuilder: (context, index) {
-              return Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.grey[100],
-                    ),
-                    child: Icon(Icons.image, color: Colors.grey[400]),
-                  ),
-                  Positioned(
-                    top: -8,
-                    right: -8,
-                    child: IconButton(
-                      icon: const Icon(Icons.remove_circle, color: Colors.red),
-                      onPressed: () => _removePhoto(index),
-                    ),
-                  ),
-                ],
-              );
-            },
+        if (selectedMedia.isNotEmpty)
+          Stack(
+            children: [
+              Container(
+                height: 150,
+                width: 150,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(selectedMedia.first, fit: BoxFit.cover),
+                ),
+              ),
+              Positioned(
+                top: -8,
+                right: -8,
+                child: IconButton(
+                  icon: const Icon(Icons.remove_circle, color: Colors.red),
+                  onPressed: onRemovePhoto,
+                ),
+              ),
+            ],
           ),
         const SizedBox(height: 12),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
-            onPressed: _addPhoto,
+            onPressed: onAddPhoto,
             icon: const Icon(Icons.add_photo_alternate_outlined),
             label: const Text('Add Photos'),
             style: OutlinedButton.styleFrom(
