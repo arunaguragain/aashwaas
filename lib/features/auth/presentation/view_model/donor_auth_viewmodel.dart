@@ -78,22 +78,24 @@ class DonorAuthViewmodel extends Notifier<DonorAuthState> {
 
     final result = await _logoutUsecase();
 
-    result.fold(
-      (failure) => state = state.copyWith(
-        status: AuthStatus.error,
-        errorMessage: failure.message,
-      ),
-      (success) async {
-        // Clear user session on successful logout
-        final userSessionService = ref.read(userSessionServiceProvider);
-        await userSessionService.clearUserSession();
+    if (result.isRight()) {
+      // Clear user session on successful logout
+      final userSessionService = ref.read(userSessionServiceProvider);
+      await userSessionService.clearUserSession();
 
-        state = state.copyWith(
-          status: AuthStatus.unauthenticated,
-          authEntity: null,
-        );
-      },
-    );
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        authEntity: null,
+      );
+    } else {
+      result.fold(
+        (failure) => state = state.copyWith(
+          status: AuthStatus.error,
+          errorMessage: failure.message,
+        ),
+        (_) {},
+      );
+    }
   }
 
   void clearError() {
