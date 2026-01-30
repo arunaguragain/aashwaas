@@ -23,8 +23,8 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
 
-  final bool _obscurePassword = true;
-  final bool _obscureConfirmPassword = true;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
@@ -66,10 +66,7 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
         );
         Navigator.of(context).pop();
       } else if (next.status == AuthStatus.error) {
-        MySnackbar.showError(
-          context,
-          'Registration failed. Please try again',
-        );
+        MySnackbar.showError(context, 'Registration failed. Please try again');
       }
     });
     final _gap = SizedBox(height: 15);
@@ -126,6 +123,25 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
                   labelText: "Password",
                   errorMessage: "Password is required",
                   obscureText: _obscurePassword,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      color: Colors.deepPurple,
+                      size: 22,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                    splashColor: Colors.deepPurple.withOpacity(0.1),
+                    highlightColor: Colors.deepPurple.withOpacity(0.05),
+                    tooltip: _obscurePassword
+                        ? 'Show password'
+                        : 'Hide password',
+                  ),
                 ),
 
                 _gap,
@@ -136,6 +152,25 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
                   labelText: "Confirm Password",
                   errorMessage: "Password is required",
                   obscureText: _obscureConfirmPassword,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureConfirmPassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      color: Colors.deepPurple,
+                      size: 22,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                      });
+                    },
+                    splashColor: Colors.deepPurple.withOpacity(0.1),
+                    highlightColor: Colors.deepPurple.withOpacity(0.05),
+                    tooltip: _obscureConfirmPassword
+                        ? 'Show password'
+                        : 'Hide password',
+                  ),
                 ),
 
                 Row(

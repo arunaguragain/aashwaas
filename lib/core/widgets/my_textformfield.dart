@@ -6,8 +6,9 @@ class MyTextformfield extends StatelessWidget {
     required this.hintText,
     required this.controller,
     required this.labelText,
-    required this.errorMessage, 
+    required this.errorMessage,
     this.obscureText,
+    this.suffixIcon,
   });
 
   final String labelText;
@@ -15,13 +16,18 @@ class MyTextformfield extends StatelessWidget {
   final TextEditingController controller;
   final String errorMessage;
   final bool? obscureText;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      decoration: InputDecoration(labelText: labelText, hintText: hintText),
-
+      obscureText: obscureText ?? false,
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+        suffixIcon: suffixIcon,
+      ),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return errorMessage;

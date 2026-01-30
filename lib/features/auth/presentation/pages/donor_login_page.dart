@@ -103,6 +103,25 @@ class _DonorLoginScreenState extends ConsumerState<DonorLoginScreen> {
                   obscureText: _obscurePassword,
                   labelText: "Password",
                   errorMessage: "Password is required",
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      color: Colors.deepPurple,
+                      size: 22,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                    splashColor: Colors.deepPurple.withOpacity(0.1),
+                    highlightColor: Colors.deepPurple.withOpacity(0.05),
+                    tooltip: _obscurePassword
+                        ? 'Show password'
+                        : 'Hide password',
+                  ),
                 ),
 
                 _gap,
