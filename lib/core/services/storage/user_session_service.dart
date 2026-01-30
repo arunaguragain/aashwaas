@@ -56,6 +56,7 @@ class UserSessionService {
     await _prefs.remove(_keyUserId);
     await _prefs.remove(_keysIsLoggedIn);
     await _prefs.remove(_keyUserProfileImage);
+    await _prefs.remove('user_role');
   }
 
   bool isLoggedIn() {

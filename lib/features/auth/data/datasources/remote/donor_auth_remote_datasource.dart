@@ -1,6 +1,7 @@
 import 'package:aashwaas/core/api/api_client.dart';
 import 'package:aashwaas/core/api/api_endpoints.dart';
 import 'package:aashwaas/core/services/storage/user_session_service.dart';
+import 'package:aashwaas/core/services/storage/token_service.dart';
 import 'package:aashwaas/features/auth/data/datasources/donor_auth_datasource.dart';
 import 'package:aashwaas/features/auth/data/models/donor_auth_api_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,18 +11,22 @@ final authDonorRemoteProvider = Provider<IDonorAuthRemoteDataSource>((ref) {
   return AuthDonorRemoteDatasource(
     apiClient: ref.read(apiClientProvider),
     userSessionService: ref.read(userSessionServiceProvider),
+    tokenService: ref.read(tokenServiceProvider),
   );
 });
 
 class AuthDonorRemoteDatasource implements IDonorAuthRemoteDataSource {
   final ApiClient _apiClient;
   final UserSessionService _userSessionService;
+  final TokenService _tokenService;
 
   AuthDonorRemoteDatasource({
     required ApiClient apiClient,
     required UserSessionService userSessionService,
+    required TokenService tokenService,
   }) : _apiClient = apiClient,
-       _userSessionService = userSessionService;
+       _userSessionService = userSessionService,
+       _tokenService = tokenService;
 
   @override
   Future<DonorAuthApiModel> getDonorById(String authId) {
@@ -40,12 +45,18 @@ class AuthDonorRemoteDatasource implements IDonorAuthRemoteDataSource {
       final data = response.data['data'] as Map<String, dynamic>;
       final user = DonorAuthApiModel.fromJson(data);
 
+      // Extract and save JWT token
+      final token = response.data['token'] as String?;
+      if (token != null) {
+        await _tokenService.saveToken(token);
+      }
+
       //Save user session
       await _userSessionService.saveUserSession(
         userId: user.id!,
         email: user.email,
         fullName: user.fullName,
-        phoneNumber: user.phoneNumber, 
+        phoneNumber: user.phoneNumber,
         role: 'donor',
       );
       return user;
@@ -67,6 +78,13 @@ class AuthDonorRemoteDatasource implements IDonorAuthRemoteDataSource {
     if (response.data['success'] == true) {
       final data = response.data['data'] as Map<String, dynamic>;
       final registeredUser = DonorAuthApiModel.fromJson(data);
+
+      // Extract and save JWT token
+      final token = response.data['token'] as String?;
+      if (token != null) {
+        await _tokenService.saveToken(token);
+      }
+
       return registeredUser;
     }
 

@@ -1,5 +1,5 @@
-import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // provider
@@ -28,4 +28,3 @@ class TokenService {
     await _prefs.remove(_tokenKey);
   }
 }
-

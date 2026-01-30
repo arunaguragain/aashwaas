@@ -1,27 +1,29 @@
+import 'package:aashwaas/app/routes/app_routes.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
-import 'package:aashwaas/features/auth/presentation/pages/volunteer_login_page.dart';
+import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
+import 'package:aashwaas/features/auth/presentation/view_model/donor_auth_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox.expand(
       child: Center(
-        child:
-            //  Text('Welcome to Volunteers Profile Screen')
-            MyButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (context) => const VolunteerLoginScreen(),
-                  ),
-                );
-              },
-              text: 'logout',
-            ),
+        child: MyButton(
+          onPressed: () async {
+            // Call logout
+            await ref.read(authDonorViewmodelProvider.notifier).logout();
+
+            // Navigate to login
+            if (context.mounted) {
+              AppRoutes.pushReplacement(context, const DonorLoginScreen());
+            }
+          },
+          text: 'Logout',
+        ),
       ),
     );
   }

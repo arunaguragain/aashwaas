@@ -124,21 +124,6 @@ class _VolunteerLoginScreenState extends ConsumerState<VolunteerLoginScreen> {
                 _gap,
 
                 MyButton(
-                  // onPressed: () {
-                  //   if (_formKey.currentState!.validate()) {
-                  //     Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute<void>(
-                  //           builder: (context) => const VolunteerHomeScreen(),
-                  //         ),
-                  //     );
-
-                  //    showMySnackBar(
-                  //         context: context,
-                  //         message: "Logged in as Volunteer",
-                  //    );
-                  //   }
-                  // },
                   onPressed: _handleLogin,
                   isLoading: volunteerAuthState.status == AuthStatus.loading,
                   text: "Login",

@@ -40,10 +40,25 @@ class DonationRemoteDataSource implements IDonationRemoteDataSource {
     final response = await _apiClient.uploadFile(
       ApiEndpoints.donationUploadPhoto,
       formData: formData,
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
+      options: Options(
+        headers: {'Authorization': 'Bearer $token'},
+        contentType: 'multipart/form-data',
+      ),
     );
 
-    return response.data['data'];
+    // Extract the photo URL from response
+    final data = response.data;
+    if (data is Map<String, dynamic>) {
+      // Handle response like: { "success": true, "data": "filename.jpg" }
+      // or { "success": true, "data": { "url": "..." } }
+      if (data['data'] is String) {
+        return data['data'] as String;
+      } else if (data['data'] is Map) {
+        return data['data']['url'] as String? ??
+            data['data']['filename'] as String;
+      }
+    }
+    throw Exception('Invalid response format from upload endpoint');
   }
 
   @override

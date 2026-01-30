@@ -1,20 +1,25 @@
+import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/features/auth/domain/usecases/donor_login_usecase.dart';
+import 'package:aashwaas/features/auth/domain/usecases/donor_logout_usecase.dart';
 import 'package:aashwaas/features/auth/domain/usecases/donor_register_usecase.dart';
 import 'package:aashwaas/features/auth/presentation/state/donor_auth_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final authDonorViewmodelProvider = NotifierProvider<DonorAuthViewmodel, DonorAuthState>(
-  () => DonorAuthViewmodel(),
-);
+final authDonorViewmodelProvider =
+    NotifierProvider<DonorAuthViewmodel, DonorAuthState>(
+      () => DonorAuthViewmodel(),
+    );
 
 class DonorAuthViewmodel extends Notifier<DonorAuthState> {
   late final RegisterUsecase _registerUsecase;
   late final LoginUsecase _loginUsecase;
+  late final DonorLogoutUsecase _logoutUsecase;
 
   @override
   DonorAuthState build() {
     _registerUsecase = ref.read(registerDonorUsecaseProvider);
     _loginUsecase = ref.read(donorLoginUsecaseProvider);
+    _logoutUsecase = ref.read(logoutDonorUsecaseProvider);
     return DonorAuthState();
   }
 
@@ -65,5 +70,33 @@ class DonorAuthViewmodel extends Notifier<DonorAuthState> {
         );
       },
     );
+  }
+
+  // logout
+  Future<void> logout() async {
+    state = state.copyWith(status: AuthStatus.loading);
+
+    final result = await _logoutUsecase();
+
+    result.fold(
+      (failure) => state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: failure.message,
+      ),
+      (success) async {
+        // Clear user session on successful logout
+        final userSessionService = ref.read(userSessionServiceProvider);
+        await userSessionService.clearUserSession();
+
+        state = state.copyWith(
+          status: AuthStatus.unauthenticated,
+          authEntity: null,
+        );
+      },
+    );
+  }
+
+  void clearError() {
+    state = state.copyWith(errorMessage: null);
   }
 }

@@ -120,21 +120,6 @@ class _DonorLoginScreenState extends ConsumerState<DonorLoginScreen> {
                 _gap,
 
                 MyButton(
-                  // onPressed: () {
-                  //   if (_formKey.currentState!.validate()) {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute<void>(
-                  //         builder: (context) => const DonorHomeScreen(),
-                  //       ),
-                  //     );
-
-                  //     showMySnackBar(
-                  //       context: context,
-                  //       message: "Logged in as Donor",
-                  //     );
-                  //   }
-                  // },
                   onPressed: _handleLogin,
                   isLoading: donorAuthState.status == AuthStatus.loading,
                   text: "Login",

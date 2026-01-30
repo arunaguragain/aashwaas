@@ -1,20 +1,22 @@
 import 'package:aashwaas/core/api/api_endpoints.dart';
+import 'package:aashwaas/core/services/storage/token_service.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 // Provider for ApiClient
 final apiClientProvider = Provider<ApiClient>((ref) {
-  return ApiClient();
+  final tokenService = ref.read(tokenServiceProvider);
+  return ApiClient(tokenService: tokenService);
 });
 
 class ApiClient {
   late final Dio _dio;
+  final TokenService _tokenService;
 
-  ApiClient() {
+  ApiClient({required TokenService tokenService}) : _tokenService = tokenService {
     _dio = Dio(
       BaseOptions(
         baseUrl: ApiEndpoints.baseUrl,
@@ -28,7 +30,7 @@ class ApiClient {
     );
 
     // Add interceptors
-    _dio.interceptors.add(_AuthInterceptor());
+    _dio.interceptors.add(_AuthInterceptor(_tokenService));
 
     // Auto retry on network failures
     _dio.interceptors.add(
@@ -139,8 +141,9 @@ class ApiClient {
 
 // Auth Interceptor to add JWT token to requests
 class _AuthInterceptor extends Interceptor {
-  final _storage = const FlutterSecureStorage();
-  static const String _tokenKey = 'auth_token';
+  final TokenService _tokenService;
+
+  _AuthInterceptor(this._tokenService);
 
   @override
   void onRequest(
@@ -167,7 +170,7 @@ class _AuthInterceptor extends Interceptor {
         options.path == ApiEndpoints.volunteer;
 
     if (!isPublicGet && !isAuthEndpoint) {
-      final token = await _storage.read(key: _tokenKey);
+      final token = await _tokenService.getToken();
       if (token != null) {
         options.headers['Authorization'] = 'Bearer $token';
       }
@@ -180,8 +183,8 @@ class _AuthInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     // Handle 401 Unauthorized - token expired
     if (err.response?.statusCode == 401) {
-      // Clear token and redirect to login
-      _storage.delete(key: _tokenKey);
+      // Clear token on unauthorized
+      _tokenService.removeToken();
       // You can add navigation logic here or use a callback
     }
     handler.next(err);
