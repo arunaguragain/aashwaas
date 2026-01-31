@@ -16,16 +16,16 @@ import 'package:aashwaas/features/donation/presentation/state/donation_state.dar
 import 'package:aashwaas/features/donation/presentation/view_model/donation_viewmodel.dart';
 import 'package:mocktail/mocktail.dart';
 
+//  flutter test --coverage
+//  flutter pub run test_cov_console
+
 class MockCreateDonationUsecase extends Mock implements CreateDonationUsecase {}
 
-class MockGetAllDonationsUsecase extends Mock
-    implements GetAllDonationsUsecase {}
+class MockGetAllDonationsUsecase extends Mock implements GetAllDonationsUsecase {}
 
-class MockGetDonationByIdUsecase extends Mock
-    implements GetDonationByIdUsecase {}
+class MockGetDonationByIdUsecase extends Mock implements GetDonationByIdUsecase {}
 
-class MockGetDonationsByUserUsecase extends Mock
-    implements GetDonationsByUserUsecase {}
+class MockGetDonationsByUserUsecase extends Mock implements GetDonationsByUserUsecase {}
 
 class MockUpdateDonationUsecase extends Mock implements UpdateDonationUsecase {}
 
