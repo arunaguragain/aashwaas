@@ -57,6 +57,7 @@ class AuthDonorRemoteDatasource implements IDonorAuthRemoteDataSource {
         email: user.email,
         fullName: user.fullName,
         phoneNumber: user.phoneNumber,
+        createdAt: user.createdAt?.toIso8601String(),
         role: 'donor',
       );
       return user;

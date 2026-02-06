@@ -25,6 +25,7 @@ class UserSessionService {
   static const String _keyUserFullName = 'user_full_name';
   static const String _keyUserPhoneNumber = 'user_phone_number';
   static const String _keyUserProfileImage = 'user_profile_image';
+  static const String _keyUserCreatedAt = 'user_created_at';
 
   //Store user session data
   Future<void> saveUserSession({
@@ -33,6 +34,7 @@ class UserSessionService {
     required String fullName,
     required String? phoneNumber,
     String? profileImage,
+    String? createdAt,
     required String role,
   }) async {
     await _prefs.setBool(_keysIsLoggedIn, true);
@@ -45,6 +47,9 @@ class UserSessionService {
     if (profileImage != null) {
       await _prefs.setString(_keyUserProfileImage, profileImage);
     }
+    if (createdAt != null) {
+      await _prefs.setString(_keyUserCreatedAt, createdAt);
+    }
     await setUserRole(role);
   }
 
@@ -56,6 +61,7 @@ class UserSessionService {
     await _prefs.remove(_keyUserId);
     await _prefs.remove(_keysIsLoggedIn);
     await _prefs.remove(_keyUserProfileImage);
+    await _prefs.remove(_keyUserCreatedAt);
     await _prefs.remove('user_role');
   }
 
@@ -85,6 +91,10 @@ class UserSessionService {
 
   String? getUserProfileImage() {
     return _prefs.getString(_keyUserProfileImage);
+  }
+
+  String? getUserCreatedAt() {
+    return _prefs.getString(_keyUserCreatedAt);
   }
 
   Future<String?> getUserRole() async {

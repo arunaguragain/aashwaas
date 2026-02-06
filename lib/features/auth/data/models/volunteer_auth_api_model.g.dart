@@ -15,7 +15,10 @@ VolunteerAuthApiModel _$VolunteerAuthApiModelFromJson(
       phoneNumber: json['phoneNumber'] as String?,
       password: json['password'] as String?,
       role: json['role'] as String?,
-      profilePicture: json['profilePicture'] as String?,
+        profilePicture: json['profilePicture'] as String?,
+        createdAt: json['createdAt'] == null
+            ? null
+            : DateTime.parse(json['createdAt'] as String),
     );
 
 Map<String, dynamic> _$VolunteerAuthApiModelToJson(
@@ -28,4 +31,5 @@ Map<String, dynamic> _$VolunteerAuthApiModelToJson(
       'password': instance.password,
       'role': instance.role,
       'profilePicture': instance.profilePicture,
+      'createdAt': instance.createdAt?.toIso8601String(),
     };

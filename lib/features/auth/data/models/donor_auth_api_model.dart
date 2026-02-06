@@ -14,6 +14,7 @@ class DonorAuthApiModel {
   final String? password;
   final String? role;
   final String? profilePicture;
+  final DateTime? createdAt;
 
   DonorAuthApiModel({
     this.id,
@@ -23,6 +24,7 @@ class DonorAuthApiModel {
     this.password,
     this.role,
     this.profilePicture,
+    this.createdAt,
   });
 
   Map<String, dynamic> toJson() => _$DonorAuthApiModelToJson(this);
@@ -37,6 +39,7 @@ class DonorAuthApiModel {
       email: email,
       phoneNumber: phoneNumber,
       profilePicture: profilePicture,
+      createdAt: createdAt,
     );
   }
 

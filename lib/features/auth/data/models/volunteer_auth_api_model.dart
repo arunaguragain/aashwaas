@@ -14,6 +14,7 @@ class VolunteerAuthApiModel {
   final String? password;
   final String? role;
   final String? profilePicture;
+  final DateTime? createdAt;
 
   VolunteerAuthApiModel({
     this.id,
@@ -23,9 +24,14 @@ class VolunteerAuthApiModel {
     this.password,
     this.role,
     this.profilePicture,
+    this.createdAt,
   });
 
-  Map<String, dynamic> toJson() => _$VolunteerAuthApiModelToJson(this);
+  Map<String, dynamic> toJson() {
+    final data = _$VolunteerAuthApiModelToJson(this);
+    data.removeWhere((key, value) => value == null);
+    return data;
+  }
 
   factory VolunteerAuthApiModel.fromJson(Map<String, dynamic> json) =>
       _$VolunteerAuthApiModelFromJson(json);
@@ -37,6 +43,7 @@ class VolunteerAuthApiModel {
       email: email,
       phoneNumber: phoneNumber,
       profilePicture: profilePicture,
+      createdAt: createdAt,
     );
   }
 
