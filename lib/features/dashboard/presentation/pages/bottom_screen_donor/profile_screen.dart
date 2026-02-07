@@ -3,6 +3,7 @@ import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
 import 'package:aashwaas/features/auth/presentation/view_model/donor_auth_viewmodel.dart';
+import 'package:aashwaas/features/dashboard/presentation/pages/edit_profile_screen.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/profile_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/profile_impact_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/profile_stats_card.dart';
@@ -64,7 +65,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 email: email,
                 phone: phone,
                 profileImage: profileImage,
-                onEditPressed: () {},
+                onEditPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (context) => const EditProfileScreen(),
+                    ),
+                  );
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
                 roleSinceText: roleSinceText,
               ),
               const SizedBox(height: 16),

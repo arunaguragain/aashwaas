@@ -1,5 +1,6 @@
 import 'package:aashwaas/core/error/failures.dart';
 import 'package:aashwaas/core/services/connectivity/network_info.dart';
+import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/features/auth/data/datasources/local/volunteer_auth_local_datasource.dart';
 import 'package:aashwaas/features/auth/data/datasources/remote/volunteer_auth_remote_datasource.dart';
 import 'package:aashwaas/features/auth/data/datasources/volunteer_auth_datasource.dart';
@@ -15,10 +16,12 @@ final authVolunteerRepositoryProvider = Provider<IVolunteerAuthRepository>((ref)
   final authVolunteerLocalDataSource = ref.read(authVolunteerLocalDatasourceProvider);
   final authVolunteerRemoteDataSource = ref.read(authVolunteerRemoteProvider);
   final networkInfo = ref.read(networkInfoProvider);
+  final userSessionService = ref.read(userSessionServiceProvider);
   return VolunteerAuthRepository(
     authVolunteerDataSource: authVolunteerLocalDataSource,
     authVolunteerRemoteDataSource: authVolunteerRemoteDataSource,
     networkInfo: networkInfo,
+    userSessionService: userSessionService,
   );
 });
 
@@ -26,14 +29,17 @@ class VolunteerAuthRepository implements IVolunteerAuthRepository {
   final IVolunteerAuthLocalDataSource _authVolunteerDataSource;
   final IVolunteerAuthRemoteDataSource _authVolunteerRemoteDataSource;
   final NetworkInfo _networkInfo;
+  final UserSessionService _userSessionService;
 
   VolunteerAuthRepository({
     required IVolunteerAuthLocalDataSource authVolunteerDataSource,
     required IVolunteerAuthRemoteDataSource authVolunteerRemoteDataSource,
     required NetworkInfo networkInfo,
+    required UserSessionService userSessionService,
   }) : _authVolunteerDataSource = authVolunteerDataSource,
        _authVolunteerRemoteDataSource = authVolunteerRemoteDataSource,
-       _networkInfo = networkInfo;
+       _networkInfo = networkInfo,
+       _userSessionService = userSessionService;
   @override
   Future<Either<Failure, VolunteerAuthEntity>> getCurrentVolunteer() async {
     try {
@@ -141,6 +147,55 @@ class VolunteerAuthRepository implements IVolunteerAuthRepository {
       } catch (e) {
         return Left(LocalDatabaseFailure(message: e.toString()));
       }
+    }
+  }
+
+  @override
+  Future<Either<Failure, VolunteerAuthEntity>> updateVolunteerProfile(
+    String userId,
+    String fullName,
+    String phoneNumber,
+    String? profilePicture,
+  ) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final payload = <String, dynamic>{
+          'name': fullName,
+          'phoneNumber': phoneNumber,
+        };
+        if (profilePicture != null && profilePicture.trim().isNotEmpty) {
+          payload['profilePicture'] = profilePicture;
+        }
+        final updated = await _authVolunteerRemoteDataSource.updateVolunteerProfile(
+          userId,
+          payload,
+        );
+        return Right(updated.toEntity());
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> uploadVolunteerProfilePhoto(
+    String userId,
+    String filePath,
+  ) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final result = await _authVolunteerRemoteDataSource.uploadVolunteerPhoto(
+          userId,
+          filePath,
+        );
+        return Right(result);
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
     }
   }
 }

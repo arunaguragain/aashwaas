@@ -44,13 +44,12 @@ class DonationRemoteDataSource implements IDonationRemoteDataSource {
         headers: {'Authorization': 'Bearer $token'},
         contentType: 'multipart/form-data',
       ),
+      method: 'POST',
     );
 
     // Extract the photo URL from response
     final data = response.data;
     if (data is Map<String, dynamic>) {
-      // Handle response like: { "success": true, "data": "filename.jpg" }
-      // or { "success": true, "data": { "url": "..." } }
       if (data['data'] is String) {
         return data['data'] as String;
       } else if (data['data'] is Map) {

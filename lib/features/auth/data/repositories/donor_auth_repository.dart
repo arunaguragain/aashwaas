@@ -1,5 +1,6 @@
 import 'package:aashwaas/core/error/failures.dart';
 import 'package:aashwaas/core/services/connectivity/network_info.dart';
+import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/features/auth/data/datasources/donor_auth_datasource.dart';
 import 'package:aashwaas/features/auth/data/datasources/local/donor_auth_local_datasource.dart';
 import 'package:aashwaas/features/auth/data/datasources/remote/donor_auth_remote_datasource.dart';
@@ -15,10 +16,12 @@ final authDonorRepositoryProvider = Provider<IDonorAuthRepository>((ref) {
   final authDonorLocalDataSource = ref.read(authDonorLocalDatasourceProvider);
   final authDonorRemoteDataSource = ref.read(authDonorRemoteProvider);
   final networkInfo = ref.read(networkInfoProvider);
+  final userSessionService = ref.read(userSessionServiceProvider);
   return DonorAuthRepository(
     authDonorDataSource: authDonorLocalDataSource,
     authDonorRemoteDataSource: authDonorRemoteDataSource,
     networkInfo: networkInfo,
+    userSessionService: userSessionService,
   );
 });
 
@@ -26,14 +29,17 @@ class DonorAuthRepository implements IDonorAuthRepository {
   final IDonorAuthLocalDataSource _authDonorDataSource;
   final IDonorAuthRemoteDataSource _authDonorRemoteDataSource;
   final NetworkInfo _networkInfo;
+  final UserSessionService _userSessionService;
 
   DonorAuthRepository({
     required IDonorAuthLocalDataSource authDonorDataSource,
     required IDonorAuthRemoteDataSource authDonorRemoteDataSource,
     required NetworkInfo networkInfo,
+    required UserSessionService userSessionService,
   }) : _authDonorDataSource = authDonorDataSource,
        _authDonorRemoteDataSource = authDonorRemoteDataSource,
-       _networkInfo = networkInfo;
+       _networkInfo = networkInfo,
+       _userSessionService = userSessionService;
   @override
   Future<Either<Failure, DonorAuthEntity>> getCurrentDonor() async {
     try {
@@ -141,6 +147,55 @@ class DonorAuthRepository implements IDonorAuthRepository {
       } catch (e) {
         return Left(LocalDatabaseFailure(message: e.toString()));
       }
+    }
+  }
+
+  @override
+  Future<Either<Failure, DonorAuthEntity>> updateDonorProfile(
+    String userId,
+    String fullName,
+    String phoneNumber,
+    String? profilePicture,
+  ) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final payload = <String, dynamic>{
+          'name': fullName,
+          'phoneNumber': phoneNumber,
+        };
+        if (profilePicture != null && profilePicture.trim().isNotEmpty) {
+          payload['profilePicture'] = profilePicture;
+        }
+        final updated = await _authDonorRemoteDataSource.updateDonorProfile(
+          userId,
+          payload,
+        );
+        return Right(updated.toEntity());
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> uploadDonorProfilePhoto(
+    String userId,
+    String filePath,
+  ) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final result = await _authDonorRemoteDataSource.uploadDonorPhoto(
+          userId,
+          filePath,
+        );
+        return Right(result);
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
     }
   }
 }

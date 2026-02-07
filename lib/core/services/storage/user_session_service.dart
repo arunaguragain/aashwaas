@@ -97,11 +97,31 @@ class UserSessionService {
     return _prefs.getString(_keyUserCreatedAt);
   }
 
+  Future<void> updateUserProfile({
+    String? fullName,
+    String? phoneNumber,
+    String? profileImage,
+  }) async {
+    if (fullName != null) {
+      await _prefs.setString(_keyUserFullName, fullName);
+    }
+    if (phoneNumber != null) {
+      await _prefs.setString(_keyUserPhoneNumber, phoneNumber);
+    }
+    if (profileImage != null) {
+      await _prefs.setString(_keyUserProfileImage, profileImage);
+    }
+  }
+
   Future<String?> getUserRole() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(
       'user_role',
     ); // Get user role (either 'volunteer' or 'donor')
+  }
+
+  String? getUserRoleSync() {
+    return _prefs.getString('user_role');
   }
 
   Future<void> setUserRole(String role) async {

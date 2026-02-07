@@ -25,25 +25,28 @@ class ApiEndpoints {
   static const Duration connectionTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
 
-
   // ============ Donor Endpoints ============
   static const String donor = '/auth/register';
   static const String donorLogin = '/auth/login';
   // static const String donorRegister = '/register';
-  static String donorById(String id) => '/auth/donor/$id';
-  static String donorPhoto(String id) => '/auth/donor/$id/photo';
+  static String donorById(String id) => '/auth/$id';
+  static String donorPhoto(String id) => '/auth/$id';
 
   //volunteer endpoints
   static const String volunteer = '/auth/register';
   static const String volunteerLogin = '/auth/login';
   // static const String volunteerRegister = '/register';
-  static String volunteerById(String id) => '/auth/volunteer/$id';
-  static String volunteerPhoto(String id) => '/auth/volunteer/$id/photo';
+  static String volunteerById(String id) => '/auth/$id';
+  static String volunteerPhoto(String id) => '/auth/$id';
 
   // ============ Donation Endpoints ============
   static const String donations = '/donations';
   static String donationById(String id) => '/donations/$id';
   static const String donationUploadPhoto = '/donations/upload-photo';
   static String donationPicture(String filename) =>
+      '$mediaServerUrl/item_photos/$filename';
+
+  // ============ Profile Pictures ============
+  static String profilePicture(String filename) =>
       '$mediaServerUrl/item_photos/$filename';
 }

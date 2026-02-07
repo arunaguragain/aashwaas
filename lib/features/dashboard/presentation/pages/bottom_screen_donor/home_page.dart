@@ -1,19 +1,50 @@
+import 'package:aashwaas/core/services/storage/user_session_service.dart';
+import 'package:aashwaas/features/dashboard/presentation/widgets/donation_history_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/home_header.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/quick_action_section.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/stats_card.dart';
+import 'package:aashwaas/features/donation/presentation/state/donation_state.dart';
+import 'package:aashwaas/features/donation/presentation/view_model/donation_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadRecentDonations();
+    });
+  }
+
+  Future<void> _loadRecentDonations() async {
+    final userSessionService = ref.read(userSessionServiceProvider);
+    final userId = userSessionService.getUserId();
+    if (userId != null) {
+      await ref.read(donationViewModelProvider.notifier).getMyDonations(userId);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final userSessionService = ref.watch(userSessionServiceProvider);
+    final userName = userSessionService.getUserFullName() ?? 'Donor';
+    final donationState = ref.watch(donationViewModelProvider);
+    final recentDonations = donationState.myDonations.take(2).toList();
+
     return SizedBox.expand(
       child: SingleChildScrollView(
         child: Column(
           children: [
             HomeHeader(
-              userName: 'Aruna',
+              userName: userName,
               onNotificationPressed: () {},
               onMenuPressed: () {},
               isVerified: true,
@@ -72,6 +103,33 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+                  if (donationState.status == DonationStatus.loading)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else if (recentDonations.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Center(
+                        child: Text(
+                          'No donations yet',
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                      ),
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        children: recentDonations
+                            .map(
+                              (donation) =>
+                                  DonationHistoryCard(donation: donation),
+                            )
+                            .toList(),
+                      ),
+                    ),
                 ],
               ),
             ),

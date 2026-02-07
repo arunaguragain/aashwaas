@@ -10,4 +10,14 @@ abstract interface class IDonorAuthRepository {
   );
   Future<Either<Failure, DonorAuthEntity>> getCurrentDonor();
   Future<Either<Failure, bool>> logout();
+  Future<Either<Failure, DonorAuthEntity>> updateDonorProfile(
+    String userId,
+    String fullName,
+    String phoneNumber,
+    String? profilePicture,
+  );
+  Future<Either<Failure, String>> uploadDonorProfilePhoto(
+    String userId,
+    String filePath,
+  );
 }

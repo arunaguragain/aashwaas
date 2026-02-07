@@ -15,4 +15,9 @@ abstract interface class IVolunteerAuthRemoteDataSource{
   Future<VolunteerAuthApiModel> registerVolunteer(VolunteerAuthApiModel volunteer);
   Future<VolunteerAuthApiModel?> loginVolunteer(String email, String password);
   Future<VolunteerAuthApiModel> getVolunteerById(String authId);
+  Future<VolunteerAuthApiModel> updateVolunteerProfile(
+    String authId,
+    Map<String, dynamic> payload,
+  );
+  Future<String> uploadVolunteerPhoto(String authId, String filePath);
 }

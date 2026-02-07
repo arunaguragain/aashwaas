@@ -2,6 +2,8 @@ import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/features/auth/domain/usecases/donor_login_usecase.dart';
 import 'package:aashwaas/features/auth/domain/usecases/donor_logout_usecase.dart';
 import 'package:aashwaas/features/auth/domain/usecases/donor_register_usecase.dart';
+import 'package:aashwaas/features/auth/domain/usecases/donor_update_profile_usecase.dart';
+import 'package:aashwaas/features/auth/domain/usecases/donor_upload_profile_photo_usecase.dart';
 import 'package:aashwaas/features/auth/presentation/state/donor_auth_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,12 +16,18 @@ class DonorAuthViewmodel extends Notifier<DonorAuthState> {
   late final RegisterUsecase _registerUsecase;
   late final LoginUsecase _loginUsecase;
   late final DonorLogoutUsecase _logoutUsecase;
+  late final UpdateDonorProfileUsecase _updateProfileUsecase;
+  late final UploadDonorProfilePhotoUsecase _uploadProfilePhotoUsecase;
 
   @override
   DonorAuthState build() {
     _registerUsecase = ref.read(registerDonorUsecaseProvider);
     _loginUsecase = ref.read(donorLoginUsecaseProvider);
     _logoutUsecase = ref.read(logoutDonorUsecaseProvider);
+    _updateProfileUsecase = ref.read(updateDonorProfileUsecaseProvider);
+    _uploadProfilePhotoUsecase = ref.read(
+      uploadDonorProfilePhotoUsecaseProvider,
+    );
     return DonorAuthState();
   }
 
@@ -100,5 +108,58 @@ class DonorAuthViewmodel extends Notifier<DonorAuthState> {
 
   void clearError() {
     state = state.copyWith(errorMessage: null);
+  }
+
+  Future<String?> uploadProfilePhoto({
+    required String userId,
+    required String filePath,
+  }) async {
+    state = state.copyWith(status: AuthStatus.loading);
+    final result = await _uploadProfilePhotoUsecase(
+      UploadDonorProfilePhotoParams(userId: userId, filePath: filePath),
+    );
+    return result.fold(
+      (failure) {
+        state = state.copyWith(
+          status: AuthStatus.error,
+          errorMessage: failure.message,
+        );
+        return null;
+      },
+      (url) {
+        state = state.copyWith(status: AuthStatus.authenticated);
+        return url;
+      },
+    );
+  }
+
+  Future<bool> updateProfile({
+    required String userId,
+    required String fullName,
+    required String phoneNumber,
+    String? profilePicture,
+  }) async {
+    state = state.copyWith(status: AuthStatus.loading);
+    final result = await _updateProfileUsecase(
+      UpdateDonorProfileParams(
+        userId: userId,
+        fullName: fullName,
+        phoneNumber: phoneNumber,
+        profilePicture: profilePicture,
+      ),
+    );
+    return result.fold(
+      (failure) {
+        state = state.copyWith(
+          status: AuthStatus.error,
+          errorMessage: failure.message,
+        );
+        return false;
+      },
+      (_) {
+        state = state.copyWith(status: AuthStatus.authenticated);
+        return true;
+      },
+    );
   }
 }

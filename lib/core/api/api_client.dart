@@ -16,7 +16,8 @@ class ApiClient {
   late final Dio _dio;
   final TokenService _tokenService;
 
-  ApiClient({required TokenService tokenService}) : _tokenService = tokenService {
+  ApiClient({required TokenService tokenService})
+    : _tokenService = tokenService {
     _dio = Dio(
       BaseOptions(
         baseUrl: ApiEndpoints.baseUrl,
@@ -129,11 +130,29 @@ class ApiClient {
     required FormData formData,
     Options? options,
     ProgressCallback? onSendProgress,
+    String method = 'POST',
   }) async {
-    return _dio.post(
+    final upper = method.toUpperCase();
+    if (upper == 'PUT') {
+      return _dio.put(
+        path,
+        data: formData,
+        options: options,
+        onSendProgress: onSendProgress,
+      );
+    }
+    if (upper == 'POST') {
+      return _dio.post(
+        path,
+        data: formData,
+        options: options,
+        onSendProgress: onSendProgress,
+      );
+    }
+    return _dio.request(
       path,
       data: formData,
-      options: options,
+      options: (options ?? Options()).copyWith(method: method),
       onSendProgress: onSendProgress,
     );
   }

@@ -1,19 +1,24 @@
+import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/home_header.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/stats_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/task_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userSessionService = ref.watch(userSessionServiceProvider);
+    final userName = userSessionService.getUserFullName() ?? 'Volunteer';
+
     return SizedBox.expand(
       child: SingleChildScrollView(
         child: Column(
           children: [
             HomeHeader(
-              userName: 'Aruna',
+              userName: userName,
               onNotificationPressed: () {},
               onMenuPressed: () {},
               isVerified: true,

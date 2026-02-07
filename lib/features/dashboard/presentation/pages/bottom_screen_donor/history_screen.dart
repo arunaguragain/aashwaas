@@ -26,20 +26,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     final userSessionService = ref.read(userSessionServiceProvider);
     final userId = userSessionService.getUserId();
     if (userId != null) {
-      await ref.read(donationViewModelProvider.notifier).getMyDonations(userId);
-
-      // Debug: Log the donations data
-      final donationState = ref.read(donationViewModelProvider);
-      debugPrint('=== DONATIONS DEBUG ===');
-      debugPrint('Total donations: ${donationState.myDonations.length}');
-      for (var donation in donationState.myDonations) {
-        debugPrint('---');
-        debugPrint('Item: ${donation.itemName}');
-        debugPrint('Media field: ${donation.media}');
-        debugPrint('Category: ${donation.category}');
-        debugPrint('Status: ${donation.status}');
-      }
-      debugPrint('=====================');
+      final donationNotifier = ref.read(donationViewModelProvider.notifier);
+      await donationNotifier.getMyDonations(userId);
+      if (!mounted) return;
     }
   }
 

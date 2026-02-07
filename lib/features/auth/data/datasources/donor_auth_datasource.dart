@@ -15,4 +15,9 @@ abstract interface class IDonorAuthRemoteDataSource{
   Future<DonorAuthApiModel> registerDonor(DonorAuthApiModel donor);
   Future<DonorAuthApiModel?> loginDonor(String email, String password);
   Future<DonorAuthApiModel> getDonorById(String authId);
+  Future<DonorAuthApiModel> updateDonorProfile(
+    String authId,
+    Map<String, dynamic> payload,
+  );
+  Future<String> uploadDonorPhoto(String authId, String filePath);
 }

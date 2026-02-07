@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:aashwaas/core/api/api_endpoints.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/profile_info_row.dart';
 import 'package:flutter/material.dart';
 
@@ -41,14 +44,11 @@ class ProfileCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CircleAvatar(
-                radius: 30,
+                radius: 36,
                 backgroundColor: const Color(0xFFF3F5F7),
-                backgroundImage:
-                    profileImage != null && profileImage!.trim().isNotEmpty
-                    ? NetworkImage(profileImage!)
-                    : null,
+                backgroundImage: _resolveProfileImage(profileImage),
                 child: profileImage == null || profileImage!.trim().isEmpty
-                    ? const Icon(Icons.person, color: Colors.grey, size: 32)
+                    ? const Icon(Icons.person, color: Colors.grey, size: 36)
                     : null,
               ),
               const SizedBox(width: 12),
@@ -125,5 +125,20 @@ class ProfileCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  ImageProvider<Object>? _resolveProfileImage(String? imagePath) {
+    if (imagePath == null || imagePath.trim().isEmpty) {
+      return null;
+    }
+    final value = imagePath.trim();
+    if (value.startsWith('http://') || value.startsWith('https://')) {
+      return NetworkImage(value);
+    }
+    final file = File(value);
+    if (file.existsSync()) {
+      return FileImage(file);
+    }
+    return NetworkImage(ApiEndpoints.profilePicture(value));
   }
 }
