@@ -12,13 +12,15 @@ class DonationHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
+        border: Border.all(color: theme.dividerColor),
         boxShadow: const [
           BoxShadow(
             color: Color(0x11000000),
@@ -58,9 +60,9 @@ class DonationHistoryCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       '${donation.quantity} items',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: Colors.black54,
+                        color: theme.textTheme.bodySmall?.color,
                       ),
                     ),
                     const SizedBox(height: 6),

@@ -5,6 +5,8 @@ import 'package:aashwaas/features/dashboard/presentation/widgets/quick_action_se
 import 'package:aashwaas/features/dashboard/presentation/widgets/stats_card.dart';
 import 'package:aashwaas/features/donation/presentation/state/donation_state.dart';
 import 'package:aashwaas/features/donation/presentation/view_model/donation_viewmodel.dart';
+import 'package:aashwaas/app/routes/app_routes.dart';
+import 'package:aashwaas/features/settings/presentation/pages/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,7 +48,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             HomeHeader(
               userName: userName,
               onNotificationPressed: () {},
-              onMenuPressed: () {},
+              onMenuPressed: () {
+                AppRoutes.push(context, const SettingsScreen());
+              },
               isVerified: true,
               role: 'donor',
             ),
@@ -72,7 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             SizedBox(height: 10),
             Container(
-              color: Colors.white,
+              color: Theme.of(context).scaffoldBackgroundColor,
               child: Column(
                 children: [
                   SizedBox(height: 14),

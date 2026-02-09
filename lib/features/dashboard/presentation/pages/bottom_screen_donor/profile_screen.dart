@@ -52,7 +52,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final roleSinceText = _formatRoleSince('Donor', createdAtIso);
 
     return Container(
-      color: const Color(0xFFF4F6FA),
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: SafeArea(
         top: false,
         child: SingleChildScrollView(

@@ -11,13 +11,17 @@ class HistoryStatusChip extends StatelessWidget {
     String text;
 
     switch (status.toLowerCase()) {
-      case 'delivered':
+      case 'completed':
         color = const Color(0xFF4CAF50);
-        text = 'Delivered';
+        text = 'Completed';
         break;
       case 'pending':
         color = const Color(0xFFFFA726);
         text = 'Pending';
+        break;
+      case 'assigned':
+        color = const Color(0xFF26A69A);
+        text = 'Assigned';
         break;
       case 'cancelled':
         color = Colors.red;

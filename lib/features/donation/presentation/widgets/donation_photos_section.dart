@@ -15,21 +15,27 @@ class DonationPhotosSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final labelColor = theme.textTheme.bodyMedium?.color ?? Colors.black;
+    final hintColor = theme.textTheme.bodySmall?.color ?? Colors.grey[700];
+    final borderColor = theme.dividerColor;
+    final fillColor = theme.inputDecorationTheme.fillColor ?? Colors.grey[100];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Photos',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.black,
+            color: labelColor,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           'Add photos to help us verify the items',
-          style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+          style: TextStyle(fontSize: 12, color: hintColor),
         ),
         const SizedBox(height: 12),
         if (selectedMedia.isEmpty)
@@ -37,22 +43,15 @@ class DonationPhotosSection extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
+              border: Border.all(color: borderColor),
               borderRadius: BorderRadius.circular(8),
-              color: Colors.grey[100],
+              color: fillColor,
             ),
             child: Column(
               children: [
-                Icon(
-                  Icons.cloud_upload_outlined,
-                  size: 40,
-                  color: Colors.grey[400],
-                ),
+                Icon(Icons.cloud_upload_outlined, size: 40, color: hintColor),
                 const SizedBox(height: 10),
-                const Text(
-                  'No photos added yet',
-                  style: TextStyle(color: Colors.grey),
-                ),
+                Text('No photos added yet', style: TextStyle(color: hintColor)),
               ],
             ),
           ),
@@ -63,7 +62,7 @@ class DonationPhotosSection extends StatelessWidget {
                 height: 150,
                 width: 150,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
+                  border: Border.all(color: borderColor),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: ClipRRect(
@@ -90,7 +89,7 @@ class DonationPhotosSection extends StatelessWidget {
             label: const Text('Add Photos'),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              side: const BorderSide(color: Colors.grey),
+              side: BorderSide(color: borderColor),
             ),
           ),
         ),

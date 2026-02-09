@@ -241,7 +241,7 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Add Donation')),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SizedBox.expand(
         child: SingleChildScrollView(
           child: Padding(

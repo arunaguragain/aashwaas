@@ -56,7 +56,10 @@ class HomeHeader extends StatelessWidget {
                           role == 'donor'
                               ? 'Verified Donor'
                               : 'Verified Volunteer',
-                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
                         ),
                         const SizedBox(width: 4),
                         Icon(Icons.check_circle, color: Colors.green, size: 16),

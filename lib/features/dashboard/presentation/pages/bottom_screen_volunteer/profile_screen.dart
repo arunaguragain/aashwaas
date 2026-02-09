@@ -18,6 +18,35 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  Future<void> _confirmLogout() async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldLogout == true) {
+      await ref.read(authVolunteerViewmodelProvider.notifier).logout();
+      if (context.mounted) {
+        AppRoutes.pushReplacement(context, const VolunteerLoginScreen());
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final userSessionService = ref.watch(userSessionServiceProvider);
@@ -33,7 +62,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final roleSinceText = _formatRoleSince('Volunteer', createdAtIso);
 
     return Container(
-      color: const Color(0xFFF4F6FA),
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: SafeArea(
         top: false,
         child: SingleChildScrollView(
@@ -86,17 +115,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               const SizedBox(height: 24),
               MyButton(
-                onPressed: () async {
-                  await ref
-                      .read(authVolunteerViewmodelProvider.notifier)
-                      .logout();
-                  if (context.mounted) {
-                    AppRoutes.pushReplacement(
-                      context,
-                      const VolunteerLoginScreen(),
-                    );
-                  }
-                },
+                onPressed: _confirmLogout,
                 text: 'Logout',
                 icon: const Icon(Icons.logout, color: Colors.white),
               ),

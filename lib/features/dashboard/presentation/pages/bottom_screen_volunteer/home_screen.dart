@@ -1,7 +1,9 @@
+import 'package:aashwaas/app/routes/app_routes.dart';
 import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/home_header.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/stats_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/task_card.dart';
+import 'package:aashwaas/features/settings/presentation/pages/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,7 +22,9 @@ class HomeScreen extends ConsumerWidget {
             HomeHeader(
               userName: userName,
               onNotificationPressed: () {},
-              onMenuPressed: () {},
+              onMenuPressed: () {
+                AppRoutes.push(context, const SettingsScreen());
+              },
               isVerified: true,
               role: 'volunteer',
             ),
@@ -44,7 +48,7 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 20),
 
             Container(
-              color: Colors.white,
+              color: Theme.of(context).scaffoldBackgroundColor,
               child: Padding(
                 padding: const EdgeInsets.all(18.0),
                 child: Column(

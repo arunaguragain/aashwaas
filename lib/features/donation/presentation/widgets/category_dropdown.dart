@@ -16,15 +16,22 @@ class DonationCategoryDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final labelColor = theme.textTheme.bodyMedium?.color ?? Colors.black;
+    final hintColor = theme.hintColor;
+    final fillColor =
+        theme.inputDecorationTheme.fillColor ?? Colors.grey[100];
+    final borderColor = theme.dividerColor;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.black,
+            color: labelColor,
           ),
         ),
         const SizedBox(height: 6),
@@ -32,22 +39,22 @@ class DonationCategoryDropdown extends StatelessWidget {
           value: selectedCategory,
           hint: Text(
             'Select Category',
-            style: TextStyle(color: Colors.grey[700]),
+            style: TextStyle(color: hintColor),
           ),
           decoration: InputDecoration(
             filled: true,
-            fillColor: Colors.grey[100],
+            fillColor: fillColor,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.grey),
+              borderSide: BorderSide(color: borderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.grey),
+              borderSide: BorderSide(color: borderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.grey, width: 1.5),
+              borderSide: BorderSide(color: borderColor, width: 1.5),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,

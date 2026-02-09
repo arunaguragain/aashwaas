@@ -1,5 +1,5 @@
 import 'package:aashwaas/app/routes/app_routes.dart';
-import 'package:aashwaas/app/theme/theme_mode_provider.dart';
+import 'package:aashwaas/core/providers/theme_mode_provider.dart';
 import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
