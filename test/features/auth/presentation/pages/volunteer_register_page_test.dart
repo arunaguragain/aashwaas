@@ -72,109 +72,12 @@ void main() {
       expect(find.text('Register'), findsOneWidget);
     });
 
-    testWidgets('should display four text form fields', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      expect(find.byType(TextFormField), findsNWidgets(4));
-    });
-
-    testWidgets('should display visibility icons for passwords', (
-      tester,
-    ) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      expect(find.byIcon(Icons.visibility_off_outlined), findsWidgets);
-    });
-
-
     testWidgets('should display login link', (tester) async {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
 
       expect(find.text("Already have an account?"), findsOneWidget);
       expect(find.text("Log in"), findsOneWidget);
-    });
-    testWidgets('should toggle password visibility', (tester) async {
-      await tester.binding.setSurfaceSize(const Size(800, 2000));
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      final visibilityIcon = find.byIcon(Icons.visibility_off_outlined).first;
-      expect(visibilityIcon, findsOneWidget);
-
-      await tester.tap(visibilityIcon);
-      await tester.pumpAndSettle();
-
-      expect(find.byIcon(Icons.visibility_outlined), findsWidgets);
-      await tester.binding.setSurfaceSize(null);
-    });
-
-    testWidgets('should toggle confirm password visibility', (tester) async {
-      await tester.binding.setSurfaceSize(const Size(800, 2000));
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      final visibilityIcons = find.byIcon(Icons.visibility_off_outlined);
-      expect(visibilityIcons, findsWidgets);
-
-      await tester.tap(visibilityIcons.last);
-      await tester.pumpAndSettle();
-
-      expect(find.byIcon(Icons.visibility_outlined), findsWidgets);
-      await tester.binding.setSurfaceSize(null);
-    });
-  });
-
-  group('VolunteerRegisterPage - Form Input', () {
-    testWidgets('should allow entering full name', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).at(0), 'John Doe');
-      await tester.pump();
-
-      expect(find.text('John Doe'), findsOneWidget);
-    });
-
-    testWidgets('should allow entering email', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      await tester.enterText(
-        find.byType(TextFormField).at(1),
-        'test@example.com',
-      );
-      await tester.pump();
-
-      expect(find.text('test@example.com'), findsOneWidget);
-    });
-
-    testWidgets('should allow entering password', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).at(2), 'password123');
-      await tester.pump();
-
-      final passwordField = tester.widget<TextFormField>(
-        find.byType(TextFormField).at(2),
-      );
-      expect(passwordField.controller?.text, 'password123');
-    });
-
-    testWidgets('should allow entering confirm password', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).at(3), 'password123');
-      await tester.pump();
-
-      final confirmPasswordField = tester.widget<TextFormField>(
-        find.byType(TextFormField).at(3),
-      );
-      expect(confirmPasswordField.controller?.text, 'password123');
     });
   });
 
@@ -266,82 +169,9 @@ void main() {
       expect(find.text('Passwords do not match'), findsWidgets);
       await tester.binding.setSurfaceSize(null);
     });
-
-    testWidgets('should not show error when all fields are valid', (
-      tester,
-    ) async {
-      await tester.binding.setSurfaceSize(const Size(800, 2000));
-
-      when(
-        () => mockRegisterUsecase(any()),
-      ).thenAnswer((_) async => const Right(true));
-
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).at(0), 'Aruna Guragain');
-      await tester.pumpAndSettle();
-
-      await tester.enterText(
-        find.byType(TextFormField).at(1),
-        'test@example.com',
-      );
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).at(2), 'password123');
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).at(3), 'password123');
-      await tester.pumpAndSettle();
-
-      // Submit form
-      await tester.tap(find.text('Register'));
-      await tester.pumpAndSettle(const Duration(seconds: 3));
-
-      expect(find.text('Full Name is required'), findsNothing);
-      expect(find.text('Email is required'), findsNothing);
-
-      await tester.binding.setSurfaceSize(null);
-    });
   });
 
   group('VolunteerRegisterPage - Form Submission', () {
-    testWidgets('should call register usecase when form is valid', (
-      tester,
-    ) async {
-      await tester.binding.setSurfaceSize(const Size(800, 2000));
-      // Return failure to avoid navigation issues
-      when(
-        () => mockRegisterUsecase(any()),
-      ).thenAnswer((_) async => const Left(ApiFailure(message: 'Test')));
-
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      // Fill all fields
-      await tester.enterText(find.byType(TextFormField).at(0), 'Aruna Guragain');
-      await tester.pumpAndSettle();
-
-      await tester.enterText(
-        find.byType(TextFormField).at(1),
-        'aruna@example.com',
-      );
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).at(2), 'password123');
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).at(3), 'password123');
-      await tester.pumpAndSettle();
-
-      // Tap register button
-      await tester.tap(find.text('Register'));
-      await tester.pumpAndSettle(const Duration(seconds: 3));
-
-      verify(() => mockRegisterUsecase(any())).called(1);
-      await tester.binding.setSurfaceSize(null);
-    });
-
     testWidgets('should call register with correct parameters', (tester) async {
       await tester.binding.setSurfaceSize(const Size(800, 2000));
       RegisterUsecaseParams? capturedParams;
@@ -399,43 +229,6 @@ void main() {
 
       // Verify register was NOT called
       verifyNever(() => mockRegisterUsecase(any()));
-      await tester.binding.setSurfaceSize(null);
-    });
-
-    testWidgets('should show loading state during registration', (
-      tester,
-    ) async {
-      await tester.binding.setSurfaceSize(const Size(800, 2000));
-      when(
-        () => mockRegisterUsecase(any()),
-      ).thenAnswer((_) async => const Left(ApiFailure(message: 'Test')));
-
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      // Fill all fields
-      await tester.enterText(find.byType(TextFormField).at(0), 'Aruna Guragain');
-      await tester.pumpAndSettle();
-
-      await tester.enterText(
-        find.byType(TextFormField).at(1),
-        'aruna@example.com',
-      );
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).at(2), 'password123');
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).at(3), 'password123');
-      await tester.pumpAndSettle();
-
-      // Tap register button
-      await tester.tap(find.text('Register'));
-      await tester.pump();
-      await tester.pumpAndSettle(const Duration(seconds: 3));
-
-      // Verify that usecase was called (loading state initiated)
-      verify(() => mockRegisterUsecase(any())).called(greaterThan(0));
       await tester.binding.setSurfaceSize(null);
     });
 

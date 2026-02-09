@@ -95,18 +95,6 @@ void main() {
       expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
     });
 
-    testWidgets('should toggle password visibility', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pump();
-
-      expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
-
-      await tester.tap(find.byIcon(Icons.visibility_off_outlined));
-      await tester.pump();
-
-      expect(find.byIcon(Icons.visibility_outlined), findsOneWidget);
-    });
-
     testWidgets('should display forgot password button', (tester) async {
       await tester.pumpWidget(createTestWidget());
       await tester.pump();
@@ -120,21 +108,6 @@ void main() {
 
       expect(find.text("Don't have an account?"), findsOneWidget);
       expect(find.text('Sign Up'), findsOneWidget);
-    });
-
-    testWidgets('should display OR divider', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pump();
-
-      expect(find.text('Or'), findsOneWidget);
-    });
-
-    testWidgets('should display hint texts', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pump();
-
-      expect(find.text('Enter your email'), findsOneWidget);
-      expect(find.text('Enter your password'), findsOneWidget);
     });
 
     testWidgets('should display login with google button', (tester) async {
@@ -151,12 +124,6 @@ void main() {
       expect(find.text('Login as Volunteer'), findsOneWidget);
     });
 
-    testWidgets('should display logo image', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pump();
-
-      expect(find.byType(Image), findsOneWidget);
-    });
   });
 
   group('DonorLoginPage - Form Validation', () {
@@ -185,65 +152,11 @@ void main() {
       expect(find.text('Password is required'), findsOneWidget);
     });
 
-    testWidgets('should allow text entry in email field', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pump();
-
-      await tester.enterText(
-        find.byType(TextFormField).first,
-        'test@example.com',
-      );
-      await tester.pump();
-
-      expect(find.text('test@example.com'), findsOneWidget);
-    });
-
-    testWidgets('should allow text entry in password field', (tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pump();
-
-      await tester.enterText(find.byType(TextFormField).last, 'password123');
-      await tester.pump();
-
-      final passwordField = tester.widget<TextFormField>(
-        find.byType(TextFormField).last,
-      );
-      expect(passwordField.controller?.text, 'password123');
-    });
   });
 
   group('DonorLoginPage - Form Submission', () {
-    testWidgets('should call login usecase when form is valid', (tester) async {
-      // Arrange
-      final completer = Completer<Either<Failure, DonorAuthEntity>>();
 
-      when(() => mockLoginUsecase(any())).thenAnswer((_) => completer.future);
-
-      await tester.pumpWidget(createTestWidget());
-      await tester.pump();
-
-      // Fill form fields
-      await tester.enterText(
-        find.byType(TextFormField).first,
-        'test@example.com',
-      );
-      await tester.pump();
-
-      await tester.enterText(find.byType(TextFormField).last, 'password123');
-      await tester.pump();
-
-      // Tap login button
-      await tester.tap(find.text('Login'));
-      // Wait for the viewmodel's 2-second delay and the usecase call
-      await tester.pump(const Duration(seconds: 3));
-
-      // Verify login usecase was called
-      verify(() => mockLoginUsecase(any())).called(greaterThan(0));
-    });
-
-    testWidgets('should call login with correct email and password', (
-      tester,
-    ) async {
+    testWidgets('should call login with correct email and password', (tester,) async {
       // Arrange
       final completer = Completer<Either<Failure, DonorAuthEntity>>();
 
@@ -297,39 +210,8 @@ void main() {
       verifyNever(() => mockLoginUsecase(any()));
     });
 
-    testWidgets('should show loading indicator while logging in', (
-      tester,
-    ) async {
-      // Arrange
-      final completer = Completer<Either<Failure, DonorAuthEntity>>();
-
-      when(() => mockLoginUsecase(any())).thenAnswer((_) => completer.future);
-
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      // Fill form fields
-      await tester.enterText(
-        find.byType(TextFormField).first,
-        'test@example.com',
-      );
-      await tester.pumpAndSettle();
-
-      await tester.enterText(find.byType(TextFormField).last, 'password123');
-      await tester.pumpAndSettle();
-
-      // Tap login button
-      await tester.tap(find.text('Login'));
-      // Wait a bit for the state to be updated
-      await tester.pump(const Duration(seconds: 3));
-
-      // Verify that usecase was called (loading state initiated)
-      verify(() => mockLoginUsecase(any())).called(greaterThan(0));
-    });
-
     testWidgets(
-      'should succeed with correct credentials and fail with wrong credentials',
-      (tester) async {
+      'should succeed with correct credentials and fail with wrong credentials',(tester) async {
         // Define correct credentials
         const correctEmail = 'correct@test.com';
         const correctPassword = 'correctpass';

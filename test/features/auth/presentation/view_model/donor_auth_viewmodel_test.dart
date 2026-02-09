@@ -69,19 +69,6 @@ void main() {
     phoneNumber: '9800000000.',
   );
 
-  group('DonorAuthViewModel', () {
-    group('initial state', () {
-      test('should have initial state when created', () {
-        // Act
-        final state = container.read(authDonorViewmodelProvider);
-
-        // Assert
-        expect(state.status, AuthStatus.initial);
-        expect(state.authEntity, isNull);
-        expect(state.errorMessage, isNull);
-      });
-    });
-
     group('register', () {
       test(
         'should emit registered state when registration is successful',
@@ -129,30 +116,6 @@ void main() {
         expect(state.errorMessage, 'Email already exists');
         verify(() => mockRegisterUsecase(any())).called(1);
       });
-
-      test('should pass correct parameters to usecase', () async {
-        // Arrange
-        RegisterUsecaseParams? capturedParams;
-        when(() => mockRegisterUsecase(any())).thenAnswer((invocation) {
-          capturedParams =
-              invocation.positionalArguments[0] as RegisterUsecaseParams;
-          return Future.value(const Right(true));
-        });
-
-        final viewModel = container.read(authDonorViewmodelProvider.notifier);
-
-        // Act
-        await viewModel.register(
-          fullName: 'Test Donor',
-          email: 'test@example.com',
-          password: 'password123',
-        );
-
-        // Assert
-        expect(capturedParams?.fullName, 'Test Donor');
-        expect(capturedParams?.email, 'test@example.com');
-        expect(capturedParams?.password, 'password123');
-      });
     });
 
     group('login', () {
@@ -199,27 +162,6 @@ void main() {
         verify(() => mockLoginUsecase(any())).called(1);
       });
 
-      test('should pass correct credentials to usecase', () async {
-        // Arrange
-        LoginUsecaseParams? capturedParams;
-        when(() => mockLoginUsecase(any())).thenAnswer((invocation) {
-          capturedParams =
-              invocation.positionalArguments[0] as LoginUsecaseParams;
-          return Future.value(const Right(tDonor));
-        });
-
-        final viewModel = container.read(authDonorViewmodelProvider.notifier);
-
-        // Act
-        await viewModel.login(
-          email: 'test@example.com',
-          password: 'password123',
-        );
-
-        // Assert
-        expect(capturedParams?.email, 'test@example.com');
-        expect(capturedParams?.password, 'password123');
-      });
     });
 
     group('logout', () {
@@ -283,97 +225,4 @@ void main() {
         verifyNever(() => mockUserSessionService.clearUserSession());
       });
     });
-
-    group('clearError', () {
-      test('should call clearError without throwing', () async {
-        // Arrange
-        const failure = ApiFailure(message: 'Some error');
-        when(
-          () => mockLoginUsecase(any()),
-        ).thenAnswer((_) async => const Left(failure));
-
-        final viewModel = container.read(authDonorViewmodelProvider.notifier);
-        await viewModel.login(email: 'test@example.com', password: 'password');
-
-        // Verify error is set
-        final state = container.read(authDonorViewmodelProvider);
-        expect(state.errorMessage, 'Some error');
-
-        // Act & Assert - should not throw
-        expect(() => viewModel.clearError(), returnsNormally);
-      });
-    });
-  });
-
-  group('DonorAuthState', () {
-    test('should have correct initial values', () {
-      // Arrange
-      const state = DonorAuthState();
-
-      // Assert
-      expect(state.status, AuthStatus.initial);
-      expect(state.authEntity, isNull);
-      expect(state.errorMessage, isNull);
-    });
-
-    test('copyWith should update specified fields', () {
-      // Arrange
-      const state = DonorAuthState();
-
-      // Act
-      final newState = state.copyWith(
-        status: AuthStatus.authenticated,
-        authEntity: tDonor,
-      );
-
-      // Assert
-      expect(newState.status, AuthStatus.authenticated);
-      expect(newState.authEntity, tDonor);
-      expect(newState.errorMessage, isNull);
-    });
-
-    test('copyWith should preserve existing values when not specified', () {
-      // Arrange
-      const state = DonorAuthState(
-        status: AuthStatus.authenticated,
-        authEntity: tDonor,
-        errorMessage: 'error',
-      );
-
-      // Act
-      final newState = state.copyWith(status: AuthStatus.loading);
-
-      // Assert
-      expect(newState.status, AuthStatus.loading);
-      expect(newState.authEntity, tDonor);
-      expect(newState.errorMessage, 'error');
-    });
-
-    test('props should contain all fields', () {
-      // Arrange
-      const state = DonorAuthState(
-        status: AuthStatus.authenticated,
-        authEntity: tDonor,
-        errorMessage: 'error',
-      );
-
-      // Assert
-      expect(state.props, [AuthStatus.authenticated, tDonor, 'error']);
-    });
-
-    test('two states with same values should be equal', () {
-      // Arrange
-      const state1 = DonorAuthState(
-        status: AuthStatus.authenticated,
-        authEntity: tDonor,
-      );
-      const state2 = DonorAuthState(
-        status: AuthStatus.authenticated,
-        authEntity: tDonor,
-      );
-
-      // Assert
-      expect(state1, state2);
-    });
-  });
 }

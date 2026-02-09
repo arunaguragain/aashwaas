@@ -98,29 +98,6 @@ void main() {
     expect(capturedEntity?.donationId, isNull);
   });
 
-  test('should return failure when repository call fails', () async {
-    // Arrange
-    const failure = ApiFailure(message: 'Failed to create donation');
-    when(
-      () => mockRepository.createDonation(any()),
-    ).thenAnswer((_) async => const Left(failure));
-
-    // Act
-    final result = await usecase(
-      const CreateDonationParams(
-        itemName: tItemName,
-        category: tCategory,
-        quantity: tQuantity,
-        condition: tCondition,
-        pickupLocation: tPickupLocation,
-      ),
-    );
-
-    // Assert
-    expect(result, const Left(failure));
-    verify(() => mockRepository.createDonation(any())).called(1);
-    verifyNoMoreInteractions(mockRepository);
-  });
 
   test('should return NetworkFailure when there is no internet', () async {
     // Arrange

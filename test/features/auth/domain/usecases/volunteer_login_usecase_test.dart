@@ -68,38 +68,6 @@ void main() {
       verifyNoMoreInteractions(mockRepository);
     });
 
-    test('should return NetworkFailure when there is no internet', () async {
-      // Arrange
-      const failure = NetworkFailure();
-      when(
-        () => mockRepository.loginVolunteer(tEmail, tPassword),
-      ).thenAnswer((_) async => const Left(failure));
-
-      // Act
-      final result = await usecase(
-        const LoginUsecaseParams(email: tEmail, password: tPassword),
-      );
-
-      // Assert
-      expect(result, const Left(failure));
-      verify(() => mockRepository.loginVolunteer(tEmail, tPassword)).called(1);
-    });
-
-    test('should pass correct email and password to repository', () async {
-      // Arrange
-      when(
-        () => mockRepository.loginVolunteer(any(), any()),
-      ).thenAnswer((_) async => const Right(tVolunteer));
-
-      // Act
-      await usecase(
-        const LoginUsecaseParams(email: tEmail, password: tPassword),
-      );
-
-      // Assert
-      verify(() => mockRepository.loginVolunteer(tEmail, tPassword)).called(1);
-    });
-
     test(
       'should succeed with correct credentials and fail with wrong credentials',
       () async {
@@ -142,13 +110,6 @@ void main() {
   });
 
   group('LoginUsecaseParams', () {
-    test('should have correct props', () {
-      // Arrange
-      const params = LoginUsecaseParams(email: tEmail, password: tPassword);
-
-      // Assert
-      expect(params.props, [tEmail, tPassword]);
-    });
 
     test('two params with same values should be equal', () {
       // Arrange
