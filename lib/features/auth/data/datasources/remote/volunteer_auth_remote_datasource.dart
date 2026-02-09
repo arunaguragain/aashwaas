@@ -72,6 +72,7 @@ class AuthVolunteerRemoteDatasource implements IVolunteerAuthRemoteDataSource {
         email: user.email,
         fullName: user.fullName,
         phoneNumber: user.phoneNumber,
+        profileImage: user.profilePicture,
         createdAt: user.createdAt?.toIso8601String(),
         role: 'volunteer',
       );

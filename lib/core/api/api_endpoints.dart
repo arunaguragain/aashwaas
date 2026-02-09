@@ -46,6 +46,10 @@ class ApiEndpoints {
   static String donationPicture(String filename) =>
       '$mediaServerUrl/item_photos/$filename';
 
+  // ============ NGO Endpoints ============
+  static const String ngos = '/ngos';
+  static String ngoById(String id) => '/ngos/$id';
+
   // ============ Profile Pictures ============
   static String profilePicture(String filename) =>
       '$mediaServerUrl/item_photos/$filename';
