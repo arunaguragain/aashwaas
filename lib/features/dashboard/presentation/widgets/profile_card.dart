@@ -141,6 +141,10 @@ class ProfileCard extends StatelessWidget {
     if (file.existsSync()) {
       return FileImage(file);
     }
+    if (value.contains('/')) {
+      final normalized = value.startsWith('/') ? value.substring(1) : value;
+      return NetworkImage('${ApiEndpoints.mediaServerUrl}/$normalized');
+    }
     return NetworkImage(ApiEndpoints.profilePicture(value));
   }
 }

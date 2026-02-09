@@ -1,6 +1,7 @@
 import 'package:aashwaas/app/routes/app_routes.dart';
 import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
+import 'package:aashwaas/features/auth/data/datasources/remote/volunteer_auth_remote_datasource.dart';
 import 'package:aashwaas/features/auth/presentation/pages/volunteer_login_page.dart';
 import 'package:aashwaas/features/auth/presentation/view_model/volunteer_auth_viewmodel.dart';
 import 'package:aashwaas/features/dashboard/presentation/pages/edit_profile_screen.dart';
@@ -18,6 +19,35 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  String? _remoteProfileImage;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadProfile();
+    });
+  }
+
+  Future<void> _loadProfile() async {
+    final userSessionService = ref.read(userSessionServiceProvider);
+    final userId = userSessionService.getUserId();
+    if (userId == null) {
+      return;
+    }
+    try {
+      final volunteer = await ref
+          .read(authVolunteerRemoteProvider)
+          .getVolunteerById(userId);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _remoteProfileImage = volunteer.profilePicture;
+      });
+    } catch (_) {}
+  }
+
   Future<void> _confirmLogout() async {
     final shouldLogout = await showDialog<bool>(
       context: context,
@@ -54,7 +84,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final fullName = userSessionService.getUserFullName() ?? 'Volunteer';
     final email = userSessionService.getUserEmail() ?? 'volunteer@email.com';
     final phone = userSessionService.getUserPhoneNumber() ?? '+977 9800000000';
-    final profileImage = userSessionService.getUserProfileImage();
+    final profileImage =
+        _remoteProfileImage ?? userSessionService.getUserProfileImage();
     final createdAtIso = userSessionService.getUserCreatedAt();
 
     final tasksCompleted = 0;
@@ -79,7 +110,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute<void>(
-                      builder: (context) => const EditProfileScreen(),
+                      builder: (context) =>
+                          EditProfileScreen(initialProfileImage: profileImage),
                     ),
                   );
                   if (mounted) {

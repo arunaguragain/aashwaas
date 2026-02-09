@@ -8,11 +8,15 @@ import 'package:aashwaas/core/widgets/my_textformfield.dart';
 import 'package:aashwaas/features/auth/presentation/view_model/donor_auth_viewmodel.dart';
 import 'package:aashwaas/features/auth/presentation/view_model/volunteer_auth_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
-  const EditProfileScreen({super.key});
+  const EditProfileScreen({super.key, this.initialProfileImage});
+
+  final String? initialProfileImage;
 
   @override
   ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -26,6 +30,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   String? _profileImagePath;
   bool _isSaving = false;
+  bool _isPickingImage = false;
 
   @override
   void initState() {
@@ -33,7 +38,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final userSessionService = ref.read(userSessionServiceProvider);
     _fullNameController.text = userSessionService.getUserFullName() ?? '';
     _phoneController.text = userSessionService.getUserPhoneNumber() ?? '';
-    _profileImagePath = userSessionService.getUserProfileImage();
+    _profileImagePath =
+        widget.initialProfileImage ?? userSessionService.getUserProfileImage();
   }
 
   @override
@@ -126,16 +132,126 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     }
   }
 
-  Future<void> _pickProfileImage() async {
-    final picked = await _imagePicker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
-    if (picked != null) {
-      setState(() {
-        _profileImagePath = picked.path;
-      });
+  Future<bool> _requestPermission(Permission permission) async {
+    final status = await permission.status;
+    if (status.isGranted) return true;
+
+    if (status.isDenied) {
+      final result = await permission.request();
+      return result.isGranted;
     }
+
+    if (status.isPermanentlyDenied) {
+      _showPermissionDeniedDialog();
+      return false;
+    }
+
+    return false;
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Permission Required'),
+        content: const Text(
+          'This feature requires permission to access your camera. Please enable it in your device settings.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              openAppSettings();
+            },
+            child: const Text('Open Settings'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickFromCamera() async {
+    final hasPermission = await _requestPermission(Permission.camera);
+    if (!hasPermission) return;
+
+    await _pickImage(ImageSource.camera);
+  }
+
+  Future<void> _pickFromGallery() async {
+    await _pickImage(ImageSource.gallery);
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    if (_isPickingImage) {
+      return;
+    }
+    setState(() => _isPickingImage = true);
+    try {
+      final picked = await _imagePicker.pickImage(
+        source: source,
+        imageQuality: 80,
+      );
+      if (picked != null && mounted) {
+        setState(() {
+          _profileImagePath = picked.path;
+        });
+      }
+    } on PlatformException catch (_) {
+      if (mounted) {
+        MySnackbar.showError(context, 'Image picker is already open');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isPickingImage = false);
+      }
+    }
+  }
+
+  void _showImagePickerSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Profile Photo',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Colors.blue),
+              title: const Text('Take Photo'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickFromCamera();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Colors.green),
+              title: const Text('Choose from Gallery'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickFromGallery();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.close, color: Colors.red),
+              title: const Text('Cancel'),
+              onTap: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -182,7 +298,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               : null,
                         ),
                         InkWell(
-                          onTap: _pickProfileImage,
+                          onTap: _showImagePickerSheet,
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
@@ -215,7 +331,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     ),
                     const SizedBox(height: 8),
                     TextButton(
-                      onPressed: _pickProfileImage,
+                      onPressed: _showImagePickerSheet,
                       child: const Text('Change Photo'),
                     ),
                   ],
@@ -271,6 +387,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     if (file.existsSync()) {
       return FileImage(file);
     }
-    return null;
+    if (value.contains('/')) {
+      final normalized = value.startsWith('/') ? value.substring(1) : value;
+      return NetworkImage('${ApiEndpoints.mediaServerUrl}/$normalized');
+    }
+    return NetworkImage(ApiEndpoints.profilePicture(value));
   }
 }

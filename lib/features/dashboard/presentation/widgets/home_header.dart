@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:aashwaas/core/api/api_endpoints.dart';
 import 'package:flutter/material.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -29,10 +32,9 @@ class HomeHeader extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundImage: profileImageUrl != null
-                    ? NetworkImage(profileImageUrl!)
-                    : null,
-                child: profileImageUrl == null
+                backgroundImage: _resolveProfileImage(profileImageUrl),
+                child:
+                    profileImageUrl == null || profileImageUrl!.trim().isEmpty
                     ? Icon(Icons.person, size: 40, color: Colors.deepPurple)
                     : null,
               ),
@@ -56,10 +58,7 @@ class HomeHeader extends StatelessWidget {
                           role == 'donor'
                               ? 'Verified Donor'
                               : 'Verified Volunteer',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black54,
-                          ),
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
                         ),
                         const SizedBox(width: 4),
                         Icon(Icons.check_circle, color: Colors.green, size: 16),
@@ -90,5 +89,24 @@ class HomeHeader extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  ImageProvider<Object>? _resolveProfileImage(String? imagePath) {
+    if (imagePath == null || imagePath.trim().isEmpty) {
+      return null;
+    }
+    final value = imagePath.trim();
+    if (value.startsWith('http://') || value.startsWith('https://')) {
+      return NetworkImage(value);
+    }
+    final file = File(value);
+    if (file.existsSync()) {
+      return FileImage(file);
+    }
+    if (value.contains('/')) {
+      final normalized = value.startsWith('/') ? value.substring(1) : value;
+      return NetworkImage('${ApiEndpoints.mediaServerUrl}/$normalized');
+    }
+    return NetworkImage(ApiEndpoints.profilePicture(value));
   }
 }

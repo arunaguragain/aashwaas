@@ -3,6 +3,7 @@ import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
 import 'package:aashwaas/features/auth/presentation/view_model/donor_auth_viewmodel.dart';
+import 'package:aashwaas/features/auth/data/datasources/remote/donor_auth_remote_datasource.dart';
 import 'package:aashwaas/features/dashboard/presentation/pages/edit_profile_screen.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/profile_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/profile_impact_card.dart';
@@ -20,11 +21,43 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  String? _remoteProfileImage;
+
+  Future<void> _confirmLogout() async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldLogout == true) {
+      await ref.read(authDonorViewmodelProvider.notifier).logout();
+      if (context.mounted) {
+        AppRoutes.pushReplacement(context, const DonorLoginScreen());
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadStats();
+      _loadProfile();
     });
   }
 
@@ -36,6 +69,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
+  Future<void> _loadProfile() async {
+    final userSessionService = ref.read(userSessionServiceProvider);
+    final userId = userSessionService.getUserId();
+    if (userId == null) {
+      return;
+    }
+    try {
+      final donor = await ref
+          .read(authDonorRemoteProvider)
+          .getDonorById(userId);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _remoteProfileImage = donor.profilePicture;
+      });
+    } catch (_) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     final donationState = ref.watch(donationViewModelProvider);
@@ -44,7 +96,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final fullName = userSessionService.getUserFullName() ?? 'Donor';
     final email = userSessionService.getUserEmail() ?? 'donor@email.com';
     final phone = userSessionService.getUserPhoneNumber() ?? '+977 9800000000';
-    final profileImage = userSessionService.getUserProfileImage();
+    final profileImage =
+        _remoteProfileImage ?? userSessionService.getUserProfileImage();
     final createdAtIso = userSessionService.getUserCreatedAt();
 
     final itemsDonated = donationState.totalDonationCount;
@@ -69,7 +122,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute<void>(
-                      builder: (context) => const EditProfileScreen(),
+                      builder: (context) =>
+                          EditProfileScreen(initialProfileImage: profileImage),
                     ),
                   );
                   if (mounted) {
@@ -105,15 +159,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               const SizedBox(height: 24),
               MyButton(
-                onPressed: () async {
-                  await ref.read(authDonorViewmodelProvider.notifier).logout();
-                  if (context.mounted) {
-                    AppRoutes.pushReplacement(
-                      context,
-                      const DonorLoginScreen(),
-                    );
-                  }
-                },
+                onPressed: _confirmLogout,
                 text: 'Logout',
                 icon: const Icon(Icons.logout, color: Colors.white),
               ),

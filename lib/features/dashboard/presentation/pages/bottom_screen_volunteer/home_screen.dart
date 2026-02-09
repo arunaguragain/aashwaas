@@ -14,6 +14,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userSessionService = ref.watch(userSessionServiceProvider);
     final userName = userSessionService.getUserFullName() ?? 'Volunteer';
+    final profileImage = userSessionService.getUserProfileImage();
 
     return SizedBox.expand(
       child: SingleChildScrollView(
@@ -21,6 +22,7 @@ class HomeScreen extends ConsumerWidget {
           children: [
             HomeHeader(
               userName: userName,
+              profileImageUrl: profileImage,
               onNotificationPressed: () {},
               onMenuPressed: () {
                 AppRoutes.push(context, const SettingsScreen());

@@ -29,8 +29,16 @@ class AuthDonorRemoteDatasource implements IDonorAuthRemoteDataSource {
        _tokenService = tokenService;
 
   @override
-  Future<DonorAuthApiModel> getDonorById(String authId) {
-    throw UnimplementedError();
+  Future<DonorAuthApiModel> getDonorById(String authId) async {
+    final response = await _apiClient.get(ApiEndpoints.donorById(authId));
+    final payload = response.data;
+    if (payload is Map<String, dynamic>) {
+      final data = payload['data'] ?? payload;
+      if (data is Map<String, dynamic>) {
+        return DonorAuthApiModel.fromJson(data);
+      }
+    }
+    throw Exception('Invalid donor profile response');
   }
 
   @override

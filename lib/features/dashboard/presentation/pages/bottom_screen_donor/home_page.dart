@@ -38,6 +38,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final userSessionService = ref.watch(userSessionServiceProvider);
     final userName = userSessionService.getUserFullName() ?? 'Donor';
+    final profileImage = userSessionService.getUserProfileImage();
     final donationState = ref.watch(donationViewModelProvider);
     final recentDonations = donationState.myDonations.take(2).toList();
 
@@ -47,6 +48,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             HomeHeader(
               userName: userName,
+              profileImageUrl: profileImage,
               onNotificationPressed: () {},
               onMenuPressed: () {
                 AppRoutes.push(context, const SettingsScreen());

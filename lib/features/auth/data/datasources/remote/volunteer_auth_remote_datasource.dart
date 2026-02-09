@@ -34,8 +34,16 @@ class AuthVolunteerRemoteDatasource implements IVolunteerAuthRemoteDataSource {
        _tokenService = tokenService;
 
   @override
-  Future<VolunteerAuthApiModel> getVolunteerById(String authId) {
-    throw UnimplementedError();
+  Future<VolunteerAuthApiModel> getVolunteerById(String authId) async {
+    final response = await _apiClient.get(ApiEndpoints.volunteerById(authId));
+    final payload = response.data;
+    if (payload is Map<String, dynamic>) {
+      final data = payload['data'] ?? payload;
+      if (data is Map<String, dynamic>) {
+        return VolunteerAuthApiModel.fromJson(data);
+      }
+    }
+    throw Exception('Invalid volunteer profile response');
   }
 
   @override
