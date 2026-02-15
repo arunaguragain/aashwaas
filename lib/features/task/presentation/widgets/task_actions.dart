@@ -17,16 +17,18 @@ class TaskActions extends StatelessWidget {
           flex: 2,
           child: SizedBox(
             height: 40,
-            child: ElevatedButton(
+            child: OutlinedButton(
               onPressed: onAccept,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2EAD63),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Color(0xFF2EAD63)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                elevation: 0,
               ),
-              child: const Text('Accept'),
+              child: const Text(
+                'Accept',
+                style: TextStyle(color: Color(0xFF2EAD63)),
+              ),
             ),
           ),
         ),

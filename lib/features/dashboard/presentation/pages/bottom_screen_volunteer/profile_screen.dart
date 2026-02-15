@@ -8,6 +8,9 @@ import 'package:aashwaas/features/dashboard/presentation/pages/edit_profile_scre
 import 'package:aashwaas/features/dashboard/presentation/widgets/profile_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/profile_impact_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/profile_stats_card.dart';
+import 'package:aashwaas/features/task/presentation/view_model/task_viewmodel.dart';
+import 'package:aashwaas/features/task/presentation/state/task_state.dart';
+import 'package:aashwaas/features/task/domain/entities/task_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,6 +29,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadProfile();
+      ref.read(taskViewModelProvider.notifier).getMyTasks();
     });
   }
 
@@ -88,7 +92,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         _remoteProfileImage ?? userSessionService.getUserProfileImage();
     final createdAtIso = userSessionService.getUserCreatedAt();
 
-    final tasksCompleted = 0;
+    final taskState = ref.watch(taskViewModelProvider);
+    final myTasks = taskState.myTasks;
+    final tasksCompleted = myTasks
+        .where((t) => t.status == TaskStatus.completed)
+        .length;
+    final assignedCount = myTasks
+        .where((t) => t.status == TaskStatus.assigned)
+        .length;
+    final acceptedCount = myTasks
+        .where((t) => t.status == TaskStatus.accepted)
+        .length;
+    final totalTasks = myTasks.length;
     final impactPoints = tasksCompleted * 10;
     final roleSinceText = _formatRoleSince('Volunteer', createdAtIso);
 
@@ -135,7 +150,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 secondaryValue: '$impactPoints',
                 secondaryIcon: Icons.workspace_premium_outlined,
                 secondaryIconColor: const Color(0xFF7D5AF1),
-                isLoading: false,
+                isLoading: taskState.status == TaskViewStatus.loading,
               ),
               const SizedBox(height: 16),
               ProfileImpactCard(

@@ -4,8 +4,11 @@ import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_vol
 import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_volunteer/task_screen.dart';
 import 'package:flutter/material.dart';
 
+typedef VolunteerTabChange = void Function(int index);
+
 class VolunteerHomeScreen extends StatefulWidget {
-  const VolunteerHomeScreen({super.key});
+  final VolunteerTabChange? onTabChange;
+  const VolunteerHomeScreen({super.key, this.onTabChange});
 
   @override
   State<VolunteerHomeScreen> createState() => _VolunteerHomeScreenState();
@@ -14,12 +17,28 @@ class VolunteerHomeScreen extends StatefulWidget {
 class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> {
   int _selectedIndex = 0;
 
-  List<Widget> lstBottomScreen = [
-    const HomeScreen(),
-    const TaskScreen(),
-    const HistoryScreen(),
-    const ProfileScreen(),
-  ];
+  late final List<Widget> lstBottomScreen;
+
+  @override
+  void initState() {
+    super.initState();
+    lstBottomScreen = [
+      HomeScreen(
+        onTabChange: (index) {
+          if (widget.onTabChange != null) {
+            widget.onTabChange!(index);
+          } else {
+            setState(() {
+              _selectedIndex = index;
+            });
+          }
+        },
+      ),
+      const TaskScreen(),
+      const HistoryScreen(),
+      const ProfileScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +65,13 @@ class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> {
         ],
         currentIndex: _selectedIndex,
         onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+          if (widget.onTabChange != null) {
+            widget.onTabChange!(index);
+          } else {
+            setState(() {
+              _selectedIndex = index;
+            });
+          }
         },
       ),
     );
