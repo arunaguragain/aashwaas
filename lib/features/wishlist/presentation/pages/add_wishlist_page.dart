@@ -53,11 +53,12 @@ class _AddWishlistPageState extends State<AddWishlistPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFD2ECEF),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Add Wishlist Item'),
-        backgroundColor: const Color(0xFFD2ECEF),
+        backgroundColor: theme.appBarTheme.backgroundColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),

@@ -1,6 +1,6 @@
 import 'package:aashwaas/app/routes/app_routes.dart';
-import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_donor/ngo_page.dart';
 import 'package:aashwaas/features/donation/presentation/pages/add_donation_page.dart';
+import 'package:aashwaas/features/wishlist/presentation/pages/wishlist_page.dart';
 import 'package:flutter/material.dart';
 import 'quick_action_button.dart';
 
@@ -60,17 +60,11 @@ class QuickActionsSection extends StatelessWidget {
                     }
                   },
                 ),
-                // TODO: Replace with actual Wishlist page if available
                 QuickActionButton(
                   label: 'My Wishlist',
                   icon: Icons.bookmark_border,
                   onTap: () {
-                    // Add navigation to Wishlist page if implemented
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Wishlist page coming soon!'),
-                      ),
-                    );
+                    AppRoutes.push(context, const WishlistPage());
                   },
                 ),
                 // TODO: Replace with actual Reviews page if available
