@@ -1,4 +1,5 @@
 import 'package:aashwaas/core/services/storage/user_session_service.dart';
+import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_donor/history_screen.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/donation_history_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/home_header.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/quick_action_section.dart';
@@ -10,8 +11,12 @@ import 'package:aashwaas/features/settings/presentation/pages/settings_screen.da
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+
+typedef TabChangeCallback = void Function(int index);
+
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+  final TabChangeCallback? onTabChange;
+  const HomeScreen({super.key, this.onTabChange});
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -82,7 +87,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 children: [
                   SizedBox(height: 14),
-                  QuickActionsSection(),
+                  QuickActionsSection(onTabChange: widget.onTabChange),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -99,7 +104,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            if (widget.onTabChange != null) {
+                              widget.onTabChange!(3); // History tab
+                            }
+                          },
                           child: Text(
                             "View All",
                             selectionColor: Colors.blue,

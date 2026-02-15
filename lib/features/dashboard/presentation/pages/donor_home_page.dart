@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'bottom_screen_donor/profile_screen.dart';
 
+
 class DonorHomeScreen extends StatefulWidget {
   const DonorHomeScreen({super.key});
 
@@ -16,13 +17,30 @@ class DonorHomeScreen extends StatefulWidget {
 class _DonorHomeScreenState extends State<DonorHomeScreen> {
   int _selectedIndex = 0;
 
-  List<Widget> lstBottomScreen = [
-    const HomeScreen(),
-    const NgoScreen(),
-    const SizedBox.shrink(),
-    const HistoryScreen(),
-    const ProfileScreen(),
-  ];
+
+  late final List<Widget> lstBottomScreen;
+
+  @override
+  void initState() {
+    super.initState();
+    lstBottomScreen = [
+      HomeScreen(
+        onTabChange: (index) {
+          if (index != 2) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          } else {
+            _onDonationPressed();
+          }
+        },
+      ),
+      const NgoScreen(),
+      const SizedBox.shrink(),
+      const HistoryScreen(),
+      const ProfileScreen(),
+    ];
+  }
 
   void _onDonationPressed() {
     Navigator.push(

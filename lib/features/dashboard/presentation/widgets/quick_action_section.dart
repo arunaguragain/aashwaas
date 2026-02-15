@@ -4,8 +4,11 @@ import 'package:aashwaas/features/donation/presentation/pages/add_donation_page.
 import 'package:flutter/material.dart';
 import 'quick_action_button.dart';
 
+typedef TabChangeCallback = void Function(int index);
+
 class QuickActionsSection extends StatelessWidget {
-  const QuickActionsSection({super.key});
+  final TabChangeCallback? onTabChange;
+  const QuickActionsSection({super.key, this.onTabChange});
 
   @override
   Widget build(BuildContext context) {
@@ -45,25 +48,43 @@ class QuickActionsSection extends StatelessWidget {
                   label: 'Donate Item',
                   icon: Icons.add,
                   onTap: () {
-                    AppRoutes.push(context, AddDonationScreen());
+                    AppRoutes.push(context, const AddDonationScreen());
                   },
                 ),
                 QuickActionButton(
                   label: 'Find NGOs',
                   icon: Icons.location_on_outlined,
                   onTap: () {
-                    // AppRoutes.push(context, NgoScreen());
+                    if (onTabChange != null) {
+                      onTabChange!(1); // NGOs tab
+                    }
                   },
                 ),
+                // TODO: Replace with actual Wishlist page if available
                 QuickActionButton(
                   label: 'My Wishlist',
                   icon: Icons.bookmark_border,
-                  onTap: () {},
+                  onTap: () {
+                    // Add navigation to Wishlist page if implemented
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Wishlist page coming soon!'),
+                      ),
+                    );
+                  },
                 ),
+                // TODO: Replace with actual Reviews page if available
                 QuickActionButton(
                   label: 'My Reviews',
                   icon: Icons.star_border,
-                  onTap: () {},
+                  onTap: () {
+                    // Add navigation to Reviews page if implemented
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Reviews page coming soon!'),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
