@@ -3,32 +3,46 @@ import 'package:flutter/material.dart';
 class WishlistStatCard extends StatelessWidget {
   final String title;
   final String value;
+  final Color? valueColor;
 
-  const WishlistStatCard({super.key, required this.title, required this.value});
+  const WishlistStatCard({
+    super.key,
+    required this.title,
+    required this.value,
+    this.valueColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final primary = valueColor ?? theme.colorScheme.primary;
+
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: theme.cardColor,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: theme.dividerColor),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x11000000),
-              blurRadius: 8,
-              offset: Offset(0, 4),
-            ),
-          ],
+          border: Border.all(color: const Color(0xFFE0E0E0)),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(title, style: theme.textTheme.bodyMedium),
-            const SizedBox(height: 8),
-            Text(value, style: theme.textTheme.titleLarge),
+            Text(
+              value,
+              style: TextStyle(
+                color: primary,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 11, color: Colors.black54),
+            ),
           ],
         ),
       ),
