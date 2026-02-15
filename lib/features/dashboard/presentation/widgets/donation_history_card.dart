@@ -3,15 +3,20 @@ import 'package:aashwaas/features/dashboard/presentation/widgets/history_categor
 import 'package:aashwaas/features/dashboard/presentation/widgets/history_info_row.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/history_status_chip.dart';
 import 'package:aashwaas/features/donation/domain/entities/donation_entity.dart';
-import 'package:flutter/material.dart';
+import 'package:aashwaas/features/donation/presentation/pages/donation_details_dialog.dart';
+import 'package:aashwaas/features/donation/presentation/pages/edit_donation_page.dart';
+import 'package:aashwaas/features/donation/presentation/view_model/donation_viewmodel.dart';
 
-class DonationHistoryCard extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class DonationHistoryCard extends ConsumerWidget {
   final DonationEntity donation;
 
   const DonationHistoryCard({super.key, required this.donation});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     return Container(
@@ -115,7 +120,22 @@ class DonationHistoryCard extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (donation.status?.toLowerCase() == 'pending') {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (ctx) =>
+                              EditDonationPage(donation: donation),
+                        ),
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) =>
+                            DonationDetailsDialog(donation: donation),
+                      );
+                    }
+                  },
                   child: Text(
                     (donation.status?.toLowerCase() == 'pending')
                         ? 'Edit'
@@ -123,17 +143,46 @@ class DonationHistoryCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.redAccent),
+              if (donation.status?.toLowerCase() == 'pending') ...[
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text('Cancel Donation'),
+                          content: const Text(
+                            'Are you sure you want to cancel this donation?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(ctx).pop(),
+                              child: const Text('No'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.of(ctx).pop();
+                                if (donation.donationId != null) {
+                                  await ref
+                                      .read(donationViewModelProvider.notifier)
+                                      .deleteDonation(donation.donationId!);
+                                }
+                              },
+                              child: const Text('Yes'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      side: const BorderSide(color: Colors.redAccent),
+                    ),
+                    child: const Text('Cancel'),
                   ),
-                  child: const Text('Cancel'),
                 ),
-              ),
+              ],
             ],
           ),
         ],
