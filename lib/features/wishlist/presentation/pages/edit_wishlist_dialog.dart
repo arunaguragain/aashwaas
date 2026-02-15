@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/donation_form_field.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/category_dropdown.dart';
@@ -11,13 +10,13 @@ class EditWishlistDialog extends StatefulWidget {
   final String initialNotes;
   final void Function(String, String, String, String) onEdit;
   const EditWishlistDialog({
-    Key? key,
+    super.key,
     required this.initialTitle,
     required this.initialCategory,
     required this.initialPlanned,
     required this.initialNotes,
     required this.onEdit,
-  }) : super(key: key);
+  });
 
   @override
   State<EditWishlistDialog> createState() => _EditWishlistDialogState();
