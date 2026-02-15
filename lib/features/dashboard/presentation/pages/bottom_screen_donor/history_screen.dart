@@ -80,7 +80,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 
     final totalCount = myDonations.length;
     final deliveredCount = myDonations
-        .where((item) => item.status == 'delivered')
+        .where(
+          (item) => item.status == 'delivered' || item.status == 'completed',
+        )
         .length;
     final pendingCount = myDonations
         .where((item) => item.status == 'pending')

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aashwaas/features/task/presentation/view_model/task_viewmodel.dart';
 import 'package:aashwaas/features/task/presentation/state/task_state.dart';
+import 'package:aashwaas/features/task/presentation/widgets/task_card.dart';
 
 class TaskScreen extends ConsumerStatefulWidget {
   const TaskScreen({super.key});
@@ -42,113 +43,98 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final t = items[index];
-
-        return Card(
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
-            title: Text(t.title),
-            subtitle: Text('Status: ${t.status.name}'),
-            trailing: PopupMenuButton<String>(
-              onSelected: (value) {
-                final vm = ref.read(taskViewModelProvider.notifier);
-                if (value == 'accept' && t.taskId != null) {
-                  vm.acceptTask(t.taskId!);
-                } else if (value == 'complete' && t.taskId != null) {
-                  vm.completeTask(t.taskId!);
-                } else if (value == 'cancel' && t.taskId != null) {
-                  vm.cancelTask(t.taskId!);
-                }
-              },
-              itemBuilder: (_) => [
-                const PopupMenuItem(value: 'accept', child: Text('Accept')),
-                const PopupMenuItem(value: 'complete', child: Text('Complete')),
-                const PopupMenuItem(value: 'cancel', child: Text('Cancel')),
-              ],
-            ),
-            onTap: () {
-              if (t.taskId != null) {
-                ref.read(taskViewModelProvider.notifier).getTaskById(t.taskId!);
-                showModalBottomSheet(
-                  context: context,
-                  builder: (_) {
-                    final selected = ref
-                        .read(taskViewModelProvider)
-                        .selectedTask;
-                    return Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            selected?.title ?? t.title,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+        return TaskCard(
+          task: t,
+          onTap: () {
+            if (t.taskId != null) {
+              ref.read(taskViewModelProvider.notifier).getTaskById(t.taskId!);
+              showModalBottomSheet(
+                context: context,
+                builder: (_) {
+                  final selected = ref.read(taskViewModelProvider).selectedTask;
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          selected?.title ?? t.title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Donation: ${selected?.donationId ?? t.donationId}',
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Volunteer: ${selected?.volunteerId ?? t.volunteerId}',
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            ElevatedButton(
+                              onPressed: selected?.taskId != null
+                                  ? () {
+                                      ref
+                                          .read(taskViewModelProvider.notifier)
+                                          .acceptTask(selected!.taskId!);
+                                      Navigator.of(context).pop();
+                                    }
+                                  : null,
+                              child: const Text('Accept'),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Donation: ${selected?.donationId ?? t.donationId}',
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Volunteer: ${selected?.volunteerId ?? t.volunteerId}',
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              ElevatedButton(
-                                onPressed: selected?.taskId != null
-                                    ? () {
-                                        ref
-                                            .read(
-                                              taskViewModelProvider.notifier,
-                                            )
-                                            .acceptTask(selected!.taskId!);
-                                        Navigator.of(context).pop();
-                                      }
-                                    : null,
-                                child: const Text('Accept'),
-                              ),
-                              const SizedBox(width: 8),
-                              ElevatedButton(
-                                onPressed: selected?.taskId != null
-                                    ? () {
-                                        ref
-                                            .read(
-                                              taskViewModelProvider.notifier,
-                                            )
-                                            .completeTask(selected!.taskId!);
-                                        Navigator.of(context).pop();
-                                      }
-                                    : null,
-                                child: const Text('Complete'),
-                              ),
-                              const SizedBox(width: 8),
-                              ElevatedButton(
-                                onPressed: selected?.taskId != null
-                                    ? () {
-                                        ref
-                                            .read(
-                                              taskViewModelProvider.notifier,
-                                            )
-                                            .cancelTask(selected!.taskId!);
-                                        Navigator.of(context).pop();
-                                      }
-                                    : null,
-                                child: const Text('Cancel'),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              }
-            },
-          ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed: selected?.taskId != null
+                                  ? () {
+                                      ref
+                                          .read(taskViewModelProvider.notifier)
+                                          .completeTask(selected!.taskId!);
+                                      Navigator.of(context).pop();
+                                    }
+                                  : null,
+                              child: const Text('Complete'),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed: selected?.taskId != null
+                                  ? () {
+                                      ref
+                                          .read(taskViewModelProvider.notifier)
+                                          .cancelTask(selected!.taskId!);
+                                      Navigator.of(context).pop();
+                                    }
+                                  : null,
+                              child: const Text('Cancel'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            }
+          },
+          onAccept: t.taskId != null
+              ? () => ref
+                    .read(taskViewModelProvider.notifier)
+                    .acceptTask(t.taskId!)
+              : null,
+          onComplete: t.taskId != null
+              ? () => ref
+                    .read(taskViewModelProvider.notifier)
+                    .completeTask(t.taskId!)
+              : null,
+          onCancel: t.taskId != null
+              ? () => ref
+                    .read(taskViewModelProvider.notifier)
+                    .cancelTask(t.taskId!)
+              : null,
         );
       },
     );
