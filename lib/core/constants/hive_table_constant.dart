@@ -16,4 +16,7 @@ class HiveTableConstant {
 
   static const int wishlistTypeId = 3;
   static const String wishlistTable = "wishlist_table";
+  
+  static const int taskTypeId = 4;
+  static const String taskTable = 'task_table';
 }

@@ -3,6 +3,7 @@ import 'package:aashwaas/features/auth/data/models/donor_auth_hive_model.dart';
 import 'package:aashwaas/features/auth/data/models/volunteer_auth_hive_model.dart';
 import 'package:aashwaas/features/donation/data/models/donatioin_hive_model.dart';
 import 'package:aashwaas/features/wishlist/data/models/wishlist_hive_model.dart';
+import 'package:aashwaas/features/task/data/models/task_hive_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,6 +34,9 @@ class HiveService {
     if (!Hive.isAdapterRegistered(HiveTableConstant.wishlistTypeId)) {
       Hive.registerAdapter(WishlistHiveModelAdapter());
     }
+    if (!Hive.isAdapterRegistered(HiveTableConstant.taskTypeId)) {
+      Hive.registerAdapter(TaskHiveModelAdapter());
+    }
   }
 
   Future<void> openBoxes() async {
@@ -42,6 +46,7 @@ class HiveService {
     );
     await Hive.openBox<DonationHiveModel>(HiveTableConstant.donationTable);
     await Hive.openBox<WishlistHiveModel>(HiveTableConstant.wishlistTable);
+    await Hive.openBox<TaskHiveModel>(HiveTableConstant.taskTable);
   }
 
   Future<void> close() async {
@@ -203,8 +208,8 @@ class HiveService {
 
   Future<List<WishlistHiveModel>> getWishlistsByStatus(String status) async {
     return _wishlistBox.values
-      .where((w) => w.status.toString().split('.').last == status)
-      .toList();
+        .where((w) => w.status.toString().split('.').last == status)
+        .toList();
   }
 
   Future<List<WishlistHiveModel>> getWishlistsByDonor(String donorId) async {

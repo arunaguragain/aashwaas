@@ -51,7 +51,8 @@ class ApiEndpoints {
   static const String wishlistCreate = '/wishlists';
   static String wishlistById(String id) => '/wishlists/$id';
   static String wishlistByDonor(String donorId) => '/wishlists/donor/$donorId';
-  static String wishlistByCategory(String category) => '/wishlists/category/$category';
+  static String wishlistByCategory(String category) =>
+      '/wishlists/category/$category';
   static String wishlistByStatus(String status) => '/wishlists/status/$status';
   static String wishlistUpdate(String id) => '/wishlists/$id';
   static String wishlistDelete(String id) => '/wishlists/$id';
@@ -59,6 +60,16 @@ class ApiEndpoints {
   // ============ NGO Endpoints ============
   static const String ngos = '/ngos';
   static String ngoById(String id) => '/ngos/$id';
+
+  // ============ Task Endpoints ============
+  static const String tasks = '/tasks';
+  static String taskById(String id) => '/tasks/$id';
+  static String tasksByVolunteer(String volunteerId) =>
+      '/tasks/volunteer/$volunteerId';
+  static const String tasksMy = '/tasks/me';
+  static String taskAccept(String id) => '/tasks/$id/accept';
+  static String taskComplete(String id) => '/tasks/$id/complete';
+  static String taskCancel(String id) => '/tasks/$id/cancel';
 
   // ============ Profile Pictures ============
   static String profilePicture(String filename) =>
