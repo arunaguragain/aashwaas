@@ -28,7 +28,7 @@ String _statusToString(WishlistStatus status) {
     case WishlistStatus.cancelled:
       return 'cancelled';
     case WishlistStatus.active:
-    return 'active';
+      return 'active';
   }
 }
 
@@ -74,4 +74,21 @@ class WishlistApiModel {
     createdAt: createdAt,
     updatedAt: updatedAt,
   );
+
+  factory WishlistApiModel.fromEntity(WishlistEntity entity) =>
+      WishlistApiModel(
+        id: entity.wishlistId,
+        title: entity.title,
+        category: entity.category,
+        plannedDate: entity.plannedDate,
+        notes: entity.notes,
+        donorId: entity.donorId,
+        status: WishlistStatus.values[entity.status.index],
+        createdAt: entity.createdAt,
+        updatedAt: entity.updatedAt,
+      );
+
+  static List<WishlistEntity> toEntityList(List<WishlistApiModel> models) {
+    return models.map((m) => m.toEntity()).toList();
+  }
 }

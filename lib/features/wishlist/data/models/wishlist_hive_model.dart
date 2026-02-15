@@ -1,9 +1,11 @@
 import 'package:hive/hive.dart';
+import 'package:aashwaas/core/constants/hive_table_constant.dart';
+import 'package:aashwaas/features/wishlist/data/models/wishlist_api_model.dart';
 import 'package:aashwaas/features/wishlist/domain/entities/wishlist_entity.dart';
 
 part 'wishlist_hive_model.g.dart';
 
-@HiveType(typeId: 2)
+@HiveType(typeId: HiveTableConstant.wishlistTypeId)
 class WishlistHiveModel extends HiveObject {
   @HiveField(0)
   String? id;
@@ -68,4 +70,30 @@ class WishlistHiveModel extends HiveObject {
         createdAt: entity.createdAt,
         updatedAt: entity.updatedAt,
       );
+
+  static List<WishlistEntity> toEntityList(List<WishlistHiveModel> models) {
+    return models.map((m) => m.toEntity()).toList();
+  }
+
+  /// Convert from API model to Hive model for caching
+  factory WishlistHiveModel.fromApiModel(WishlistApiModel apiModel) {
+    return WishlistHiveModel(
+      id: apiModel.id,
+      title: apiModel.title,
+      category: apiModel.category,
+      plannedDate: apiModel.plannedDate,
+      notes: apiModel.notes,
+      donorId: apiModel.donorId ?? '',
+      status: apiModel.status,
+      createdAt: apiModel.createdAt,
+      updatedAt: apiModel.updatedAt,
+    );
+  }
+
+  /// Convert list of API models to Hive models for caching
+  static List<WishlistHiveModel> fromApiModelList(
+    List<WishlistApiModel> apiModels,
+  ) {
+    return apiModels.map((m) => WishlistHiveModel.fromApiModel(m)).toList();
+  }
 }

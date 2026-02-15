@@ -8,7 +8,7 @@ part of 'wishlist_hive_model.dart';
 
 class WishlistHiveModelAdapter extends TypeAdapter<WishlistHiveModel> {
   @override
-  final int typeId = 2;
+  final int typeId = 3;
 
   @override
   WishlistHiveModel read(BinaryReader reader) {
