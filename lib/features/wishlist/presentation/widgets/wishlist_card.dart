@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aashwaas/core/widgets/my_button.dart';
 
 class WishlistCard extends StatelessWidget {
   final String title;
@@ -8,9 +9,10 @@ class WishlistCard extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final VoidCallback? onDonate;
+  final bool showDonate;
 
   const WishlistCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.category,
     required this.planned,
@@ -18,7 +20,8 @@ class WishlistCard extends StatelessWidget {
     this.onEdit,
     this.onDelete,
     this.onDonate,
-  }) : super(key: key);
+    this.showDonate = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -77,18 +80,16 @@ class WishlistCard extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7CA9F3),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+            if (showDonate)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: MyButton(
+                  text: 'Donate Now',
+                  onPressed: onDonate ?? () {},
+                  color: Colors.blueAccent,
+                  textColor: Colors.white,
                 ),
-                onPressed: onDonate,
-                child: const Text('Donate Now'),
               ),
-            ),
           ],
         ),
       ),

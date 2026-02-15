@@ -15,7 +15,24 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AddDonationScreen extends ConsumerStatefulWidget {
-  const AddDonationScreen({super.key});
+  final String? initialItemName;
+  final String? initialCategory;
+  final String? initialDescription;
+  final String? initialQuantity;
+  final String? initialCondition;
+  final String? initialPickupLocation;
+  final VoidCallback? onDonationCreated;
+
+  const AddDonationScreen({
+    super.key,
+    this.initialItemName,
+    this.initialCategory,
+    this.initialDescription,
+    this.initialQuantity,
+    this.initialCondition,
+    this.initialPickupLocation,
+    this.onDonationCreated,
+  });
 
   @override
   ConsumerState<AddDonationScreen> createState() => _AddDonationScreenState();
@@ -46,6 +63,26 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
   @override
   void initState() {
     super.initState();
+    // If initial values provided, populate controllers and selections
+    final widgetInitial = widget as AddDonationScreen;
+    if (widgetInitial.initialItemName != null) {
+      _itemNameController.text = widgetInitial.initialItemName!;
+    }
+    if (widgetInitial.initialDescription != null) {
+      _descriptionController.text = widgetInitial.initialDescription!;
+    }
+    if (widgetInitial.initialQuantity != null) {
+      _quantityController.text = widgetInitial.initialQuantity!;
+    }
+    if (widgetInitial.initialPickupLocation != null) {
+      _locationController.text = widgetInitial.initialPickupLocation!;
+    }
+    if (widgetInitial.initialCategory != null) {
+      _selectedCategory = widgetInitial.initialCategory;
+    }
+    if (widgetInitial.initialCondition != null) {
+      _selectedCondition = widgetInitial.initialCondition;
+    }
   }
 
   @override
@@ -232,6 +269,10 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
       if (next.status == DonationStatus.created) {
         MySnackbar.showSuccess(context, 'Donation submitted successfully');
         _clearForm();
+        // notify caller (e.g., wishlist) that a donation was created
+        if (widget.onDonationCreated != null) {
+          widget.onDonationCreated!();
+        }
         Navigator.of(context).pop();
       } else if (next.status == DonationStatus.error &&
           next.errorMessage != null) {

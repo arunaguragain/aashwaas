@@ -3,15 +3,17 @@ import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/donation_form_field.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/category_dropdown.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aashwaas/features/wishlist/presentation/view_model/wishlist_viewmodel.dart';
 
-class AddWishlistPage extends StatefulWidget {
+class AddWishlistPage extends ConsumerStatefulWidget {
   const AddWishlistPage({super.key});
 
   @override
-  State<AddWishlistPage> createState() => _AddWishlistPageState();
+  ConsumerState<AddWishlistPage> createState() => _AddWishlistPageState();
 }
 
-class _AddWishlistPageState extends State<AddWishlistPage> {
+class _AddWishlistPageState extends ConsumerState<AddWishlistPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _plannedController = TextEditingController();
@@ -35,8 +37,18 @@ class _AddWishlistPageState extends State<AddWishlistPage> {
 
   void _handleSubmit() {
     if (_formKey.currentState!.validate()) {
-      // TODO: Integrate with wishlist ViewModel/provider
-      MySnackbar.showSuccess(context, 'Wishlist item added successfully');
+      final donorId = 'unknown';
+      ref
+          .read(wishlistViewModelProvider.notifier)
+          .createWishlist(
+            title: _titleController.text,
+            category: _selectedCategory ?? 'Other',
+            plannedDate: _plannedController.text,
+            notes: _notesController.text.isEmpty ? null : _notesController.text,
+            donorId: donorId,
+          );
+
+      MySnackbar.showSuccess(context, 'Wishlist item added');
       _clearForm();
       Navigator.of(context).pop();
     }
