@@ -46,6 +46,16 @@ class ApiEndpoints {
   static String donationPicture(String filename) =>
       '$mediaServerUrl/item_photos/$filename';
 
+  // ============ Wishlist Endpoints ============
+  static const String wishlistAll = '/wishlists';
+  static const String wishlistCreate = '/wishlists';
+  static String wishlistById(String id) => '/wishlists/$id';
+  static String wishlistByDonor(String donorId) => '/wishlists/donor/$donorId';
+  static String wishlistByCategory(String category) => '/wishlists/category/$category';
+  static String wishlistByStatus(String status) => '/wishlists/status/$status';
+  static String wishlistUpdate(String id) => '/wishlists/$id';
+  static String wishlistDelete(String id) => '/wishlists/$id';
+
   // ============ NGO Endpoints ============
   static const String ngos = '/ngos';
   static String ngoById(String id) => '/ngos/$id';

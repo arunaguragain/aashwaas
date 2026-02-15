@@ -2,6 +2,7 @@ import 'package:aashwaas/core/constants/hive_table_constant.dart';
 import 'package:aashwaas/features/auth/data/models/donor_auth_hive_model.dart';
 import 'package:aashwaas/features/auth/data/models/volunteer_auth_hive_model.dart';
 import 'package:aashwaas/features/donation/data/models/donatioin_hive_model.dart';
+import 'package:aashwaas/features/wishlist/data/models/wishlist_hive_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,6 +30,9 @@ class HiveService {
     if (!Hive.isAdapterRegistered(HiveTableConstant.donationTypeId)) {
       Hive.registerAdapter(DonationHiveModelAdapter());
     }
+    if (!Hive.isAdapterRegistered(HiveTableConstant.wishlistTypeId)) {
+      Hive.registerAdapter(WishlistHiveModelAdapter());
+    }
   }
 
   Future<void> openBoxes() async {
@@ -37,6 +41,7 @@ class HiveService {
       HiveTableConstant.volunteerAuthTable,
     );
     await Hive.openBox<DonationHiveModel>(HiveTableConstant.donationTable);
+    await Hive.openBox<WishlistHiveModel>(HiveTableConstant.wishlistTable);
   }
 
   Future<void> close() async {
@@ -122,6 +127,9 @@ class HiveService {
   Box<DonationHiveModel> get _donationBox =>
       Hive.box<DonationHiveModel>(HiveTableConstant.donationTable);
 
+  Box<WishlistHiveModel> get _wishlistBox =>
+      Hive.box<WishlistHiveModel>(HiveTableConstant.wishlistTable);
+
   Future<bool> createDonation(DonationHiveModel donation) async {
     await _donationBox.put(donation.donationId, donation);
     return true;
@@ -173,4 +181,51 @@ class HiveService {
     }
   }
 
+  // Wishlist queries
+  Future<bool> createWishlist(WishlistHiveModel wishlist) async {
+    await _wishlistBox.put(wishlist.id, wishlist);
+    return true;
+  }
+
+  Future<List<WishlistHiveModel>> getAllWishlists() async {
+    return _wishlistBox.values.toList();
+  }
+
+  Future<WishlistHiveModel?> getWishlistById(String wishlistId) async {
+    return _wishlistBox.get(wishlistId);
+  }
+
+  Future<List<WishlistHiveModel>> getWishlistsByCategory(
+    String category,
+  ) async {
+    return _wishlistBox.values.where((w) => w.category == category).toList();
+  }
+
+  Future<List<WishlistHiveModel>> getWishlistsByStatus(String status) async {
+    return _wishlistBox.values
+      .where((w) => w.status.toString().split('.').last == status)
+      .toList();
+  }
+
+  Future<List<WishlistHiveModel>> getWishlistsByDonor(String donorId) async {
+    return _wishlistBox.values.where((w) => w.donorId == donorId).toList();
+  }
+
+  Future<bool> updateWishlist(WishlistHiveModel wishlist) async {
+    await _wishlistBox.put(wishlist.id, wishlist);
+    return true;
+  }
+
+  Future<bool> deleteWishlist(String wishlistId) async {
+    await _wishlistBox.delete(wishlistId);
+    return true;
+  }
+
+  /// Cache all wishlists (clear existing and replace with new data)
+  Future<void> cacheAllWishlists(List<WishlistHiveModel> wishlists) async {
+    await _wishlistBox.clear();
+    for (var w in wishlists) {
+      await _wishlistBox.put(w.id, w);
+    }
+  }
 }
