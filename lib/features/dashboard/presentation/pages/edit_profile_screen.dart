@@ -65,24 +65,32 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       }
 
       String? uploadedProfilePicture;
-      if (_profileImagePath != null &&
-          _profileImagePath!.trim().isNotEmpty &&
-          !_profileImagePath!.startsWith('http')) {
-        if (role == 'donor') {
-          uploadedProfilePicture = await ref
-              .read(authDonorViewmodelProvider.notifier)
-              .uploadProfilePhoto(userId: userId, filePath: _profileImagePath!);
-        } else {
-          uploadedProfilePicture = await ref
-              .read(authVolunteerViewmodelProvider.notifier)
-              .uploadProfilePhoto(userId: userId, filePath: _profileImagePath!);
-        }
-        if (uploadedProfilePicture == null) {
-          if (mounted) {
-            MySnackbar.showError(context, 'Failed to upload photo');
+      if (_profileImagePath != null && _profileImagePath!.trim().isNotEmpty) {
+        // Only attempt to upload when the path points to a local file that exists.
+        final file = File(_profileImagePath!);
+        if (file.existsSync()) {
+          if (role == 'donor') {
+            uploadedProfilePicture = await ref
+                .read(authDonorViewmodelProvider.notifier)
+                .uploadProfilePhoto(
+                  userId: userId,
+                  filePath: _profileImagePath!,
+                );
+          } else {
+            uploadedProfilePicture = await ref
+                .read(authVolunteerViewmodelProvider.notifier)
+                .uploadProfilePhoto(
+                  userId: userId,
+                  filePath: _profileImagePath!,
+                );
           }
-          setState(() => _isSaving = false);
-          return;
+          if (uploadedProfilePicture == null) {
+            if (mounted) {
+              MySnackbar.showError(context, 'Failed to upload photo');
+            }
+            setState(() => _isSaving = false);
+            return;
+          }
         }
       }
 
@@ -287,6 +295,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           backgroundImage: _resolvePreviewImage(
                             _profileImagePath,
                           ),
+                          onBackgroundImageError: (error, stack) {},
                           child:
                               _profileImagePath == null ||
                                   _profileImagePath!.trim().isEmpty
@@ -392,5 +401,23 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       return NetworkImage('${ApiEndpoints.mediaServerUrl}/$normalized');
     }
     return NetworkImage(ApiEndpoints.profilePicture(value));
+  }
+
+  Widget _buildPreviewAvatar(String? imagePath) {
+    final provider = _resolvePreviewImage(imagePath);
+    if (provider == null) {
+      return const Icon(Icons.person, color: Colors.grey, size: 40);
+    }
+
+    return ClipOval(
+      child: Image(
+        image: provider,
+        width: 88,
+        height: 88,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            const Icon(Icons.person, color: Colors.grey, size: 40),
+      ),
+    );
   }
 }

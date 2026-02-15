@@ -48,10 +48,7 @@ class ProfileCard extends StatelessWidget {
               CircleAvatar(
                 radius: 36,
                 backgroundColor: const Color(0xFFF3F5F7),
-                backgroundImage: _resolveProfileImage(profileImage),
-                child: profileImage == null || profileImage!.trim().isEmpty
-                    ? const Icon(Icons.person, color: Colors.grey, size: 36)
-                    : null,
+                child: _buildAvatarImage(profileImage),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -146,5 +143,23 @@ class ProfileCard extends StatelessWidget {
       return NetworkImage('${ApiEndpoints.mediaServerUrl}/$normalized');
     }
     return NetworkImage(ApiEndpoints.profilePicture(value));
+  }
+
+  Widget _buildAvatarImage(String? imagePath) {
+    final provider = _resolveProfileImage(imagePath);
+    if (provider == null) {
+      return const Icon(Icons.person, color: Colors.grey, size: 36);
+    }
+
+    return ClipOval(
+      child: Image(
+        image: provider,
+        width: 72,
+        height: 72,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            const Icon(Icons.person, color: Colors.grey, size: 36),
+      ),
+    );
   }
 }

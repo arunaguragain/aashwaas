@@ -32,11 +32,8 @@ class HomeHeader extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundImage: _resolveProfileImage(profileImageUrl),
-                child:
-                    profileImageUrl == null || profileImageUrl!.trim().isEmpty
-                    ? Icon(Icons.person, size: 40, color: Colors.deepPurple)
-                    : null,
+                backgroundColor: const Color(0xFFF3F5F7),
+                child: _buildAvatar(profileImageUrl),
               ),
               const SizedBox(width: 8),
 
@@ -108,5 +105,23 @@ class HomeHeader extends StatelessWidget {
       return NetworkImage('${ApiEndpoints.mediaServerUrl}/$normalized');
     }
     return NetworkImage(ApiEndpoints.profilePicture(value));
+  }
+
+  Widget _buildAvatar(String? imagePath) {
+    final provider = _resolveProfileImage(imagePath);
+    if (provider == null) {
+      return const Icon(Icons.person, size: 40, color: Colors.deepPurple);
+    }
+
+    return ClipOval(
+      child: Image(
+        image: provider,
+        width: 40,
+        height: 40,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            const Icon(Icons.person, size: 40, color: Colors.deepPurple),
+      ),
+    );
   }
 }

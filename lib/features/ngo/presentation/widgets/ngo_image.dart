@@ -19,8 +19,13 @@ class NgoImage extends StatelessWidget {
         height: height,
         color: const Color(0xFFF1F4F9),
         child: resolved == null
-            ? const Icon(Icons.apartment, color: Colors.grey, size: 30)
-            : Image(image: resolved, fit: BoxFit.cover),
+          ? const Icon(Icons.apartment, color: Colors.grey, size: 30)
+          : Image(
+            image: resolved,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) =>
+              const Icon(Icons.apartment, color: Colors.grey, size: 30),
+            ),
       ),
     );
   }
