@@ -1,5 +1,6 @@
 import 'package:aashwaas/app/routes/app_routes.dart';
 import 'package:aashwaas/features/donation/presentation/pages/add_donation_page.dart';
+import 'package:aashwaas/features/review/presentation/pages/review_page.dart';
 import 'package:aashwaas/features/wishlist/presentation/pages/wishlist_page.dart';
 import 'package:flutter/material.dart';
 import 'quick_action_button.dart';
@@ -67,17 +68,11 @@ class QuickActionsSection extends StatelessWidget {
                     AppRoutes.push(context, const WishlistPage());
                   },
                 ),
-                // TODO: Replace with actual Reviews page if available
                 QuickActionButton(
-                  label: 'My Reviews',
+                  label: 'Reviews',
                   icon: Icons.star_border,
                   onTap: () {
-                    // Add navigation to Reviews page if implemented
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Reviews page coming soon!'),
-                      ),
-                    );
+                    AppRoutes.push(context, const ReviewPage());
                   },
                 ),
               ],
