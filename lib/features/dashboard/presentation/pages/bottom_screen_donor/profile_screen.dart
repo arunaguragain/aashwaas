@@ -65,7 +65,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final userSessionService = ref.read(userSessionServiceProvider);
     final userId = userSessionService.getUserId();
     if (userId != null) {
-      await ref.read(donationViewModelProvider.notifier).getMyDonations(userId);
+      await ref.read(donationViewModelProvider.notifier).getMyDonations();
     }
   }
 

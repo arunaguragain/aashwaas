@@ -1,5 +1,4 @@
 import 'package:aashwaas/core/services/storage/user_session_service.dart';
-import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_donor/history_screen.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/donation_history_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/home_header.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/quick_action_section.dart';
@@ -35,7 +34,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final userSessionService = ref.read(userSessionServiceProvider);
     final userId = userSessionService.getUserId();
     if (userId != null) {
-      await ref.read(donationViewModelProvider.notifier).getMyDonations(userId);
+      await ref.read(donationViewModelProvider.notifier).getMyDonations();
     }
   }
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aashwaas/features/donation/domain/usecases/get_my_donations_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aashwaas/features/donation/domain/usecases/create_donation_usecase.dart';
 import 'package:aashwaas/features/donation/domain/usecases/delete_donation_usecase.dart';
@@ -17,6 +18,7 @@ class DonationViewModel extends Notifier<DonationState> {
   late final GetAllDonationsUsecase _getAllDonationsUsecase;
   late final GetDonationByIdUsecase _getDonationByIdUsecase;
   late final GetDonationsByUserUsecase _getDonationsByUserUsecase;
+  late final GetMyDonationsUsecase _getMyDonationsUsecase;
   late final CreateDonationUsecase _createDonationUsecase;
   late final UpdateDonationUsecase _updateDonationUsecase;
   late final DeleteDonationUsecase _deleteDonationUsecase;
@@ -27,6 +29,7 @@ class DonationViewModel extends Notifier<DonationState> {
     _getAllDonationsUsecase = ref.read(getAllDonationsUsecaseProvider);
     _getDonationByIdUsecase = ref.read(getDonationByIdUsecaseProvider);
     _getDonationsByUserUsecase = ref.read(getDonationsByUserUsecaseProvider);
+    _getMyDonationsUsecase = ref.read(getMyDonationsUsecaseProvider);
     _createDonationUsecase = ref.read(createDonationUsecaseProvider);
     _updateDonationUsecase = ref.read(updateDonationUsecaseProvider);
     _deleteDonationUsecase = ref.read(deleteDonationUsecaseProvider);
@@ -142,12 +145,10 @@ class DonationViewModel extends Notifier<DonationState> {
     );
   }
 
-  Future<void> getMyDonations(String donorId) async {
+  Future<void> getMyDonations() async {
     state = state.copyWith(status: DonationStatus.loading);
 
-    final result = await _getDonationsByUserUsecase(
-      GetDonationsByUserParams(donorId: donorId),
-    );
+    final result = await _getMyDonationsUsecase();
 
     result.fold(
       (failure) => state = state.copyWith(

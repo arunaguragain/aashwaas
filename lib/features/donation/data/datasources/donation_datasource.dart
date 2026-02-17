@@ -19,6 +19,7 @@ abstract interface class IDonationRemoteDataSource {
   Future<DonationApiModel> createDonation(DonationApiModel donation);
   Future<List<DonationApiModel>> getAllDonations();
   Future<List<DonationApiModel>> getDonationsByDonor(String donorId);
+  Future<List<DonationApiModel>> getMyDonations();
   Future<DonationApiModel> getDonationById(String donationId);
   Future<List<DonationApiModel>> getDonationsByCategory(String category);
   Future<List<DonationApiModel>> getDonationsByStatus(String status);

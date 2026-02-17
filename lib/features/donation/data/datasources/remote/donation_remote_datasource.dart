@@ -18,6 +18,17 @@ final donationRemoteDataSourceProvider = Provider<IDonationRemoteDataSource>((
 });
 
 class DonationRemoteDataSource implements IDonationRemoteDataSource {
+  @override
+  Future<List<DonationApiModel>> getMyDonations() async {
+    final token = await _tokenService.getToken();
+    final response = await _apiClient.get(
+      ApiEndpoints.donationsMy,
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
+    final data = response.data['data'] as List;
+    return data.map((json) => DonationApiModel.fromJson(json)).toList();
+  }
+
   final ApiClient _apiClient;
   final TokenService _tokenService;
 

@@ -23,13 +23,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   }
 
   Future<void> _loadDonations() async {
-    final userSessionService = ref.read(userSessionServiceProvider);
-    final userId = userSessionService.getUserId();
-    if (userId != null) {
-      final donationNotifier = ref.read(donationViewModelProvider.notifier);
-      await donationNotifier.getMyDonations(userId);
-      if (!mounted) return;
-    }
+    final donationNotifier = ref.read(donationViewModelProvider.notifier);
+    await donationNotifier.getMyDonations();
+    if (!mounted) return;
   }
 
   @override

@@ -5,8 +5,8 @@ class ApiEndpoints {
   ApiEndpoints._();
 
   // Configuration
-  static const bool isPhysicalDevice = false;
-  static const String _ipAddress = '192.168.1.1';
+  static const bool isPhysicalDevice = true;
+  static const String _ipAddress = '192.168.254.17';
   static const int _port = 5050;
 
   // Base URLs
@@ -41,6 +41,7 @@ class ApiEndpoints {
 
   // ============ Donation Endpoints ============
   static const String donations = '/donations';
+  static const String donationsMy = '/donations/my';
   static String donationById(String id) => '/donations/$id';
   static const String donationUploadPhoto = '/donations/upload-photo';
   static String donationPicture(String filename) =>

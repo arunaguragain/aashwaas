@@ -24,6 +24,24 @@ final donationRepositoryProvider = Provider<IDonationRepository>((ref) {
 });
 
 class DonationRepository implements IDonationRepository {
+  @override
+  Future<Either<Failure, List<DonationEntity>>> getMyDonations() async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final models = await _remoteDataSource.getMyDonations();
+        final entities = DonationApiModel.toEntityList(models);
+        return Right(entities);
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      // No local fallback for /my endpoint, return empty or error
+      return Left(
+        LocalDatabaseFailure(message: 'No local cache for user donations'),
+      );
+    }
+  }
+
   final DonationLocalDatasource _localDataSource;
   final IDonationRemoteDataSource _remoteDataSource;
   final NetworkInfo _networkInfo;
@@ -52,13 +70,14 @@ class DonationRepository implements IDonationRepository {
           // Use debugPrint (only visible in debug) to avoid noise in production.
           try {
             // ignore: avoid_print
-            print('Warning: remote getAllDonations returned EMPTY list — skipping local cache to avoid data loss');
+            print(
+              'Warning: remote getAllDonations returned EMPTY list — skipping local cache to avoid data loss',
+            );
           } catch (_) {}
         }
         final entities = DonationApiModel.toEntityList(models);
         return Right(entities);
       } catch (e) {
-
         return _getCachedDonations();
       }
     } else {
@@ -78,7 +97,9 @@ class DonationRepository implements IDonationRepository {
   }
 
   @override
-  Future<Either<Failure, List<DonationEntity>>> getItemsByUser(String donorId,) async {
+  Future<Either<Failure, List<DonationEntity>>> getItemsByUser(
+    String donorId,
+  ) async {
     if (await _networkInfo.isConnected) {
       try {
         final models = await _remoteDataSource.getDonationsByDonor(donorId);
@@ -99,7 +120,9 @@ class DonationRepository implements IDonationRepository {
   }
 
   @override
-  Future<Either<Failure, List<DonationEntity>>> getDonationsByCategory(String category,) async {
+  Future<Either<Failure, List<DonationEntity>>> getDonationsByCategory(
+    String category,
+  ) async {
     if (await _networkInfo.isConnected) {
       try {
         final models = await _remoteDataSource.getDonationsByCategory(category);
@@ -120,7 +143,9 @@ class DonationRepository implements IDonationRepository {
   }
 
   @override
-  Future<Either<Failure, List<DonationEntity>>> getDonationsByStatus(String status,) async {
+  Future<Either<Failure, List<DonationEntity>>> getDonationsByStatus(
+    String status,
+  ) async {
     if (await _networkInfo.isConnected) {
       try {
         final models = await _remoteDataSource.getDonationsByStatus(status);
@@ -141,7 +166,9 @@ class DonationRepository implements IDonationRepository {
   }
 
   @override
-  Future<Either<Failure, DonationEntity>> getDonationById(String donationId,) async {
+  Future<Either<Failure, DonationEntity>> getDonationById(
+    String donationId,
+  ) async {
     if (await _networkInfo.isConnected) {
       try {
         final model = await _remoteDataSource.getDonationById(donationId);
