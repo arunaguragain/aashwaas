@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 class DonationPhotosSection extends StatelessWidget {
   final List<File> selectedMedia;
+  final String? existingMediaUrl;
   final VoidCallback onAddPhoto;
   final VoidCallback onRemovePhoto;
 
   const DonationPhotosSection({
     super.key,
     required this.selectedMedia,
+    this.existingMediaUrl,
     required this.onAddPhoto,
     required this.onRemovePhoto,
   });
@@ -39,22 +41,65 @@ class DonationPhotosSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         if (selectedMedia.isEmpty)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(30),
-            decoration: BoxDecoration(
-              border: Border.all(color: borderColor),
-              borderRadius: BorderRadius.circular(8),
-              color: fillColor,
-            ),
-            child: Column(
-              children: [
-                Icon(Icons.cloud_upload_outlined, size: 40, color: hintColor),
-                const SizedBox(height: 10),
-                Text('No photos added yet', style: TextStyle(color: hintColor)),
-              ],
-            ),
-          ),
+          (existingMediaUrl == null)
+              ? Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: borderColor),
+                    borderRadius: BorderRadius.circular(8),
+                    color: fillColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.cloud_upload_outlined,
+                        size: 40,
+                        color: hintColor,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'No photos added yet',
+                        style: TextStyle(color: hintColor),
+                      ),
+                    ],
+                  ),
+                )
+              : Stack(
+                  children: [
+                    Container(
+                      height: 150,
+                      width: 150,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: borderColor),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          existingMediaUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (c, e, s) {
+                            return Center(
+                              child: Icon(Icons.broken_image, color: hintColor),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: -8,
+                      right: -8,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.remove_circle,
+                          color: Colors.red,
+                        ),
+                        onPressed: onRemovePhoto,
+                      ),
+                    ),
+                  ],
+                ),
         if (selectedMedia.isNotEmpty)
           Stack(
             children: [
