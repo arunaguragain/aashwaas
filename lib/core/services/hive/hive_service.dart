@@ -4,6 +4,7 @@ import 'package:aashwaas/features/auth/data/models/volunteer_auth_hive_model.dar
 import 'package:aashwaas/features/donation/data/models/donatioin_hive_model.dart';
 import 'package:aashwaas/features/wishlist/data/models/wishlist_hive_model.dart';
 import 'package:aashwaas/features/task/data/models/task_hive_model.dart';
+import 'package:aashwaas/features/review/data/models/review_hive_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -37,6 +38,9 @@ class HiveService {
     if (!Hive.isAdapterRegistered(HiveTableConstant.taskTypeId)) {
       Hive.registerAdapter(TaskHiveModelAdapter());
     }
+    if (!Hive.isAdapterRegistered(HiveTableConstant.reviewTypeId)) {
+      Hive.registerAdapter(ReviewHiveModelAdapter());
+    }
   }
 
   Future<void> openBoxes() async {
@@ -47,6 +51,7 @@ class HiveService {
     await Hive.openBox<DonationHiveModel>(HiveTableConstant.donationTable);
     await Hive.openBox<WishlistHiveModel>(HiveTableConstant.wishlistTable);
     await Hive.openBox<TaskHiveModel>(HiveTableConstant.taskTable);
+    await Hive.openBox<ReviewHiveModel>(HiveTableConstant.reviewTable);
   }
 
   Future<void> close() async {
@@ -231,6 +236,45 @@ class HiveService {
     await _wishlistBox.clear();
     for (var w in wishlists) {
       await _wishlistBox.put(w.id, w);
+    }
+  }
+
+  //Review queries 
+  Box<ReviewHiveModel> get _reviewBox =>
+      Hive.box<ReviewHiveModel>(HiveTableConstant.reviewTable);
+
+  Future<bool> createReview(ReviewHiveModel review) async {
+    await _reviewBox.put(review.id, review);
+    return true;
+  }
+
+  Future<List<ReviewHiveModel>> getAllReviews() async {
+    return _reviewBox.values.toList();
+  }
+
+  Future<ReviewHiveModel?> getReviewById(String reviewId) async {
+    return _reviewBox.get(reviewId);
+  }
+
+  Future<List<ReviewHiveModel>> getReviewsByUser(String userId) async {
+    return _reviewBox.values.where((r) => r.userId == userId).toList();
+  }
+
+  Future<bool> updateReview(ReviewHiveModel review) async {
+    await _reviewBox.put(review.id, review);
+    return true;
+  }
+
+  Future<bool> deleteReview(String reviewId) async {
+    await _reviewBox.delete(reviewId);
+    return true;
+  }
+
+  /// Cache all reviews (clear existing and replace with new data)
+  Future<void> cacheAllReviews(List<ReviewHiveModel> reviews) async {
+    await _reviewBox.clear();
+    for (var r in reviews) {
+      await _reviewBox.put(r.id, r);
     }
   }
 }

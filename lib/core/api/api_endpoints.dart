@@ -71,6 +71,14 @@ class ApiEndpoints {
   static String taskComplete(String id) => '/tasks/$id/complete';
   static String taskCancel(String id) => '/tasks/$id/cancel';
 
+  // ============ Review Endpoints ============
+  static const String reviews = '/reviews';
+  static String reviewById(String id) => '/reviews/$id';
+  static String reviewsByUser(String userId) => '/reviews/user/$userId';
+  static const String reviewCreate = '/reviews';
+  static String reviewUpdate(String id) => '/reviews/$id';
+  static String reviewDelete(String id) => '/reviews/$id';
+
   // ============ Profile Pictures ============
   static String profilePicture(String filename) =>
       '$mediaServerUrl/item_photos/$filename';
