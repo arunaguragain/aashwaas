@@ -12,6 +12,7 @@ ReviewApiModel _$ReviewApiModelFromJson(Map<String, dynamic> json) =>
       rating: (json['rating'] as num).toDouble(),
       comment: json['comment'] as String?,
       userId: _extractId(json['userId']),
+      authorName: _extractUserName(json['userId']),
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
@@ -26,6 +27,7 @@ Map<String, dynamic> _$ReviewApiModelToJson(ReviewApiModel instance) =>
       'rating': instance.rating,
       'comment': instance.comment,
       'userId': instance.userId,
+      'authorName': instance.authorName,
       'createdAt': instance.createdAt?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
     };

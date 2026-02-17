@@ -4,6 +4,7 @@ class ReviewCard extends StatelessWidget {
   final double rating;
   final String? comment;
   final String? dateText;
+  final String? authorName;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
@@ -12,6 +13,7 @@ class ReviewCard extends StatelessWidget {
     required this.rating,
     this.comment,
     this.dateText,
+    this.authorName,
     this.onEdit,
     this.onDelete,
   });
@@ -54,24 +56,37 @@ class ReviewCard extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit, size: 20),
-                      onPressed: onEdit,
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                        size: 20,
+                    if (onEdit != null)
+                      IconButton(
+                        icon: const Icon(Icons.edit, size: 20),
+                        onPressed: onEdit,
                       ),
-                      onPressed: onDelete,
-                    ),
+                    if (onDelete != null)
+                      IconButton(
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                          size: 20,
+                        ),
+                        onPressed: onDelete,
+                      ),
                   ],
                 ),
               ],
             ),
             const SizedBox(height: 8),
             if (comment != null && comment!.isNotEmpty) Text(comment!),
+            if (authorName != null && authorName!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                'By $authorName',
+                style: TextStyle(
+                  color: Colors.grey.shade700,
+                  fontSize: 13,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
             if (dateText != null) ...[
               const SizedBox(height: 8),
               Text(

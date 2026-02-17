@@ -231,7 +231,7 @@ void main() {
         final viewModel = container.read(donationViewModelProvider.notifier);
 
         // Act
-        await viewModel.getMyDonations('donor1');
+        await viewModel.getMyDonations();
 
         // Assert
         final state = container.read(donationViewModelProvider);

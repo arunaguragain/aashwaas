@@ -3,6 +3,9 @@ import 'package:aashwaas/features/review/presentation/pages/add_review_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/review_card.dart';
+import 'package:aashwaas/core/services/storage/user_session_service.dart';
+import 'package:aashwaas/features/auth/data/datasources/remote/donor_auth_remote_datasource.dart';
+import 'package:aashwaas/features/auth/data/datasources/remote/volunteer_auth_remote_datasource.dart';
 import 'package:aashwaas/features/review/presentation/view_model/review_viewmodel.dart';
 import 'package:aashwaas/features/review/presentation/state/review_state.dart';
 import 'package:aashwaas/features/review/presentation/pages/edit_review_page.dart';
@@ -15,6 +18,35 @@ class ReviewPage extends ConsumerStatefulWidget {
 }
 
 class _ReviewPageState extends ConsumerState<ReviewPage> {
+  // Simple in-memory cache for user names to avoid duplicate requests
+  final Map<String, String?> _nameCache = {};
+
+  Future<void> _fetchNameFor(String userId) async {
+    if (userId.isEmpty) return;
+    if (_nameCache.containsKey(userId)) return;
+    // mark as loading to avoid duplicate fetches
+    _nameCache[userId] = null;
+    try {
+      final donor = await ref
+          .read(authDonorRemoteProvider)
+          .getDonorById(userId);
+      _nameCache[userId] = donor.fullName;
+      if (mounted) setState(() {});
+      return;
+    } catch (_) {}
+    try {
+      final vol = await ref
+          .read(authVolunteerRemoteProvider)
+          .getVolunteerById(userId);
+      _nameCache[userId] = vol.fullName;
+      if (mounted) setState(() {});
+      return;
+    } catch (_) {}
+    // keep null if not found
+    _nameCache[userId] = null;
+    if (mounted) setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +57,8 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userSessionService = ref.read(userSessionServiceProvider);
+    final currentUserId = userSessionService.getCurrentUserId();
     final theme = Theme.of(context);
     final state = ref.watch(reviewViewModelProvider);
 
@@ -82,20 +116,40 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
               final dateText = r.createdAt != null
                   ? r.createdAt!.toLocal().toString().split(' ')[0]
                   : null;
+              final isMine = r.userId == currentUserId;
+              // Prefer authorName embedded in the review entity
+              String authorName = r.authorName ?? '';
+              if (authorName.isNotEmpty) {
+                // use embedded name
+              } else if (isMine) {
+                authorName = userSessionService.getUserFullName() ?? 'You';
+              } else if (_nameCache.containsKey(r.userId)) {
+                authorName = _nameCache[r.userId] ?? 'Unknown user';
+              } else {
+                authorName = 'Loading...';
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _fetchNameFor(r.userId);
+                });
+              }
               return ReviewCard(
                 rating: r.rating,
                 comment: r.comment,
                 dateText: dateText,
-                onEdit: () {
-                  AppRoutes.push(context, EditReviewPage(review: r));
-                },
-                onDelete: () {
-                  if (r.reviewId != null) {
-                    ref
-                        .read(reviewViewModelProvider.notifier)
-                        .deleteReview(r.reviewId!);
-                  }
-                },
+                authorName: authorName,
+                onEdit: isMine
+                    ? () {
+                        AppRoutes.push(context, EditReviewPage(review: r));
+                      }
+                    : null,
+                onDelete: isMine
+                    ? () {
+                        if (r.reviewId != null) {
+                          ref
+                              .read(reviewViewModelProvider.notifier)
+                              .deleteReview(r.reviewId!);
+                        }
+                      }
+                    : null,
               );
             },
           );
