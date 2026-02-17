@@ -11,6 +11,8 @@ import 'package:aashwaas/features/donation/domain/usecases/delete_donation_useca
 import 'package:aashwaas/features/donation/domain/usecases/get_all_donations_usecase.dart';
 import 'package:aashwaas/features/donation/domain/usecases/get_donation_by_id_usecase.dart';
 import 'package:aashwaas/features/donation/domain/usecases/get_donations_by_user_usecase.dart';
+import 'package:aashwaas/features/donation/domain/usecases/get_my_donations_usecase.dart';
+import 'package:aashwaas/features/donation/domain/entities/donation_entity.dart';
 import 'package:aashwaas/features/donation/domain/usecases/update_donation_usecase.dart';
 import 'package:aashwaas/features/donation/domain/usecases/upload_photo_usecase.dart';
 import 'package:aashwaas/features/donation/presentation/pages/add_donation_page.dart';
@@ -23,6 +25,8 @@ class MockGetAllDonationsUsecase extends Mock implements GetAllDonationsUsecase 
 class MockGetDonationByIdUsecase extends Mock implements GetDonationByIdUsecase {}
 
 class MockGetDonationsByUserUsecase extends Mock implements GetDonationsByUserUsecase {}
+
+class MockGetMyDonationsUsecase extends Mock implements GetMyDonationsUsecase {}
 
 class MockUpdateDonationUsecase extends Mock implements UpdateDonationUsecase {}
 
@@ -37,6 +41,7 @@ void main() {
   late MockGetAllDonationsUsecase mockGetAllDonationsUsecase;
   late MockGetDonationByIdUsecase mockGetDonationByIdUsecase;
   late MockGetDonationsByUserUsecase mockGetDonationsByUserUsecase;
+  late MockGetMyDonationsUsecase mockGetMyDonationsUsecase;
   late MockUpdateDonationUsecase mockUpdateDonationUsecase;
   late MockDeleteDonationUsecase mockDeleteDonationUsecase;
   late MockUploadPhotoUsecase mockUploadPhotoUsecase;
@@ -60,12 +65,16 @@ void main() {
     mockGetAllDonationsUsecase = MockGetAllDonationsUsecase();
     mockGetDonationByIdUsecase = MockGetDonationByIdUsecase();
     mockGetDonationsByUserUsecase = MockGetDonationsByUserUsecase();
+    mockGetMyDonationsUsecase = MockGetMyDonationsUsecase();
     mockUpdateDonationUsecase = MockUpdateDonationUsecase();
     mockDeleteDonationUsecase = MockDeleteDonationUsecase();
     mockUploadPhotoUsecase = MockUploadPhotoUsecase();
     mockUserSessionService = MockUserSessionService();
 
     when(() => mockUserSessionService.getCurrentUserId()).thenReturn('donor1');
+    when(() => mockGetMyDonationsUsecase()).thenAnswer(
+      (_) async => Right(<DonationEntity>[]),
+    );
   });
 
   Widget createTestWidget() {
@@ -75,6 +84,7 @@ void main() {
         getAllDonationsUsecaseProvider.overrideWithValue(mockGetAllDonationsUsecase),
         getDonationByIdUsecaseProvider.overrideWithValue(mockGetDonationByIdUsecase),
         getDonationsByUserUsecaseProvider.overrideWithValue(mockGetDonationsByUserUsecase),
+        getMyDonationsUsecaseProvider.overrideWithValue(mockGetMyDonationsUsecase),
         updateDonationUsecaseProvider.overrideWithValue(mockUpdateDonationUsecase),
         deleteDonationUsecaseProvider.overrideWithValue(mockDeleteDonationUsecase),
         uploadPhotoUsecaseProvider.overrideWithValue(mockUploadPhotoUsecase),

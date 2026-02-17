@@ -11,6 +11,7 @@ import 'package:aashwaas/features/donation/domain/usecases/get_donation_by_id_us
 import 'package:aashwaas/features/donation/domain/usecases/get_donations_by_user_usecase.dart';
 import 'package:aashwaas/features/donation/domain/usecases/update_donation_usecase.dart';
 import 'package:aashwaas/features/donation/domain/usecases/upload_photo_usecase.dart';
+import 'package:aashwaas/features/donation/domain/usecases/get_my_donations_usecase.dart';
 import 'package:aashwaas/features/donation/presentation/state/donation_state.dart';
 import 'package:aashwaas/features/donation/presentation/view_model/donation_viewmodel.dart';
 import 'package:mocktail/mocktail.dart';
@@ -20,17 +21,22 @@ import 'package:mocktail/mocktail.dart';
 
 class MockCreateDonationUsecase extends Mock implements CreateDonationUsecase {}
 
-class MockGetAllDonationsUsecase extends Mock implements GetAllDonationsUsecase {}
+class MockGetAllDonationsUsecase extends Mock
+    implements GetAllDonationsUsecase {}
 
-class MockGetDonationByIdUsecase extends Mock implements GetDonationByIdUsecase {}
+class MockGetDonationByIdUsecase extends Mock
+    implements GetDonationByIdUsecase {}
 
-class MockGetDonationsByUserUsecase extends Mock implements GetDonationsByUserUsecase {}
+class MockGetDonationsByUserUsecase extends Mock
+    implements GetDonationsByUserUsecase {}
 
 class MockUpdateDonationUsecase extends Mock implements UpdateDonationUsecase {}
 
 class MockDeleteDonationUsecase extends Mock implements DeleteDonationUsecase {}
 
 class MockUploadPhotoUsecase extends Mock implements UploadPhotoUsecase {}
+
+class MockGetMyDonationsUsecase extends Mock implements GetMyDonationsUsecase {}
 
 void main() {
   late MockCreateDonationUsecase mockCreateDonationUsecase;
@@ -40,6 +46,7 @@ void main() {
   late MockUpdateDonationUsecase mockUpdateDonationUsecase;
   late MockDeleteDonationUsecase mockDeleteDonationUsecase;
   late MockUploadPhotoUsecase mockUploadPhotoUsecase;
+  late MockGetMyDonationsUsecase mockGetMyDonationsUsecase;
   late ProviderContainer container;
 
   setUpAll(() {
@@ -76,6 +83,7 @@ void main() {
     mockUpdateDonationUsecase = MockUpdateDonationUsecase();
     mockDeleteDonationUsecase = MockDeleteDonationUsecase();
     mockUploadPhotoUsecase = MockUploadPhotoUsecase();
+    mockGetMyDonationsUsecase = MockGetMyDonationsUsecase();
 
     container = ProviderContainer(
       overrides: [
@@ -90,6 +98,9 @@ void main() {
         ),
         getDonationsByUserUsecaseProvider.overrideWithValue(
           mockGetDonationsByUserUsecase,
+        ),
+        getMyDonationsUsecaseProvider.overrideWithValue(
+          mockGetMyDonationsUsecase,
         ),
         updateDonationUsecaseProvider.overrideWithValue(
           mockUpdateDonationUsecase,
@@ -128,123 +139,32 @@ void main() {
   );
 
   group('DonationViewModel', () {
+    test('should return photo url when upload is successful', () async {
+      // Arrange
+      const tPhotoUrl = 'https://example.com/photo.jpg';
+      when(
+        () => mockUploadPhotoUsecase(any()),
+      ).thenAnswer((_) async => const Right(tPhotoUrl));
 
-      test('should return photo url when upload is successful', () async {
-        // Arrange
-        const tPhotoUrl = 'https://example.com/photo.jpg';
-        when(
-          () => mockUploadPhotoUsecase(any()),
-        ).thenAnswer((_) async => const Right(tPhotoUrl));
+      final viewModel = container.read(donationViewModelProvider.notifier);
 
-        final viewModel = container.read(donationViewModelProvider.notifier);
+      // Act
+      final result = await viewModel.uploadPhoto(File('test.jpg'));
 
-        // Act
-        final result = await viewModel.uploadPhoto(File('test.jpg'));
+      // Assert
+      expect(result, tPhotoUrl);
+      final state = container.read(donationViewModelProvider);
+      expect(state.uploadedPhotoUrl, tPhotoUrl);
+      expect(state.status, DonationStatus.loaded);
+      verify(() => mockUploadPhotoUsecase(any())).called(1);
+    });
 
-        // Assert
-        expect(result, tPhotoUrl);
-        final state = container.read(donationViewModelProvider);
-        expect(state.uploadedPhotoUrl, tPhotoUrl);
-        expect(state.status, DonationStatus.loaded);
-        verify(() => mockUploadPhotoUsecase(any())).called(1);
-      });
-
-      test(
-        'should emit created state when donation is created successfully',
-        () async {
-          // Arrange
-          when(
-            () => mockCreateDonationUsecase(any()),
-          ).thenAnswer((_) async => const Right(true));
-          when(
-            () => mockGetAllDonationsUsecase(),
-          ).thenAnswer((_) async => const Right([tDonation]));
-
-          final viewModel = container.read(donationViewModelProvider.notifier);
-
-          // Act
-          await viewModel.createDonation(
-            itemName: tDonation.itemName,
-            category: tDonation.category,
-            quantity: tDonation.quantity,
-            condition: tDonation.condition,
-            pickupLocation: tDonation.pickupLocation,
-          );
-          // Wait for getAllDonations to complete
-          await Future.delayed(const Duration(milliseconds: 100));
-
-          // Assert - After creation, state should have donations from getAllDonations call
-          final state = container.read(donationViewModelProvider);
-          expect(state.donations, [tDonation]);
-          verify(() => mockCreateDonationUsecase(any())).called(1);
-          verify(() => mockGetAllDonationsUsecase()).called(1);
-        },
-      );
-
-      test('should load all donations and categorize by status', () async {
-        // Arrange
-        final donations = [tDonation, tDonation2];
-        when(
-          () => mockGetAllDonationsUsecase(),
-        ).thenAnswer((_) async => Right(donations));
-
-        final viewModel = container.read(donationViewModelProvider.notifier);
-
-        // Act
-        await viewModel.getAllDonations();
-
-        // Assert
-        final state = container.read(donationViewModelProvider);
-        expect(state.status, DonationStatus.loaded);
-        expect(state.donations, donations);
-        expect(state.pendingDonations, hasLength(1));
-        expect(state.completedDonations, hasLength(1));
-        expect(state.totalDonationCount, 2);
-        verify(() => mockGetAllDonationsUsecase()).called(1);
-      });
-
-      test('should load donation by id', () async {
+    test(
+      'should emit created state when donation is created successfully',
+      () async {
         // Arrange
         when(
-          () => mockGetDonationByIdUsecase(any()),
-        ).thenAnswer((_) async => const Right(tDonation));
-
-        final viewModel = container.read(donationViewModelProvider.notifier);
-
-        // Act
-        await viewModel.getDonationById('1');
-
-        // Assert
-        final state = container.read(donationViewModelProvider);
-        expect(state.status, DonationStatus.loaded);
-        expect(state.selectedDonation, tDonation);
-        verify(() => mockGetDonationByIdUsecase(any())).called(1);
-      });
-
-      test('should load donations by donor id', () async {
-        // Arrange
-        final donations = [tDonation];
-        when(
-          () => mockGetDonationsByUserUsecase(any()),
-        ).thenAnswer((_) async => Right(donations));
-
-        final viewModel = container.read(donationViewModelProvider.notifier);
-
-        // Act
-        await viewModel.getMyDonations();
-
-        // Assert
-        final state = container.read(donationViewModelProvider);
-        expect(state.status, DonationStatus.loaded);
-        expect(state.myDonations, donations);
-        expect(state.totalDonationCount, 1);
-        verify(() => mockGetDonationsByUserUsecase(any())).called(1);
-      });
-
-      test('should emit updated state when update is successful', () async {
-        // Arrange
-        when(
-          () => mockUpdateDonationUsecase(any()),
+          () => mockCreateDonationUsecase(any()),
         ).thenAnswer((_) async => const Right(true));
         when(
           () => mockGetAllDonationsUsecase(),
@@ -253,8 +173,7 @@ void main() {
         final viewModel = container.read(donationViewModelProvider.notifier);
 
         // Act
-        await viewModel.updateDonation(
-          donationId: '1',
+        await viewModel.createDonation(
           itemName: tDonation.itemName,
           category: tDonation.category,
           quantity: tDonation.quantity,
@@ -264,34 +183,125 @@ void main() {
         // Wait for getAllDonations to complete
         await Future.delayed(const Duration(milliseconds: 100));
 
-        // Assert
+        // Assert - After creation, state should have donations from getAllDonations call
         final state = container.read(donationViewModelProvider);
         expect(state.donations, [tDonation]);
-        verify(() => mockUpdateDonationUsecase(any())).called(1);
+        verify(() => mockCreateDonationUsecase(any())).called(1);
         verify(() => mockGetAllDonationsUsecase()).called(1);
-      });
+      },
+    );
 
-      test('should emit deleted state when deletion is successful', () async {
-        // Arrange
-        when(
-          () => mockDeleteDonationUsecase(any()),
-        ).thenAnswer((_) async => const Right(true));
-        when(
-          () => mockGetAllDonationsUsecase(),
-        ).thenAnswer((_) async => const Right([tDonation]));
+    test('should load all donations and categorize by status', () async {
+      // Arrange
+      final donations = [tDonation, tDonation2];
+      when(
+        () => mockGetAllDonationsUsecase(),
+      ).thenAnswer((_) async => Right(donations));
 
-        final viewModel = container.read(donationViewModelProvider.notifier);
+      final viewModel = container.read(donationViewModelProvider.notifier);
 
-        // Act
-        await viewModel.deleteDonation('1');
-        // Wait for getAllDonations to complete
-        await Future.delayed(const Duration(milliseconds: 100));
+      // Act
+      await viewModel.getAllDonations();
 
-        // Assert - After deletion, state should have donations from getAllDonations call
-        final state = container.read(donationViewModelProvider);
-        expect(state.donations, [tDonation]);
-        verify(() => mockDeleteDonationUsecase(any())).called(1);
-        verify(() => mockGetAllDonationsUsecase()).called(1);
-      });
+      // Assert
+      final state = container.read(donationViewModelProvider);
+      expect(state.status, DonationStatus.loaded);
+      expect(state.donations, donations);
+      expect(state.pendingDonations, hasLength(1));
+      expect(state.completedDonations, hasLength(1));
+      expect(state.totalDonationCount, 2);
+      verify(() => mockGetAllDonationsUsecase()).called(1);
+    });
+
+    test('should load donation by id', () async {
+      // Arrange
+      when(
+        () => mockGetDonationByIdUsecase(any()),
+      ).thenAnswer((_) async => const Right(tDonation));
+
+      final viewModel = container.read(donationViewModelProvider.notifier);
+
+      // Act
+      await viewModel.getDonationById('1');
+
+      // Assert
+      final state = container.read(donationViewModelProvider);
+      expect(state.status, DonationStatus.loaded);
+      expect(state.selectedDonation, tDonation);
+      verify(() => mockGetDonationByIdUsecase(any())).called(1);
+    });
+
+    test('should load donations by donor id', () async {
+      // Arrange
+      final donations = [tDonation];
+      when(
+        () => mockGetMyDonationsUsecase(),
+      ).thenAnswer((_) async => Right(donations));
+
+      final viewModel = container.read(donationViewModelProvider.notifier);
+
+      // Act
+      await viewModel.getMyDonations();
+
+      // Assert
+      final state = container.read(donationViewModelProvider);
+      expect(state.status, DonationStatus.loaded);
+      expect(state.myDonations, donations);
+      expect(state.totalDonationCount, 1);
+      verify(() => mockGetMyDonationsUsecase()).called(1);
+    });
+
+    test('should emit updated state when update is successful', () async {
+      // Arrange
+      when(
+        () => mockUpdateDonationUsecase(any()),
+      ).thenAnswer((_) async => const Right(true));
+      when(
+        () => mockGetAllDonationsUsecase(),
+      ).thenAnswer((_) async => const Right([tDonation]));
+
+      final viewModel = container.read(donationViewModelProvider.notifier);
+
+      // Act
+      await viewModel.updateDonation(
+        donationId: '1',
+        itemName: tDonation.itemName,
+        category: tDonation.category,
+        quantity: tDonation.quantity,
+        condition: tDonation.condition,
+        pickupLocation: tDonation.pickupLocation,
+      );
+      // Wait for getAllDonations to complete
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      // Assert
+      final state = container.read(donationViewModelProvider);
+      expect(state.donations, [tDonation]);
+      verify(() => mockUpdateDonationUsecase(any())).called(1);
+      verify(() => mockGetAllDonationsUsecase()).called(1);
+    });
+
+    test('should emit deleted state when deletion is successful', () async {
+      // Arrange
+      when(
+        () => mockDeleteDonationUsecase(any()),
+      ).thenAnswer((_) async => const Right(true));
+      when(
+        () => mockGetAllDonationsUsecase(),
+      ).thenAnswer((_) async => const Right([tDonation]));
+
+      final viewModel = container.read(donationViewModelProvider.notifier);
+
+      // Act
+      await viewModel.deleteDonation('1');
+      // Wait for getAllDonations to complete
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      // Assert - After deletion, state should have donations from getAllDonations call
+      final state = container.read(donationViewModelProvider);
+      expect(state.donations, [tDonation]);
+      verify(() => mockDeleteDonationUsecase(any())).called(1);
+      verify(() => mockGetAllDonationsUsecase()).called(1);
+    });
   });
 }

@@ -9,6 +9,8 @@ import 'package:aashwaas/features/auth/domain/entities/donor_auth_entity.dart';
 import 'package:aashwaas/features/auth/domain/usecases/donor_login_usecase.dart';
 import 'package:aashwaas/features/auth/domain/usecases/donor_logout_usecase.dart';
 import 'package:aashwaas/features/auth/domain/usecases/donor_register_usecase.dart';
+import 'package:aashwaas/features/auth/domain/usecases/donor_update_profile_usecase.dart';
+import 'package:aashwaas/features/auth/domain/usecases/donor_upload_profile_photo_usecase.dart';
 import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -20,10 +22,18 @@ class MockLoginUsecase extends Mock implements LoginUsecase {}
 
 class MockDonorLogoutUsecase extends Mock implements DonorLogoutUsecase {}
 
+class MockUpdateDonorProfileUsecase extends Mock
+    implements UpdateDonorProfileUsecase {}
+
+class MockUploadDonorProfilePhotoUsecase extends Mock
+    implements UploadDonorProfilePhotoUsecase {}
+
 void main() {
   late MockRegisterUsecase mockRegisterUsecase;
   late MockLoginUsecase mockLoginUsecase;
   late MockDonorLogoutUsecase mockLogoutUsecase;
+  late MockUpdateDonorProfileUsecase mockUpdateProfileUsecase;
+  late MockUploadDonorProfilePhotoUsecase mockUploadProfilePhotoUsecase;
 
   setUpAll(() {
     registerFallbackValue(
@@ -45,6 +55,8 @@ void main() {
     mockRegisterUsecase = MockRegisterUsecase();
     mockLoginUsecase = MockLoginUsecase();
     mockLogoutUsecase = MockDonorLogoutUsecase();
+    mockUpdateProfileUsecase = MockUpdateDonorProfileUsecase();
+    mockUploadProfilePhotoUsecase = MockUploadDonorProfilePhotoUsecase();
   });
 
   Widget createTestWidget() {
@@ -53,6 +65,12 @@ void main() {
         registerDonorUsecaseProvider.overrideWithValue(mockRegisterUsecase),
         donorLoginUsecaseProvider.overrideWithValue(mockLoginUsecase),
         logoutDonorUsecaseProvider.overrideWithValue(mockLogoutUsecase),
+        updateDonorProfileUsecaseProvider.overrideWithValue(
+          mockUpdateProfileUsecase,
+        ),
+        uploadDonorProfilePhotoUsecaseProvider.overrideWithValue(
+          mockUploadProfilePhotoUsecase,
+        ),
       ],
       child: const MaterialApp(home: DonorLoginScreen()),
     );
@@ -123,7 +141,6 @@ void main() {
 
       expect(find.text('Login as Volunteer'), findsOneWidget);
     });
-
   });
 
   group('DonorLoginPage - Form Validation', () {
@@ -151,12 +168,12 @@ void main() {
 
       expect(find.text('Password is required'), findsOneWidget);
     });
-
   });
 
   group('DonorLoginPage - Form Submission', () {
-
-    testWidgets('should call login with correct email and password', (tester,) async {
+    testWidgets('should call login with correct email and password', (
+      tester,
+    ) async {
       // Arrange
       final completer = Completer<Either<Failure, DonorAuthEntity>>();
 
@@ -211,7 +228,8 @@ void main() {
     });
 
     testWidgets(
-      'should succeed with correct credentials and fail with wrong credentials',(tester) async {
+      'should succeed with correct credentials and fail with wrong credentials',
+      (tester) async {
         // Define correct credentials
         const correctEmail = 'correct@test.com';
         const correctPassword = 'correctpass';

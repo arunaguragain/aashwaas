@@ -6,6 +6,8 @@ import 'package:aashwaas/core/error/failures.dart';
 import 'package:aashwaas/features/auth/domain/usecases/volunteer_login_usecase.dart';
 import 'package:aashwaas/features/auth/domain/usecases/volunteer_logout_usecase.dart';
 import 'package:aashwaas/features/auth/domain/usecases/volunteer_register_usecase.dart';
+import 'package:aashwaas/features/auth/domain/usecases/volunteer_update_profile_usecase.dart';
+import 'package:aashwaas/features/auth/domain/usecases/volunteer_upload_profile_photo_usecase.dart';
 import 'package:aashwaas/features/auth/presentation/pages/volunteer_register_page.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -13,12 +15,21 @@ class MockRegisterUsecase extends Mock implements RegisterUsecase {}
 
 class MockLoginUsecase extends Mock implements LoginUsecase {}
 
-class MockVolunteerLogoutUsecase extends Mock implements VolunteerLogoutUsecase {}
+class MockVolunteerLogoutUsecase extends Mock
+    implements VolunteerLogoutUsecase {}
+
+class MockUpdateVolunteerProfileUsecase extends Mock
+    implements UpdateVolunteerProfileUsecase {}
+
+class MockUploadVolunteerProfilePhotoUsecase extends Mock
+    implements UploadVolunteerProfilePhotoUsecase {}
 
 void main() {
   late MockRegisterUsecase mockRegisterUsecase;
   late MockLoginUsecase mockLoginUsecase;
   late MockVolunteerLogoutUsecase mockLogoutUsecase;
+  late MockUpdateVolunteerProfileUsecase mockUpdateProfileUsecase;
+  late MockUploadVolunteerProfilePhotoUsecase mockUploadProfilePhotoUsecase;
 
   setUpAll(() {
     registerFallbackValue(
@@ -40,6 +51,8 @@ void main() {
     mockRegisterUsecase = MockRegisterUsecase();
     mockLoginUsecase = MockLoginUsecase();
     mockLogoutUsecase = MockVolunteerLogoutUsecase();
+    mockUpdateProfileUsecase = MockUpdateVolunteerProfileUsecase();
+    mockUploadProfilePhotoUsecase = MockUploadVolunteerProfilePhotoUsecase();
   });
 
   Widget createTestWidget() {
@@ -48,6 +61,12 @@ void main() {
         registerVolunteerUsecaseProvider.overrideWithValue(mockRegisterUsecase),
         volunteerLoginUsecaseProvider.overrideWithValue(mockLoginUsecase),
         logoutVolunteerUsecaseProvider.overrideWithValue(mockLogoutUsecase),
+        updateVolunteerProfileUsecaseProvider.overrideWithValue(
+          mockUpdateProfileUsecase,
+        ),
+        uploadVolunteerProfilePhotoUsecaseProvider.overrideWithValue(
+          mockUploadProfilePhotoUsecase,
+        ),
       ],
       child: const MaterialApp(home: VolunteerRegisterScreen()),
     );
@@ -102,7 +121,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Fill only name
-      await tester.enterText(find.byType(TextFormField).at(0), 'Aruna Guragain');
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'Aruna Guragain',
+      );
       await tester.pumpAndSettle();
 
       // Try to submit
@@ -120,7 +142,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Fill name and email
-      await tester.enterText(find.byType(TextFormField).at(0), 'Aruna Guragain');
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'Aruna Guragain',
+      );
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -146,7 +171,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Fill all fields with mismatched passwords
-      await tester.enterText(find.byType(TextFormField).at(0), 'Aruna Guragain');
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'Aruna Guragain',
+      );
       await tester.pumpAndSettle();
 
       await tester.enterText(
