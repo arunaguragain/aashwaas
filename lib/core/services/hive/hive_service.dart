@@ -179,12 +179,21 @@ class HiveService {
   }
 
   Future<bool> deleteDonation(String donationId) async {
+    try {
+      // ignore: avoid_print
+      print('HiveService.deleteDonation: deleting donation with id=$donationId');
+    } catch (_) {}
     await _donationBox.delete(donationId);
     return true;
   }
 
   /// Cache all donations (clear existing and replace with new data)
   Future<void> cacheAllDonations(List<DonationHiveModel> donations) async {
+    // Log cache operations so accidental clears can be traced in debug
+    try {
+      // ignore: avoid_print
+      print('HiveService.cacheAllDonations: caching ${donations.length} donations (clearing existing)');
+    } catch (_) {}
     await _donationBox.clear();
     for (var donation in donations) {
       await _donationBox.put(donation.donationId, donation);

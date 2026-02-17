@@ -42,7 +42,19 @@ class DonationRepository implements IDonationRepository {
       try {
         final models = await _remoteDataSource.getAllDonations();
         final hiveModels = DonationHiveModel.fromApiModelList(models);
-        await _localDataSource.cacheAllDonations(hiveModels);
+        // Defensive: if remote returns empty list unexpectedly, avoid wiping local cache.
+        if (models.isNotEmpty) {
+          await _localDataSource.cacheAllDonations(hiveModels);
+        } else {
+          // Log a warning so we can trace empty responses that would otherwise clear local DB
+          // Leave local cache intact to prevent accidental data loss when server returns empty.
+          // If empty list is expected behavior, this guard can be removed later.
+          // Use debugPrint (only visible in debug) to avoid noise in production.
+          try {
+            // ignore: avoid_print
+            print('Warning: remote getAllDonations returned EMPTY list — skipping local cache to avoid data loss');
+          } catch (_) {}
+        }
         final entities = DonationApiModel.toEntityList(models);
         return Right(entities);
       } catch (e) {
