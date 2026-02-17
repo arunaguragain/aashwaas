@@ -10,7 +10,6 @@ import 'package:aashwaas/features/settings/presentation/pages/settings_screen.da
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 typedef TabChangeCallback = void Function(int index);
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -68,12 +67,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   StatsCard(
                     label: 'Items Donated',
-                    value: '20',
+                    value: donationState.myDonations.length.toString(),
                     icon: Icons.card_giftcard,
                   ),
                   StatsCard(
                     label: 'Active Listings',
-                    value: '3',
+                    value: donationState.myDonations
+                        .where((d) => d.status != 'completed')
+                        .length
+                        .toString(),
                     icon: Icons.list_alt,
                     cardColor: Colors.green,
                   ),

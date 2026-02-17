@@ -23,6 +23,9 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayName = userName.trim().isEmpty
+        ? 'Donor'
+        : userName.trim().split(RegExp(r'\s+')).first;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: Row(
@@ -41,7 +44,7 @@ class HomeHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello, $userName!',
+                    'Hello, $displayName!',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.deepPurple,

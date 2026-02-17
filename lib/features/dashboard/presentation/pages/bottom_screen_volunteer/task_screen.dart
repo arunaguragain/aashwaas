@@ -54,6 +54,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
             completed: all
                 .where((t) => t.status == TaskStatus.completed)
                 .length,
+            horizontalGap: 4,
           ),
           const SizedBox(height: 8),
           Expanded(

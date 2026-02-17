@@ -5,6 +5,7 @@ class TaskStatsCard extends StatelessWidget {
   final int assigned;
   final int accepted;
   final int completed;
+  final double horizontalGap;
 
   const TaskStatsCard({
     super.key,
@@ -12,6 +13,7 @@ class TaskStatsCard extends StatelessWidget {
     required this.assigned,
     required this.accepted,
     required this.completed,
+    this.horizontalGap = 6,
   });
 
   Widget _buildStat(
@@ -22,7 +24,7 @@ class TaskStatsCard extends StatelessWidget {
   ) {
     return Expanded(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 6),
+        margin: EdgeInsets.symmetric(horizontal: horizontalGap),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,

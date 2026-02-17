@@ -73,20 +73,32 @@ class _EditReviewPageState extends ConsumerState<EditReviewPage> {
           child: Form(
             key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
-                DropdownButtonFormField<double>(
-                  value: _rating,
-                  decoration: const InputDecoration(labelText: 'Rating *'),
-                  items: List.generate(5, (i) => (i + 1).toDouble())
-                      .map(
-                        (v) => DropdownMenuItem(
-                          value: v,
-                          child: Text(v.toString()),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (v) => setState(() => _rating = v ?? _rating),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Rating *', style: TextStyle(fontSize: 16)),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(5, (i) {
+                        final index = i + 1;
+                        final filled = index <= _rating;
+                        return IconButton(
+                          onPressed: () =>
+                              setState(() => _rating = index.toDouble()),
+                          icon: Icon(
+                            filled ? Icons.star : Icons.star_border,
+                            color: Colors.amber,
+                            size: 28,
+                          ),
+                          splashRadius: 20,
+                        );
+                      }),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 DonationFormField(

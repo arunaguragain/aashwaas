@@ -11,6 +11,7 @@ import 'package:aashwaas/features/settings/presentation/pages/settings_info_page
 import 'package:aashwaas/features/settings/presentation/widgets/settings_group.dart';
 import 'package:aashwaas/features/settings/presentation/widgets/settings_switch_tile.dart';
 import 'package:aashwaas/features/settings/presentation/widgets/settings_tile.dart';
+import 'package:aashwaas/features/review/presentation/pages/review_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -184,30 +185,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 icon: Icons.description_outlined,
                 title: 'Terms & Conditions',
                 onTap: () {
-                  AppRoutes.push(
-                    context,
-                    const SettingsInfoPage.terms(),
-                  );
+                  AppRoutes.push(context, const SettingsInfoPage.terms());
+                },
+              ),
+              SettingsTile(
+                icon: Icons.rate_review_outlined,
+                title: 'Reviews',
+                onTap: () {
+                  AppRoutes.push(context, const ReviewPage());
                 },
               ),
               SettingsTile(
                 icon: Icons.privacy_tip_outlined,
                 title: 'Privacy Policy',
                 onTap: () {
-                  AppRoutes.push(
-                    context,
-                    const SettingsInfoPage.privacy(),
-                  );
+                  AppRoutes.push(context, const SettingsInfoPage.privacy());
                 },
               ),
               SettingsTile(
                 icon: Icons.info_outline,
                 title: 'About',
                 onTap: () {
-                  AppRoutes.push(
-                    context,
-                    const SettingsInfoPage.about(),
-                  );
+                  AppRoutes.push(context, const SettingsInfoPage.about());
                 },
                 showDivider: false,
               ),

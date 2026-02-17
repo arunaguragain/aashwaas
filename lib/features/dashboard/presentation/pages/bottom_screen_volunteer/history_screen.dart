@@ -48,6 +48,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             completed: all
                 .where((t) => t.status == TaskStatus.completed)
                 .length,
+            horizontalGap: 4,
           ),
           const SizedBox(height: 8),
           if (items.isEmpty)
