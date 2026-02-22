@@ -321,6 +321,21 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
                     label: 'Quantity *',
                     hintText: 'e.g., 5 pieces',
                     controller: _quantityController,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'This field is required';
+                      }
+                      final trimmed = value.trim();
+                      final number = int.tryParse(trimmed);
+                      if (number == null) {
+                        return 'Enter a valid number';
+                      }
+                      if (number <= 0) {
+                        return 'Quantity must be greater than 0';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   DonationConditionDropdown(

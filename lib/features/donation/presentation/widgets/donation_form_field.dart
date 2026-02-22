@@ -6,6 +6,8 @@ class DonationFormField extends StatelessWidget {
   final TextEditingController controller;
   final bool isMultiline;
   final bool isRequired;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
 
   const DonationFormField({
     super.key,
@@ -14,6 +16,8 @@ class DonationFormField extends StatelessWidget {
     required this.controller,
     this.isMultiline = false,
     this.isRequired = true,
+    this.validator,
+    this.keyboardType,
   });
 
   @override
@@ -21,8 +25,7 @@ class DonationFormField extends StatelessWidget {
     final theme = Theme.of(context);
     final labelColor = theme.textTheme.bodyMedium?.color ?? Colors.black;
     final hintColor = theme.hintColor;
-    final fillColor =
-        theme.inputDecorationTheme.fillColor ?? Colors.grey[100];
+    final fillColor = theme.inputDecorationTheme.fillColor ?? Colors.grey[100];
     final borderColor = theme.dividerColor;
 
     return Column(
@@ -38,6 +41,7 @@ class DonationFormField extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         TextFormField(
+          keyboardType: keyboardType,
           controller: controller,
           maxLines: isMultiline ? 4 : 1,
           minLines: isMultiline ? 4 : 1,
@@ -63,13 +67,15 @@ class DonationFormField extends StatelessWidget {
               vertical: 12,
             ),
           ),
-          validator: (value) {
-            if (!isRequired) return null;
-            if (value == null || value.isEmpty) {
-              return 'This field is required';
-            }
-            return null;
-          },
+          validator:
+              validator ??
+              (value) {
+                if (!isRequired) return null;
+                if (value == null || value.isEmpty) {
+                  return 'This field is required';
+                }
+                return null;
+              },
         ),
       ],
     );
