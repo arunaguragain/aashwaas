@@ -13,6 +13,8 @@ import 'package:aashwaas/features/settings/presentation/widgets/settings_switch_
 import 'package:aashwaas/features/settings/presentation/widgets/settings_tile.dart';
 import 'package:aashwaas/features/review/presentation/pages/review_page.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:aashwaas/features/sensor/presentation/providers/tilt_logout_detector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -28,11 +30,49 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
+  TiltLogoutDetector? _tiltDetector;
 
   @override
   void initState() {
     super.initState();
     _loadPreferences();
+    // Start tilt detector with sustained duration to avoid minor movements
+    _tiltDetector = TiltLogoutDetector(
+      onTiltDetected: _confirmTiltLogout,
+      thresholdDegrees: -30.0,
+    );
+    _tiltDetector!.start();
+  }
+
+  @override
+  void dispose() {
+    _tiltDetector?.stop();
+    super.dispose();
+  }
+
+  Future<void> _confirmTiltLogout() async {
+    if (!mounted) return;
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout detected'),
+        content: const Text('A left tilt was detected. Do you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldLogout == true) {
+      await _handleLogout();
+    }
   }
 
   Future<void> _loadPreferences() async {

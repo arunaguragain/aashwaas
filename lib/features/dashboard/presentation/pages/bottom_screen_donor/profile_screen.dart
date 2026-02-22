@@ -10,8 +10,10 @@ import 'package:aashwaas/features/dashboard/presentation/widgets/profile_impact_
 import 'package:aashwaas/features/dashboard/presentation/widgets/profile_stats_card.dart';
 import 'package:aashwaas/features/donation/presentation/state/donation_state.dart';
 import 'package:aashwaas/features/donation/presentation/view_model/donation_viewmodel.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aashwaas/features/sensor/presentation/providers/tilt_logout_detector.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -22,6 +24,7 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   String? _remoteProfileImage;
+  TiltLogoutDetector? _tiltDetector;
 
   Future<void> _confirmLogout() async {
     final shouldLogout = await showDialog<bool>(
@@ -59,6 +62,51 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       _loadStats();
       _loadProfile();
     });
+
+    _tiltDetector = TiltLogoutDetector(
+      onTiltDetected: _confirmTiltLogout,
+      thresholdDegrees: -30.0,
+    );
+    // use conservative sustained duration and debounce defaults
+    _tiltDetector!.start();
+  }
+
+  @override
+  void dispose() {
+    _tiltDetector?.stop();
+    super.dispose();
+  }
+
+  Future<void> _performTiltLogout() async {
+    await ref.read(authDonorViewmodelProvider.notifier).logout();
+    if (context.mounted) {
+      AppRoutes.pushReplacement(context, const DonorLoginScreen());
+    }
+  }
+
+  Future<void> _confirmTiltLogout() async {
+    if (!mounted) return;
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout detected'),
+        content: const Text('A left tilt was detected. Do you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldLogout == true) {
+      await _performTiltLogout();
+    }
   }
 
   Future<void> _loadStats() async {
