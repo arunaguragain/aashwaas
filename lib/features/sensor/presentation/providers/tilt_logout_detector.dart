@@ -2,11 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:sensors_plus/sensors_plus.dart';
-
-/// Detects a sustained left-tilt (roll below [thresholdDegrees]) and calls [onTiltDetected].
-///
-/// It ignores short/brief movements by requiring the tilt to be held for
-/// [sustainedDuration]. After a detection it debounces new detections for [debounce].
 class TiltLogoutDetector {
   TiltLogoutDetector({
     required this.onTiltDetected,
