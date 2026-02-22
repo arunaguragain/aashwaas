@@ -9,6 +9,7 @@ import 'package:aashwaas/app/routes/app_routes.dart';
 import 'package:aashwaas/features/settings/presentation/pages/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 
 typedef TabChangeCallback = void Function(int index);
 
@@ -26,6 +27,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadRecentDonations();
+      ref.listen<DonationState>(donationViewModelProvider, (previous, next) {
+        if (next.status == DonationStatus.created) {
+          MySnackbar.showSuccess(context, 'Donation submitted successfully');
+        } else if (next.status == DonationStatus.updated) {
+          MySnackbar.showSuccess(context, 'Donation updated successfully');
+        } else if (next.status == DonationStatus.deleted) {
+          MySnackbar.showInfo(context, 'Donation cancelled');
+        } else if (next.status == DonationStatus.error) {
+          MySnackbar.showError(
+            context,
+            next.errorMessage ?? 'Something went wrong',
+          );
+        }
+      });
     });
   }
 

@@ -1,15 +1,16 @@
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/donation_form_field.dart';
 import 'package:aashwaas/features/donation/presentation/widgets/category_dropdown.dart';
 
-class EditWishlistDialog extends StatefulWidget {
+class EditWishlistPage extends StatefulWidget {
   final String initialTitle;
   final String initialCategory;
   final String initialPlanned;
   final String initialNotes;
   final void Function(String, String, String, String) onEdit;
-  const EditWishlistDialog({
+  const EditWishlistPage({
     super.key,
     required this.initialTitle,
     required this.initialCategory,
@@ -19,10 +20,10 @@ class EditWishlistDialog extends StatefulWidget {
   });
 
   @override
-  State<EditWishlistDialog> createState() => _EditWishlistDialogState();
+  State<EditWishlistPage> createState() => _EditWishlistPageState();
 }
 
-class _EditWishlistDialogState extends State<EditWishlistDialog> {
+class _EditWishlistPageState extends State<EditWishlistPage> {
   late TextEditingController _titleController;
   late TextEditingController _plannedController;
   late TextEditingController _notesController;

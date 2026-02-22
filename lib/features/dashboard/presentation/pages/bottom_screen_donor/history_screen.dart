@@ -1,3 +1,4 @@
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/donation_history_card.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/history_summary_row.dart';
 import 'package:aashwaas/features/donation/presentation/state/donation_state.dart';
@@ -18,6 +19,20 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadDonations();
+      ref.listen<DonationState>(donationViewModelProvider, (previous, next) {
+        if (next.status == DonationStatus.created) {
+          MySnackbar.showSuccess(context, 'Donation submitted successfully');
+        } else if (next.status == DonationStatus.updated) {
+          MySnackbar.showSuccess(context, 'Donation updated successfully');
+        } else if (next.status == DonationStatus.deleted) {
+          MySnackbar.showInfo(context, 'Donation cancelled');
+        } else if (next.status == DonationStatus.error) {
+          MySnackbar.showError(
+            context,
+            next.errorMessage ?? 'Something went wrong',
+          );
+        }
+      });
     });
   }
 

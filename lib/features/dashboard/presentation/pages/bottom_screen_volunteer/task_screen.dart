@@ -139,16 +139,59 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                           const SizedBox(width: 8),
                                           ElevatedButton(
                                             onPressed: selected?.taskId != null
-                                                ? () {
-                                                    ref
-                                                        .read(
-                                                          taskViewModelProvider
-                                                              .notifier,
-                                                        )
-                                                        .cancelTask(
-                                                          selected!.taskId!,
+                                                ? () async {
+                                                    final id =
+                                                        selected!.taskId!;
+                                                    final shouldCancel =
+                                                        await showDialog<bool>(
+                                                          context: context,
+                                                          builder: (ctx) => AlertDialog(
+                                                            title: const Text(
+                                                              'Cancel task',
+                                                            ),
+                                                            content: const Text(
+                                                              'Are you sure you want to cancel this task?',
+                                                            ),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () =>
+                                                                    Navigator.pop(
+                                                                      ctx,
+                                                                      false,
+                                                                    ),
+                                                                child:
+                                                                    const Text(
+                                                                      'No',
+                                                                    ),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed: () =>
+                                                                    Navigator.pop(
+                                                                      ctx,
+                                                                      true,
+                                                                    ),
+                                                                child:
+                                                                    const Text(
+                                                                      'Cancel',
+                                                                    ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         );
-                                                    Navigator.of(context).pop();
+
+                                                    if (shouldCancel == true) {
+                                                      await ref
+                                                          .read(
+                                                            taskViewModelProvider
+                                                                .notifier,
+                                                          )
+                                                          .cancelTask(id);
+                                                    }
+
+                                                    if (mounted)
+                                                      Navigator.of(
+                                                        context,
+                                                      ).pop();
                                                   }
                                                 : null,
                                             child: const Text('Cancel'),
@@ -173,9 +216,36 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                   .completeTask(t.taskId!)
                             : null,
                         onCancel: t.taskId != null
-                            ? () => ref
-                                  .read(taskViewModelProvider.notifier)
-                                  .cancelTask(t.taskId!)
+                            ? () async {
+                                final id = t.taskId!;
+                                final shouldCancel = await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text('Cancel task'),
+                                    content: const Text(
+                                      'Are you sure you want to cancel this task?',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(ctx, false),
+                                        child: const Text('No'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(ctx, true),
+                                        child: const Text('Cancel'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+
+                                if (shouldCancel == true) {
+                                  ref
+                                      .read(taskViewModelProvider.notifier)
+                                      .cancelTask(id);
+                                }
+                              }
                             : null,
                       );
                     },

@@ -3,12 +3,14 @@ import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/home_header.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/stats_card.dart';
 import 'package:aashwaas/features/task/domain/entities/task_entity.dart';
+import 'package:aashwaas/features/task/presentation/state/task_state.dart';
 // import 'package:aashwaas/features/dashboard/presentation/widgets/task_card.dart';
 import 'package:aashwaas/features/task/presentation/widgets/task_card.dart';
 import 'package:aashwaas/features/settings/presentation/pages/settings_screen.dart';
 import 'package:aashwaas/features/task/presentation/view_model/task_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 
 typedef VolunteerTabChange = void Function(int index);
 
@@ -23,6 +25,20 @@ class HomeScreen extends ConsumerWidget {
     final profileImage = userSessionService.getUserProfileImage();
 
     final state = ref.watch(taskViewModelProvider);
+    ref.listen<TaskState>(taskViewModelProvider, (previous, next) {
+      if (next.status == TaskViewStatus.accepted) {
+        MySnackbar.showSuccess(context, 'Task accepted');
+      } else if (next.status == TaskViewStatus.completed) {
+        MySnackbar.showSuccess(context, 'Task completed');
+      } else if (next.status == TaskViewStatus.cancelled) {
+        MySnackbar.showInfo(context, 'Task cancelled');
+      } else if (next.status == TaskViewStatus.error) {
+        MySnackbar.showError(
+          context,
+          next.errorMessage ?? 'Something went wrong',
+        );
+      }
+    });
     final myTasks = state.myTasks;
     final activeTasks = myTasks
         .where(
@@ -97,11 +113,33 @@ class HomeScreen extends ConsumerWidget {
                                 .acceptTask(pendingReviewTasks.first.taskId!);
                           }
                         },
-                        onCancel: () {
-                          if (pendingReviewTasks.first.taskId != null) {
+                        onCancel: () async {
+                          final id = pendingReviewTasks.first.taskId;
+                          if (id == null) return;
+                          final shouldCancel = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Cancel task'),
+                              content: const Text(
+                                'Are you sure you want to cancel this task?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: const Text('No'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: const Text('Cancel'),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          if (shouldCancel == true) {
                             ref
                                 .read(taskViewModelProvider.notifier)
-                                .cancelTask(pendingReviewTasks.first.taskId!);
+                                .cancelTask(id);
                           }
                         },
                       )

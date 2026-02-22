@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aashwaas/features/task/presentation/view_model/task_viewmodel.dart';
 import 'package:aashwaas/features/task/presentation/state/task_state.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/task/presentation/widgets/task_card.dart';
 import 'package:aashwaas/features/task/presentation/widgets/task_stats_card.dart';
 import 'package:aashwaas/features/task/domain/entities/task_entity.dart';
@@ -19,6 +20,20 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(taskViewModelProvider.notifier).getMyTasks();
+      ref.listen<TaskState>(taskViewModelProvider, (previous, next) {
+        if (next.status == TaskViewStatus.accepted) {
+          MySnackbar.showSuccess(context, 'Task accepted');
+        } else if (next.status == TaskViewStatus.completed) {
+          MySnackbar.showSuccess(context, 'Task completed');
+        } else if (next.status == TaskViewStatus.cancelled) {
+          MySnackbar.showInfo(context, 'Task cancelled');
+        } else if (next.status == TaskViewStatus.error) {
+          MySnackbar.showError(
+            context,
+            next.errorMessage ?? 'Something went wrong',
+          );
+        }
+      });
     });
   }
 

@@ -6,9 +6,10 @@ import '../widgets/wishlist_card.dart';
 import 'package:aashwaas/features/wishlist/presentation/view_model/wishlist_viewmodel.dart';
 import 'package:aashwaas/features/donation/presentation/pages/add_donation_page.dart';
 import 'package:aashwaas/features/wishlist/presentation/state/wishlist_state.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/wishlist/domain/entities/wishlist_entity.dart';
 import '../widgets/wishlist_summary.dart';
-import 'package:aashwaas/features/wishlist/presentation/pages/edit_wishlist_dialog.dart';
+import 'package:aashwaas/features/wishlist/presentation/pages/edit_wishlist_page.dart';
 
 class WishlistPage extends ConsumerStatefulWidget {
   const WishlistPage({super.key});
@@ -23,6 +24,21 @@ class _WishlistPageState extends ConsumerState<WishlistPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(wishlistViewModelProvider.notifier).getAllWishlists();
+
+      ref.listen<WishlistState>(wishlistViewModelProvider, (previous, next) {
+        if (next.status == WishlistViewStatus.created) {
+          MySnackbar.showSuccess(context, 'Wishlist item added');
+        } else if (next.status == WishlistViewStatus.updated) {
+          MySnackbar.showSuccess(context, 'Wishlist updated');
+        } else if (next.status == WishlistViewStatus.deleted) {
+          MySnackbar.showSuccess(context, 'Wishlist deleted');
+        } else if (next.status == WishlistViewStatus.error) {
+          MySnackbar.showError(
+            context,
+            next.errorMessage ?? 'Something went wrong',
+          );
+        }
+      });
     });
   }
 
@@ -95,7 +111,7 @@ class _WishlistPageState extends ConsumerState<WishlistPage> {
                 onEdit: () async {
                   showDialog(
                     context: context,
-                    builder: (_) => EditWishlistDialog(
+                    builder: (_) => EditWishlistPage(
                       initialTitle: w.title,
                       initialCategory: w.category,
                       initialPlanned: w.plannedDate,
@@ -115,8 +131,29 @@ class _WishlistPageState extends ConsumerState<WishlistPage> {
                     ),
                   );
                 },
-                onDelete: () {
-                  if (w.wishlistId != null) {
+                onDelete: () async {
+                  if (w.wishlistId == null) return;
+                  final shouldDelete = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('Delete wishlist'),
+                      content: const Text(
+                        'Are you sure you want to delete this wishlist item?',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: const Text('No'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: const Text('Delete'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (shouldDelete == true) {
                     ref
                         .read(wishlistViewModelProvider.notifier)
                         .deleteWishlist(w.wishlistId!);

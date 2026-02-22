@@ -7,6 +7,7 @@ import 'package:aashwaas/core/services/storage/user_session_service.dart';
 import 'package:aashwaas/features/auth/data/datasources/remote/donor_auth_remote_datasource.dart';
 import 'package:aashwaas/features/auth/data/datasources/remote/volunteer_auth_remote_datasource.dart';
 import 'package:aashwaas/features/review/presentation/view_model/review_viewmodel.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/review/presentation/state/review_state.dart';
 import 'package:aashwaas/features/review/presentation/pages/edit_review_page.dart';
 
@@ -52,6 +53,21 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(reviewViewModelProvider.notifier).getAllReviews();
+
+      ref.listen<ReviewState>(reviewViewModelProvider, (previous, next) {
+        if (next.status == ReviewViewStatus.created) {
+          MySnackbar.showSuccess(context, 'Review submitted');
+        } else if (next.status == ReviewViewStatus.updated) {
+          MySnackbar.showSuccess(context, 'Review updated successfully');
+        } else if (next.status == ReviewViewStatus.deleted) {
+          MySnackbar.showSuccess(context, 'Review deleted');
+        } else if (next.status == ReviewViewStatus.error) {
+          MySnackbar.showError(
+            context,
+            next.errorMessage ?? 'Something went wrong',
+          );
+        }
+      });
     });
   }
 
@@ -142,8 +158,29 @@ class _ReviewPageState extends ConsumerState<ReviewPage> {
                       }
                     : null,
                 onDelete: isMine
-                    ? () {
-                        if (r.reviewId != null) {
+                    ? () async {
+                        if (r.reviewId == null) return;
+                        final shouldDelete = await showDialog<bool>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text('Delete review'),
+                            content: const Text(
+                              'Are you sure you want to delete this review?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: const Text('No'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (shouldDelete == true) {
                           ref
                               .read(reviewViewModelProvider.notifier)
                               .deleteReview(r.reviewId!);

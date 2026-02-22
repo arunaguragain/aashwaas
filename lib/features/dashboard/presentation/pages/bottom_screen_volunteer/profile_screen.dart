@@ -14,6 +14,7 @@ import 'package:aashwaas/features/task/domain/entities/task_entity.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/sensor/presentation/providers/tilt_logout_detector.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -33,6 +34,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadProfile();
       ref.read(taskViewModelProvider.notifier).getMyTasks();
+      ref.listen<TaskState>(taskViewModelProvider, (previous, next) {
+        if (next.status == TaskViewStatus.accepted) {
+          MySnackbar.showSuccess(context, 'Task accepted');
+        } else if (next.status == TaskViewStatus.completed) {
+          MySnackbar.showSuccess(context, 'Task completed');
+        } else if (next.status == TaskViewStatus.cancelled) {
+          MySnackbar.showInfo(context, 'Task cancelled');
+        } else if (next.status == TaskViewStatus.error) {
+          MySnackbar.showError(
+            context,
+            next.errorMessage ?? 'Something went wrong',
+          );
+        }
+      });
     });
 
     _tiltDetector = TiltLogoutDetector(
