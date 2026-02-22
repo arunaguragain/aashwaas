@@ -14,6 +14,7 @@ class HistoryScreen extends ConsumerStatefulWidget {
 }
 
 class _HistoryScreenState extends ConsumerState<HistoryScreen> {
+  String _selectedStatus = 'all';
   @override
   void initState() {
     super.initState();
@@ -46,6 +47,23 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   Widget build(BuildContext context) {
     final donationState = ref.watch(donationViewModelProvider);
     final myDonations = donationState.myDonations;
+
+    // filter donations based on selected status
+    final filteredDonations = _selectedStatus == 'all'
+        ? myDonations
+        : myDonations.where((d) {
+            final s = (d.status ?? '').toLowerCase();
+            switch (_selectedStatus) {
+              case 'pending':
+                return s == 'pending';
+              case 'delivered':
+                return s == 'delivered' || s == 'completed';
+              case 'assigned':
+                return s == 'assigned';
+              default:
+                return true;
+            }
+          }).toList();
 
     if (donationState.status == DonationStatus.loading) {
       return const Center(child: CircularProgressIndicator());
@@ -110,7 +128,46 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
               pending: pendingCount,
             ),
             const SizedBox(height: 12),
-            ...myDonations.map((item) => DonationHistoryCard(donation: item)),
+            // Filter control
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: const [
+                    SizedBox(width: 8),
+                    // Text(
+                    // 'Filters',
+                    // style: TextStyle(fontWeight: FontWeight.bold),
+                    // ),
+                  ],
+                ),
+                DropdownButton<String>(
+                  value: _selectedStatus,
+                  items: const [
+                    DropdownMenuItem(value: 'all', child: Text('All')),
+                    DropdownMenuItem(value: 'pending', child: Text('Pending')),
+                    DropdownMenuItem(
+                      value: 'delivered',
+                      child: Text('Delivered'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'assigned',
+                      child: Text('Assigned'),
+                    ),
+                  ],
+                  onChanged: (val) {
+                    if (val == null) return;
+                    setState(() {
+                      _selectedStatus = val;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ...filteredDonations.map(
+              (item) => DonationHistoryCard(donation: item),
+            ),
           ],
         ),
       ),
