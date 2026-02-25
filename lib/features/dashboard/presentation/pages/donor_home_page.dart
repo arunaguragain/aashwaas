@@ -3,20 +3,22 @@ import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_don
 import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_donor/home_page.dart';
 import 'package:aashwaas/features/dashboard/presentation/pages/bottom_screen_donor/ngo_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
+import 'package:aashwaas/features/donation/presentation/view_model/donation_viewmodel.dart';
+import 'package:aashwaas/features/donation/presentation/state/donation_state.dart';
 
 import 'bottom_screen_donor/profile_screen.dart';
 
-
-class DonorHomeScreen extends StatefulWidget {
+class DonorHomeScreen extends ConsumerStatefulWidget {
   const DonorHomeScreen({super.key});
 
   @override
-  State<DonorHomeScreen> createState() => _DonorHomeScreenState();
+  ConsumerState<DonorHomeScreen> createState() => _DonorHomeScreenState();
 }
 
-class _DonorHomeScreenState extends State<DonorHomeScreen> {
+class _DonorHomeScreenState extends ConsumerState<DonorHomeScreen> {
   int _selectedIndex = 0;
-
 
   late final List<Widget> lstBottomScreen;
 
@@ -40,6 +42,25 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
       const HistoryScreen(),
       const ProfileScreen(),
     ];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // fetch donations and register a top-level listener so snackbars are shown
+      ref.read(donationViewModelProvider.notifier).getMyDonations();
+      ref.listen<DonationState>(donationViewModelProvider, (previous, next) {
+        if (!mounted) return;
+        if (next.status == DonationStatus.created) {
+          MySnackbar.showSuccess(context, 'Donation submitted successfully');
+        } else if (next.status == DonationStatus.updated) {
+          MySnackbar.showSuccess(context, 'Donation updated successfully');
+        } else if (next.status == DonationStatus.deleted) {
+          MySnackbar.showInfo(context, 'Donation cancelled');
+        } else if (next.status == DonationStatus.error) {
+          MySnackbar.showError(
+            context,
+            next.errorMessage ?? 'Something went wrong',
+          );
+        }
+      });
+    });
   }
 
   void _onDonationPressed() {

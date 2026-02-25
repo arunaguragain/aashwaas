@@ -52,8 +52,11 @@ class _VolunteerLoginScreenState extends ConsumerState<VolunteerLoginScreen> {
     ref.listen<VolunteerAuthState>(authVolunteerViewmodelProvider, (
       previous,
       next,
-    ) {
+    ) async {
       if (next.status == AuthStatus.authenticated) {
+        MySnackbar.showSuccess(context, 'Logged in successfully');
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (!mounted) return;
         Navigator.push(
           context,
           MaterialPageRoute<void>(

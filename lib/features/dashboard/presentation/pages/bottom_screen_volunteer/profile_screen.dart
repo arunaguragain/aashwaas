@@ -66,6 +66,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Future<void> _performTiltLogout() async {
     await ref.read(authVolunteerViewmodelProvider.notifier).logout();
     if (context.mounted) {
+      MySnackbar.showSuccess(context, 'Logged out successfully');
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (!mounted) return;
       AppRoutes.pushReplacement(context, const VolunteerLoginScreen());
     }
   }
@@ -138,6 +141,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (shouldLogout == true) {
       await ref.read(authVolunteerViewmodelProvider.notifier).logout();
       if (context.mounted) {
+        MySnackbar.showSuccess(context, 'Logged out successfully');
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (!mounted) return;
         AppRoutes.pushReplacement(context, const VolunteerLoginScreen());
       }
     }

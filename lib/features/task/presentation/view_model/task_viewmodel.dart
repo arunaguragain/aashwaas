@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aashwaas/features/task/presentation/state/task_state.dart';
+import 'package:aashwaas/features/task/domain/entities/task_entity.dart';
 import 'package:aashwaas/features/task/domain/usecases/get_all_tasks_usecase.dart';
 import 'package:aashwaas/features/task/domain/usecases/get_tasks_by_volunteer_usecase.dart';
 import 'package:aashwaas/features/task/domain/usecases/accept_task_usecase.dart';
@@ -72,7 +73,23 @@ class TaskViewModel extends Notifier<TaskState> {
   }
 
   Future<void> acceptTask(String taskId) async {
-    state = state.copyWith(status: TaskViewStatus.loading);
+    final previous = state.myTasks;
+
+    final optimistic = previous
+        .map(
+          (t) => t.taskId == taskId
+              ? t.copyWith(
+                  status: TaskStatus.accepted,
+                  acceptedAt: DateTime.now(),
+                )
+              : t,
+        )
+        .toList();
+
+    state = state.copyWith(
+      myTasks: optimistic,
+      status: TaskViewStatus.accepted,
+    );
 
     final result = await _acceptTaskUsecase(AcceptTaskParams(taskId: taskId));
 
@@ -80,16 +97,32 @@ class TaskViewModel extends Notifier<TaskState> {
       (failure) => state = state.copyWith(
         status: TaskViewStatus.error,
         errorMessage: failure.message,
+        myTasks: previous,
       ),
       (success) {
-        state = state.copyWith(status: TaskViewStatus.accepted);
-        getAllTasks();
+        state = state.copyWith(status: TaskViewStatus.loaded);
       },
     );
   }
 
   Future<void> completeTask(String taskId) async {
-    state = state.copyWith(status: TaskViewStatus.loading);
+    final previous = state.myTasks;
+
+    final optimistic = previous
+        .map(
+          (t) => t.taskId == taskId
+              ? t.copyWith(
+                  status: TaskStatus.completed,
+                  completedAt: DateTime.now(),
+                )
+              : t,
+        )
+        .toList();
+
+    state = state.copyWith(
+      myTasks: optimistic,
+      status: TaskViewStatus.completed,
+    );
 
     final result = await _completeTaskUsecase(
       CompleteTaskParams(taskId: taskId),
@@ -99,16 +132,32 @@ class TaskViewModel extends Notifier<TaskState> {
       (failure) => state = state.copyWith(
         status: TaskViewStatus.error,
         errorMessage: failure.message,
+        myTasks: previous,
       ),
       (success) {
-        state = state.copyWith(status: TaskViewStatus.completed);
-        getAllTasks();
+        state = state.copyWith(status: TaskViewStatus.loaded);
       },
     );
   }
 
   Future<void> cancelTask(String taskId) async {
-    state = state.copyWith(status: TaskViewStatus.loading);
+    final previous = state.myTasks;
+
+    final optimistic = previous
+        .map(
+          (t) => t.taskId == taskId
+              ? t.copyWith(
+                  status: TaskStatus.rejected,
+                  updatedAt: DateTime.now(),
+                )
+              : t,
+        )
+        .toList();
+
+    state = state.copyWith(
+      myTasks: optimistic,
+      status: TaskViewStatus.cancelled,
+    );
 
     final result = await _cancelTaskUsecase(CancelTaskParams(taskId: taskId));
 
@@ -116,10 +165,10 @@ class TaskViewModel extends Notifier<TaskState> {
       (failure) => state = state.copyWith(
         status: TaskViewStatus.error,
         errorMessage: failure.message,
+        myTasks: previous,
       ),
       (success) {
-        state = state.copyWith(status: TaskViewStatus.cancelled);
-        getAllTasks();
+        state = state.copyWith(status: TaskViewStatus.loaded);
       },
     );
   }

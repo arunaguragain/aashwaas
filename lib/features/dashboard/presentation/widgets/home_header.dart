@@ -73,13 +73,6 @@ class HomeHeader extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: IconButton(
-                  icon: const Icon(Icons.notifications_outlined),
-                  onPressed: onNotificationPressed,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: IconButton(
                   icon: const Icon(Icons.menu),
                   onPressed: onMenuPressed,
                 ),

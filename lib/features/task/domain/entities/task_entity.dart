@@ -29,18 +29,46 @@ class TaskEntity extends Equatable {
     this.updatedAt,
   });
 
+  TaskEntity copyWith({
+    String? taskId,
+    String? title,
+    String? donationId,
+    String? volunteerId,
+    String? ngoId,
+    TaskStatus? status,
+    DateTime? assignedAt,
+    DateTime? acceptedAt,
+    DateTime? completedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return TaskEntity(
+      taskId: taskId ?? this.taskId,
+      title: title ?? this.title,
+      donationId: donationId ?? this.donationId,
+      volunteerId: volunteerId ?? this.volunteerId,
+      ngoId: ngoId ?? this.ngoId,
+      status: status ?? this.status,
+      assignedAt: assignedAt ?? this.assignedAt,
+      acceptedAt: acceptedAt ?? this.acceptedAt,
+      completedAt: completedAt ?? this.completedAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
   @override
   List<Object?> get props => [
-        taskId,
-        title,
-        donationId,
-        volunteerId,
-        ngoId,
-        status,
-        assignedAt,
-        acceptedAt,
-        completedAt,
-        createdAt,
-        updatedAt,
-      ];
+    taskId,
+    title,
+    donationId,
+    volunteerId,
+    ngoId,
+    status,
+    assignedAt,
+    acceptedAt,
+    completedAt,
+    createdAt,
+    updatedAt,
+  ];
 }

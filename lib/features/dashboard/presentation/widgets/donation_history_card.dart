@@ -1,3 +1,4 @@
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/donation_image_placeholder.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/history_category_pill.dart';
 import 'package:aashwaas/features/dashboard/presentation/widgets/history_info_row.dart';
@@ -167,6 +168,10 @@ class DonationHistoryCard extends ConsumerWidget {
                                   await ref
                                       .read(donationViewModelProvider.notifier)
                                       .deleteDonation(donation.donationId!);
+                                  MySnackbar.showInfo(
+                                    context,
+                                    'Donation cancelled',
+                                  );
                                 }
                               },
                               child: const Text('Yes'),

@@ -48,8 +48,14 @@ class _DonorLoginScreenState extends ConsumerState<DonorLoginScreen> {
     final _gap = SizedBox(height: 15);
 
     final donorAuthState = ref.watch(authDonorViewmodelProvider);
-    ref.listen<DonorAuthState>(authDonorViewmodelProvider, (previous, next) {
+    ref.listen<DonorAuthState>(authDonorViewmodelProvider, (
+      previous,
+      next,
+    ) async {
       if (next.status == AuthStatus.authenticated) {
+        MySnackbar.showSuccess(context, 'Logged in successfully');
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (!mounted) return;
         Navigator.push(
           context,
           MaterialPageRoute<void>(

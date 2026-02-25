@@ -1,5 +1,6 @@
 import 'package:aashwaas/app/routes/app_routes.dart';
 import 'package:aashwaas/core/services/storage/user_session_service.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
 import 'package:aashwaas/features/auth/presentation/view_model/donor_auth_viewmodel.dart';
@@ -50,6 +51,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (shouldLogout == true) {
       await ref.read(authDonorViewmodelProvider.notifier).logout();
       if (context.mounted) {
+        MySnackbar.showSuccess(context, 'Logged out successfully');
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (!mounted) return;
         AppRoutes.pushReplacement(context, const DonorLoginScreen());
       }
     }
@@ -80,6 +84,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Future<void> _performTiltLogout() async {
     await ref.read(authDonorViewmodelProvider.notifier).logout();
     if (context.mounted) {
+      MySnackbar.showSuccess(context, 'Logged out successfully');
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (!mounted) return;
       AppRoutes.pushReplacement(context, const DonorLoginScreen());
     }
   }

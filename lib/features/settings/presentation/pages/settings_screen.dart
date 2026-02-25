@@ -150,6 +150,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       return;
     }
     setState(() => _darkModeEnabled = value);
+    MySnackbar.showInfo(
+      context,
+      value ? 'Dark mode enabled' : 'Dark mode disabled',
+    );
   }
 
   Future<void> _handleLogout() async {
@@ -161,6 +165,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       if (!mounted) {
         return;
       }
+      MySnackbar.showSuccess(context, 'Logged out successfully');
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (!mounted) return;
       AppRoutes.pushAndRemoveUntil(context, const VolunteerLoginScreen());
       return;
     }
@@ -169,6 +176,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (!mounted) {
       return;
     }
+    MySnackbar.showSuccess(context, 'Logged out successfully');
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
     AppRoutes.pushAndRemoveUntil(context, const DonorLoginScreen());
   }
 

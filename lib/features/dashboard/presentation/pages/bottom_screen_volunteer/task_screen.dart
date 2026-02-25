@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aashwaas/features/task/presentation/view_model/task_viewmodel.dart';
+import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/task/presentation/state/task_state.dart';
 import 'package:aashwaas/features/task/domain/entities/task_entity.dart';
 import 'package:aashwaas/features/task/presentation/widgets/task_card.dart';
@@ -14,6 +15,7 @@ class TaskScreen extends ConsumerStatefulWidget {
 }
 
 class _TaskScreenState extends ConsumerState<TaskScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -105,16 +107,24 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                         children: [
                                           ElevatedButton(
                                             onPressed: selected?.taskId != null
-                                                ? () {
-                                                    ref
+                                                ? () async {
+                                                    final id =
+                                                        selected!.taskId!;
+                                                    await ref
                                                         .read(
                                                           taskViewModelProvider
                                                               .notifier,
                                                         )
-                                                        .acceptTask(
-                                                          selected!.taskId!,
-                                                        );
-                                                    Navigator.of(context).pop();
+                                                        .acceptTask(id);
+                                                    if (mounted) {
+                                                      MySnackbar.showSuccess(
+                                                        context,
+                                                        'Task accepted',
+                                                      );
+                                                      Navigator.of(
+                                                        context,
+                                                      ).pop();
+                                                    }
                                                   }
                                                 : null,
                                             child: const Text('Accept'),
@@ -122,16 +132,24 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                           const SizedBox(width: 8),
                                           ElevatedButton(
                                             onPressed: selected?.taskId != null
-                                                ? () {
-                                                    ref
+                                                ? () async {
+                                                    final id =
+                                                        selected!.taskId!;
+                                                    await ref
                                                         .read(
                                                           taskViewModelProvider
                                                               .notifier,
                                                         )
-                                                        .completeTask(
-                                                          selected!.taskId!,
-                                                        );
-                                                    Navigator.of(context).pop();
+                                                        .completeTask(id);
+                                                    if (mounted) {
+                                                      MySnackbar.showSuccess(
+                                                        context,
+                                                        'Task completed',
+                                                      );
+                                                      Navigator.of(
+                                                        context,
+                                                      ).pop();
+                                                    }
                                                   }
                                                 : null,
                                             child: const Text('Complete'),
@@ -186,12 +204,19 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                                                 .notifier,
                                                           )
                                                           .cancelTask(id);
+                                                      if (mounted) {
+                                                        MySnackbar.showInfo(
+                                                          context,
+                                                          'Task declined',
+                                                        );
+                                                      }
                                                     }
 
-                                                    if (mounted)
+                                                    if (mounted) {
                                                       Navigator.of(
                                                         context,
                                                       ).pop();
+                                                    }
                                                   }
                                                 : null,
                                             child: const Text('Cancel'),
@@ -206,14 +231,32 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                           }
                         },
                         onAccept: t.taskId != null
-                            ? () => ref
-                                  .read(taskViewModelProvider.notifier)
-                                  .acceptTask(t.taskId!)
+                            ? () async {
+                                final id = t.taskId!;
+                                await ref
+                                    .read(taskViewModelProvider.notifier)
+                                    .acceptTask(id);
+                                if (mounted) {
+                                  MySnackbar.showSuccess(
+                                    context,
+                                    'Task accepted',
+                                  );
+                                }
+                              }
                             : null,
                         onComplete: t.taskId != null
-                            ? () => ref
-                                  .read(taskViewModelProvider.notifier)
-                                  .completeTask(t.taskId!)
+                            ? () async {
+                                final id = t.taskId!;
+                                await ref
+                                    .read(taskViewModelProvider.notifier)
+                                    .completeTask(id);
+                                if (mounted) {
+                                  MySnackbar.showSuccess(
+                                    context,
+                                    'Task completed',
+                                  );
+                                }
+                              }
                             : null,
                         onCancel: t.taskId != null
                             ? () async {
@@ -241,9 +284,15 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                 );
 
                                 if (shouldCancel == true) {
-                                  ref
+                                  await ref
                                       .read(taskViewModelProvider.notifier)
                                       .cancelTask(id);
+                                  if (mounted) {
+                                    MySnackbar.showInfo(
+                                      context,
+                                      'Task declined',
+                                    );
+                                  }
                                 }
                               }
                             : null,

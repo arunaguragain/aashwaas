@@ -2,6 +2,7 @@ import 'package:aashwaas/app/theme/theme_data.dart';
 import 'package:aashwaas/core/providers/theme_mode_provider.dart';
 import 'package:aashwaas/features/splash/presentation/pages/splash_page.dart';
 import 'package:flutter/material.dart';
+import 'package:aashwaas/core/utils/scaffold_messenger_key.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class App extends ConsumerWidget {
@@ -12,6 +13,7 @@ class App extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp(
+      scaffoldMessengerKey: scaffoldMessengerKey,
       debugShowCheckedModeBanner: false,
       theme: getApplicationTheme(),
       darkTheme: getDarkTheme(),

@@ -4,6 +4,9 @@ import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/auth/domain/usecases/donor_forgot_password_usecase.dart';
 import 'package:aashwaas/features/auth/domain/usecases/volunteer_forgot_password_usecase.dart';
 import 'package:flutter/material.dart';
+import 'package:aashwaas/app/routes/app_routes.dart';
+import 'package:aashwaas/features/auth/presentation/pages/donor_login_page.dart';
+import 'package:aashwaas/features/auth/presentation/pages/volunteer_login_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ForgotPasswordPage extends ConsumerStatefulWidget {
@@ -44,12 +47,11 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         context,
         'Check your email for reset instructions',
       );
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute<void>(
-      // builder: (context) => ResetPasswordPage(token: '', role: widget.role),
-      //   ),
-      // );
+      if (widget.role == 'donor') {
+        AppRoutes.pushReplacement(context, const DonorLoginScreen());
+      } else {
+        AppRoutes.pushReplacement(context, const VolunteerLoginScreen());
+      }
     } catch (e) {
       MySnackbar.showError(context, e.toString());
     } finally {

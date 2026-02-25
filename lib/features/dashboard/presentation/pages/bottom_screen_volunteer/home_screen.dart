@@ -106,11 +106,13 @@ class HomeScreen extends ConsumerWidget {
                     if (pendingReviewTasks.isNotEmpty)
                       TaskCard(
                         task: pendingReviewTasks.first,
-                        onAccept: () {
+                        onAccept: () async {
                           if (pendingReviewTasks.first.taskId != null) {
-                            ref
+                            final id = pendingReviewTasks.first.taskId!;
+                            await ref
                                 .read(taskViewModelProvider.notifier)
-                                .acceptTask(pendingReviewTasks.first.taskId!);
+                                .acceptTask(id);
+                            MySnackbar.showSuccess(context, 'Task accepted');
                           }
                         },
                         onCancel: () async {
@@ -137,9 +139,10 @@ class HomeScreen extends ConsumerWidget {
                           );
 
                           if (shouldCancel == true) {
-                            ref
+                            await ref
                                 .read(taskViewModelProvider.notifier)
                                 .cancelTask(id);
+                            MySnackbar.showInfo(context, 'Task declined');
                           }
                         },
                       )

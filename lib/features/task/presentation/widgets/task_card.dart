@@ -1,3 +1,4 @@
+import 'package:aashwaas/features/auth/data/datasources/remote/volunteer_auth_remote_datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aashwaas/features/task/domain/entities/task_entity.dart';
@@ -30,6 +31,7 @@ class TaskCard extends ConsumerStatefulWidget {
 class _TaskCardState extends ConsumerState<TaskCard> {
   String? pickupLocation;
   String? donorContact;
+  String? donorName;
   String? dropAddress;
   String? ngoContact;
   bool _loading = false;
@@ -60,9 +62,20 @@ class _TaskCardState extends ConsumerState<TaskCard> {
               final donorApi = await ref
                   .read(authDonorRemoteProvider)
                   .getDonorById(donorId);
-              final contact = donorApi.phoneNumber ?? donorApi.email;
-              if (mounted) setState(() => donorContact = contact);
-            } catch (_) {}
+              final contact = donorApi.email ?? donorApi.phoneNumber;
+              final name = donorApi.fullName;
+              if (mounted) {
+                setState(() {
+                  donorContact = contact;
+                  donorName = name;
+                });
+              }
+            } catch (e) {
+              try {
+                // ignore: avoid_print
+                print('Failed to fetch donor by id $donorId: $e');
+              } catch (_) {}
+            }
           }
         });
       } catch (_) {}
@@ -176,7 +189,7 @@ class _TaskCardState extends ConsumerState<TaskCard> {
                                 const SizedBox(width: 6),
                                 Expanded(
                                   child: Text(
-                                    'Contact: ${donorContact ?? task.volunteerId}',
+                                    'Contact: ${donorContact ?? '-'}',
                                     style: const TextStyle(
                                       color: Colors.black87,
                                     ),
