@@ -9,8 +9,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveService().init();
   final sharedPrefs = await SharedPreferences.getInstance();
-  runApp( 
+  runApp(
     ProviderScope(
       overrides: [sharedPreferencesProvider.overrideWithValue(sharedPrefs)],
-      child: App()));
+      child: App(),
+    ),
+  );
 }

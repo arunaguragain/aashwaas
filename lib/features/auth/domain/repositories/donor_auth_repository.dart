@@ -20,4 +20,6 @@ abstract interface class IDonorAuthRepository {
     String userId,
     String filePath,
   );
+  Future<Either<Failure, void>> forgotPassword(String email);
+  Future<Either<Failure, bool>> resetPassword(String token, String newPassword);
 }

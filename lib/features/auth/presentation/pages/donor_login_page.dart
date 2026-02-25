@@ -4,6 +4,7 @@ import 'package:aashwaas/features/auth/presentation/state/donor_auth_state.dart'
 import 'package:aashwaas/features/auth/presentation/view_model/donor_auth_viewmodel.dart';
 import 'package:aashwaas/features/dashboard/presentation/pages/donor_home_page.dart';
 import 'package:aashwaas/features/auth/presentation/pages/volunteer_login_page.dart';
+import 'package:aashwaas/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/core/widgets/my_textformfield.dart';
 import 'package:flutter/material.dart';
@@ -130,7 +131,15 @@ class _DonorLoginScreenState extends ConsumerState<DonorLoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (context) =>
+                                const ForgotPasswordPage(role: 'donor'),
+                          ),
+                        );
+                      },
                       child: Text("Forget Password?"),
                     ),
                   ],

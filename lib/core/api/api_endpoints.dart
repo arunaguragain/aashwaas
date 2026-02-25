@@ -84,4 +84,8 @@ class ApiEndpoints {
   // ============ Profile Pictures ============
   static String profilePicture(String filename) =>
       '$mediaServerUrl/item_photos/$filename';
+
+  // ============ Auth Password Endpoints ============
+  static const String requestPasswordReset = '/auth/request-password-reset';
+  static String resetPassword(String token) => '/auth/reset-password/$token';
 }

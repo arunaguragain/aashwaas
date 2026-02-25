@@ -4,6 +4,7 @@ import 'package:aashwaas/features/auth/presentation/state/volunteer_auth_state.d
 import 'package:aashwaas/features/auth/presentation/view_model/volunteer_auth_viewmodel.dart';
 import 'package:aashwaas/features/dashboard/presentation/pages/volunteer_home_page.dart';
 import 'package:aashwaas/features/auth/presentation/pages/volunteer_register_page.dart';
+import 'package:aashwaas/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:aashwaas/core/widgets/my_button.dart';
 import 'package:aashwaas/core/widgets/my_textformfield.dart';
 import 'package:flutter/material.dart';
@@ -134,7 +135,15 @@ class _VolunteerLoginScreenState extends ConsumerState<VolunteerLoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (context) =>
+                                const ForgotPasswordPage(role: 'volunteer'),
+                          ),
+                        );
+                      },
                       child: Text("Forget Password?"),
                     ),
                   ],

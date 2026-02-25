@@ -128,7 +128,9 @@ class DonorAuthRepository implements IDonorAuthRepository {
       }
     } else {
       try {
-        final exisitingUser = await _authDonorDataSource.getDonorByEmail(donor.email);
+        final exisitingUser = await _authDonorDataSource.getDonorByEmail(
+          donor.email,
+        );
         if (exisitingUser != null) {
           return const Left(
             LocalDatabaseFailure(message: "Email already registered"),
@@ -191,6 +193,55 @@ class DonorAuthRepository implements IDonorAuthRepository {
           filePath,
         );
         return Right(result);
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> forgotPassword(String email) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        await _authDonorRemoteDataSource.forgotPassword(email);
+        return const Right(null);
+      } on DioException catch (e) {
+        return Left(
+          ApiFailure(
+            message:
+                e.response?.data['message'] ?? 'Failed to send reset email',
+            statuscode: e.response?.statusCode,
+          ),
+        );
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> resetPassword(
+    String token,
+    String newPassword,
+  ) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final success = await _authDonorRemoteDataSource.resetPassword(
+          token,
+          newPassword,
+        );
+        return Right(success);
+      } on DioException catch (e) {
+        return Left(
+          ApiFailure(
+            message: e.response?.data['message'] ?? 'Failed to reset password',
+            statuscode: e.response?.statusCode,
+          ),
+        );
       } catch (e) {
         return Left(ApiFailure(message: e.toString()));
       }

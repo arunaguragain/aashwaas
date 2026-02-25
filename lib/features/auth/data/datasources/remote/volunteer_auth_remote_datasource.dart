@@ -159,4 +159,21 @@ class AuthVolunteerRemoteDatasource implements IVolunteerAuthRemoteDataSource {
     }
     return fileName;
   }
+
+  @override
+  Future<void> forgotPassword(String email) async {
+    await _apiClient.post(
+      ApiEndpoints.requestPasswordReset,
+      data: {'email': email},
+    );
+  }
+
+  @override
+  Future<bool> resetPassword(String token, String newPassword) async {
+    final response = await _apiClient.post(
+      ApiEndpoints.resetPassword(token),
+      data: {'newPassword': newPassword},
+    );
+    return response.data['success'] == true;
+  }
 }

@@ -12,8 +12,12 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final authVolunteerRepositoryProvider = Provider<IVolunteerAuthRepository>((ref) {
-  final authVolunteerLocalDataSource = ref.read(authVolunteerLocalDatasourceProvider);
+final authVolunteerRepositoryProvider = Provider<IVolunteerAuthRepository>((
+  ref,
+) {
+  final authVolunteerLocalDataSource = ref.read(
+    authVolunteerLocalDatasourceProvider,
+  );
   final authVolunteerRemoteDataSource = ref.read(authVolunteerRemoteProvider);
   final networkInfo = ref.read(networkInfoProvider);
   final userSessionService = ref.read(userSessionServiceProvider);
@@ -82,7 +86,10 @@ class VolunteerAuthRepository implements IVolunteerAuthRepository {
       }
     } else {
       try {
-        final model = await _authVolunteerDataSource.loginVolunteer(email, password);
+        final model = await _authVolunteerDataSource.loginVolunteer(
+          email,
+          password,
+        );
         if (model != null) {
           final entity = model.toEntity();
           return Right(entity);
@@ -110,7 +117,9 @@ class VolunteerAuthRepository implements IVolunteerAuthRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> registerVolunteer(VolunteerAuthEntity volunteer,) async {
+  Future<Either<Failure, bool>> registerVolunteer(
+    VolunteerAuthEntity volunteer,
+  ) async {
     if (await _networkInfo.isConnected) {
       try {
         final apiModel = VolunteerAuthApiModel.fromEntity(volunteer);
@@ -128,7 +137,8 @@ class VolunteerAuthRepository implements IVolunteerAuthRepository {
       }
     } else {
       try {
-        final exisitingUser = await _authVolunteerDataSource.getVolunteerByEmail(volunteer.email);
+        final exisitingUser = await _authVolunteerDataSource
+            .getVolunteerByEmail(volunteer.email);
         if (exisitingUser != null) {
           return const Left(
             LocalDatabaseFailure(message: "Email already registered"),
@@ -166,10 +176,8 @@ class VolunteerAuthRepository implements IVolunteerAuthRepository {
         if (profilePicture != null && profilePicture.trim().isNotEmpty) {
           payload['profilePicture'] = profilePicture;
         }
-        final updated = await _authVolunteerRemoteDataSource.updateVolunteerProfile(
-          userId,
-          payload,
-        );
+        final updated = await _authVolunteerRemoteDataSource
+            .updateVolunteerProfile(userId, payload);
         return Right(updated.toEntity());
       } catch (e) {
         return Left(ApiFailure(message: e.toString()));
@@ -186,11 +194,58 @@ class VolunteerAuthRepository implements IVolunteerAuthRepository {
   ) async {
     if (await _networkInfo.isConnected) {
       try {
-        final result = await _authVolunteerRemoteDataSource.uploadVolunteerPhoto(
-          userId,
-          filePath,
-        );
+        final result = await _authVolunteerRemoteDataSource
+            .uploadVolunteerPhoto(userId, filePath);
         return Right(result);
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> forgotPassword(String email) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        await _authVolunteerRemoteDataSource.forgotPassword(email);
+        return const Right(null);
+      } on DioException catch (e) {
+        return Left(
+          ApiFailure(
+            message:
+                e.response?.data['message'] ?? 'Failed to send reset email',
+            statuscode: e.response?.statusCode,
+          ),
+        );
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> resetPassword(
+    String token,
+    String newPassword,
+  ) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final success = await _authVolunteerRemoteDataSource.resetPassword(
+          token,
+          newPassword,
+        );
+        return Right(success);
+      } on DioException catch (e) {
+        return Left(
+          ApiFailure(
+            message: e.response?.data['message'] ?? 'Failed to reset password',
+            statuscode: e.response?.statusCode,
+          ),
+        );
       } catch (e) {
         return Left(ApiFailure(message: e.toString()));
       }

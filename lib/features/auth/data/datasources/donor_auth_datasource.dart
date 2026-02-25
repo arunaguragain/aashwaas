@@ -20,4 +20,6 @@ abstract interface class IDonorAuthRemoteDataSource{
     Map<String, dynamic> payload,
   );
   Future<String> uploadDonorPhoto(String authId, String filePath);
+  Future<void> forgotPassword(String email);
+  Future<bool> resetPassword(String token, String newPassword);
 }
