@@ -11,8 +11,10 @@ abstract interface class IVolunteerAuthLocalDataSource {
   Future<VolunteerAuthHiveModel?> getVolunteerByEmail(String email);
 }
 
-abstract interface class IVolunteerAuthRemoteDataSource{
-  Future<VolunteerAuthApiModel> registerVolunteer(VolunteerAuthApiModel volunteer);
+abstract interface class IVolunteerAuthRemoteDataSource {
+  Future<VolunteerAuthApiModel> registerVolunteer(
+    VolunteerAuthApiModel volunteer,
+  );
   Future<VolunteerAuthApiModel?> loginVolunteer(String email, String password);
   Future<VolunteerAuthApiModel> getVolunteerById(String authId);
   Future<VolunteerAuthApiModel> updateVolunteerProfile(
@@ -22,4 +24,11 @@ abstract interface class IVolunteerAuthRemoteDataSource{
   Future<String> uploadVolunteerPhoto(String authId, String filePath);
   Future<void> forgotPassword(String email);
   Future<bool> resetPassword(String token, String newPassword);
+  // OTP based password reset
+  Future<void> requestPasswordOtp(String email);
+  Future<bool> resetPasswordWithOtp(
+    String email,
+    String otp,
+    String newPassword,
+  );
 }

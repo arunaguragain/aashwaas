@@ -186,33 +186,10 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
                   ),
                 ),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: Text("Forget Password?"),
-                    ),
-                  ],
-                ),
+                _gap,
 
                 MyButton(
                   onPressed: _handleSignup,
-                  // onPressed: () {
-                  //   // if (_formKey.currentState!.validate()) {
-                  //   //   Navigator.push(
-                  //   //     context,
-                  //   //     MaterialPageRoute<void>(
-                  //   //       builder: (context) => const DonorLoginScreen(),
-                  //   //     ),
-                  //   //   );
-
-                  //   //   showMySnackBar(
-                  //   //     context: context,
-                  //   //     message: "Registered as Donor",
-                  //   //   );
-                  //   // }
-                  // },
                   isLoading: donorAuthState.status == AuthStatus.loading,
                   text: "Register",
                   color: Colors.blueAccent,

@@ -22,4 +22,10 @@ abstract interface class IDonorAuthRepository {
   );
   Future<Either<Failure, void>> forgotPassword(String email);
   Future<Either<Failure, bool>> resetPassword(String token, String newPassword);
+  Future<Either<Failure, void>> requestPasswordOtp(String email);
+  Future<Either<Failure, bool>> resetPasswordWithOtp(
+    String email,
+    String otp,
+    String newPassword,
+  );
 }

@@ -89,4 +89,7 @@ class ApiEndpoints {
   // ============ Auth Password Endpoints ============
   static const String requestPasswordReset = '/auth/request-password-reset';
   static String resetPassword(String token) => '/auth/reset-password/$token';
+  // OTP based password reset
+  static const String requestPasswordOtp = '/auth/request-password-otp';
+  static const String resetPasswordOtp = '/auth/reset-password-otp';
 }

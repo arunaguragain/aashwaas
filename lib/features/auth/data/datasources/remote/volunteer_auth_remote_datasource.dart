@@ -162,8 +162,9 @@ class AuthVolunteerRemoteDatasource implements IVolunteerAuthRemoteDataSource {
 
   @override
   Future<void> forgotPassword(String email) async {
+    // Use OTP-based request endpoint
     await _apiClient.post(
-      ApiEndpoints.requestPasswordReset,
+      ApiEndpoints.requestPasswordOtp,
       data: {'email': email},
     );
   }
@@ -173,6 +174,27 @@ class AuthVolunteerRemoteDatasource implements IVolunteerAuthRemoteDataSource {
     final response = await _apiClient.post(
       ApiEndpoints.resetPassword(token),
       data: {'newPassword': newPassword},
+    );
+    return response.data['success'] == true;
+  }
+
+  @override
+  Future<void> requestPasswordOtp(String email) async {
+    await _apiClient.post(
+      ApiEndpoints.requestPasswordOtp,
+      data: {'email': email},
+    );
+  }
+
+  @override
+  Future<bool> resetPasswordWithOtp(
+    String email,
+    String otp,
+    String newPassword,
+  ) async {
+    final response = await _apiClient.post(
+      ApiEndpoints.resetPasswordOtp,
+      data: {'email': email, 'otp': otp, 'newPassword': newPassword},
     );
     return response.data['success'] == true;
   }

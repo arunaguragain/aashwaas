@@ -205,7 +205,7 @@ class DonorAuthRepository implements IDonorAuthRepository {
   Future<Either<Failure, void>> forgotPassword(String email) async {
     if (await _networkInfo.isConnected) {
       try {
-        await _authDonorRemoteDataSource.forgotPassword(email);
+        await _authDonorRemoteDataSource.requestPasswordOtp(email);
         return const Right(null);
       } on DioException catch (e) {
         return Left(
@@ -232,6 +232,56 @@ class DonorAuthRepository implements IDonorAuthRepository {
       try {
         final success = await _authDonorRemoteDataSource.resetPassword(
           token,
+          newPassword,
+        );
+        return Right(success);
+      } on DioException catch (e) {
+        return Left(
+          ApiFailure(
+            message: e.response?.data['message'] ?? 'Failed to reset password',
+            statuscode: e.response?.statusCode,
+          ),
+        );
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> requestPasswordOtp(String email) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        await _authDonorRemoteDataSource.requestPasswordOtp(email);
+        return const Right(null);
+      } on DioException catch (e) {
+        return Left(
+          ApiFailure(
+            message: e.response?.data['message'] ?? 'Failed to send OTP',
+            statuscode: e.response?.statusCode,
+          ),
+        );
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> resetPasswordWithOtp(
+    String email,
+    String otp,
+    String newPassword,
+  ) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final success = await _authDonorRemoteDataSource.resetPasswordWithOtp(
+          email,
+          otp,
           newPassword,
         );
         return Right(success);

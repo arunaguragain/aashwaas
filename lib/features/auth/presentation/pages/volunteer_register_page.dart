@@ -189,33 +189,10 @@ class _VolunteerRegisterScreenState
                   ),
                 ),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: Text("Forget Password?"),
-                    ),
-                  ],
-                ),
+                _gap,
 
                 MyButton(
                   onPressed: _handleSignup,
-                  // onPressed: () {
-                  //   if (_formKey.currentState!.validate()) {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute<void>(
-                  //         builder: (context) => const VolunteerLoginScreen(),
-                  //       ),
-                  //     );
-
-                  //     showMySnackBar(
-                  //       context: context,
-                  //       message: "Registered as Volunteer",
-                  //     );
-                  //   }
-                  // },
                   isLoading: volunteerAuthState.status == AuthStatus.loading,
                   text: "Register",
                   color: Colors.blueAccent,

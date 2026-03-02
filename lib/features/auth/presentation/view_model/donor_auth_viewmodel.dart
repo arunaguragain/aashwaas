@@ -8,7 +8,7 @@ import 'package:aashwaas/features/auth/presentation/state/donor_auth_state.dart'
 import 'package:aashwaas/core/api/api_client.dart';
 import 'package:aashwaas/core/services/storage/token_service.dart';
 import 'package:aashwaas/features/auth/data/models/donor_auth_api_model.dart';
-import 'package:aashwaas/core/services/google_sign_in_service.dart';
+import 'package:aashwaas/features/auth/data/datasources/remote/google_sign_in_remote.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aashwaas/core/api/api_endpoints.dart';
 
@@ -70,7 +70,7 @@ class DonorAuthViewmodel extends Notifier<DonorAuthState> {
   Future<void> googleSignIn({bool registerMode = false}) async {
     state = state.copyWith(status: AuthStatus.loading);
     try {
-      final googleService = GoogleSignInService();
+      final googleService = GoogleSignInRemote();
       // Force account chooser to appear
       final idToken = await googleService.signInAndGetIdToken(
         forceAccountSelection: true,

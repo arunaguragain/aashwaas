@@ -11,7 +11,7 @@ abstract interface class IDonorAuthLocalDataSource {
   Future<DonorAuthHiveModel?> getDonorByEmail(String email);
 }
 
-abstract interface class IDonorAuthRemoteDataSource{
+abstract interface class IDonorAuthRemoteDataSource {
   Future<DonorAuthApiModel> registerDonor(DonorAuthApiModel donor);
   Future<DonorAuthApiModel?> loginDonor(String email, String password);
   Future<DonorAuthApiModel> getDonorById(String authId);
@@ -22,4 +22,11 @@ abstract interface class IDonorAuthRemoteDataSource{
   Future<String> uploadDonorPhoto(String authId, String filePath);
   Future<void> forgotPassword(String email);
   Future<bool> resetPassword(String token, String newPassword);
+  // OTP based password reset
+  Future<void> requestPasswordOtp(String email);
+  Future<bool> resetPasswordWithOtp(
+    String email,
+    String otp,
+    String newPassword,
+  );
 }

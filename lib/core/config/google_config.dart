@@ -1,8 +1,6 @@
 class GoogleConfig {
   GoogleConfig._();
 
-  // Replace these with your actual client IDs from Google Cloud Console
-  // Use web client id for serverClientId when exchanging idToken on backend
   static const String webClientId =
       '437420983219-9jmpa5ml20qj5ggt90mmsp75hvefnu23.apps.googleusercontent.com';
 
