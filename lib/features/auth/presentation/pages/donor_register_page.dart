@@ -65,8 +65,21 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
           'Registration successful! Please login',
         );
         Navigator.of(context).pop();
+      } else if (next.status == AuthStatus.authenticated) {
+        MySnackbar.showSuccess(
+          context,
+          'Google sign-in successful. Please login to continue.',
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (context) => const DonorLoginScreen(),
+          ),
+        );
       } else if (next.status == AuthStatus.error) {
-        MySnackbar.showError(context, 'Registration failed. Please try again');
+        final msg =
+            next.errorMessage ?? 'Registration failed. Please try again';
+        MySnackbar.showError(context, msg);
       }
     });
     final _gap = SizedBox(height: 15);
@@ -217,7 +230,12 @@ class _DonorRegisterScreenState extends ConsumerState<DonorRegisterScreen> {
                 ),
 
                 MyButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await ref
+                        .read(authDonorViewmodelProvider.notifier)
+                        .googleSignIn(registerMode: true);
+                  },
+                  isLoading: donorAuthState.status == AuthStatus.loading,
                   text: "Continue with Google",
                   color: Colors.white,
                   textColor: Colors.black,

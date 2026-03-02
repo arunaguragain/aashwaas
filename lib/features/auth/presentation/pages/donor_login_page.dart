@@ -172,7 +172,12 @@ class _DonorLoginScreenState extends ConsumerState<DonorLoginScreen> {
                 ),
 
                 MyButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await ref
+                        .read(authDonorViewmodelProvider.notifier)
+                        .googleSignIn();
+                  },
+                  isLoading: donorAuthState.status == AuthStatus.loading,
                   text: "Login with Google",
                   color: Colors.white,
                   textColor: Colors.black,

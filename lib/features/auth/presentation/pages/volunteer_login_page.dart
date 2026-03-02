@@ -173,7 +173,12 @@ class _VolunteerLoginScreenState extends ConsumerState<VolunteerLoginScreen> {
                 ),
 
                 MyButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await ref
+                        .read(authVolunteerViewmodelProvider.notifier)
+                        .googleSignIn();
+                  },
+                  isLoading: volunteerAuthState.status == AuthStatus.loading,
                   text: "Login with Google",
                   color: Colors.white,
                   textColor: Colors.black,

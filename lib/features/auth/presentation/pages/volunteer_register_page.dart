@@ -68,8 +68,21 @@ class _VolunteerRegisterScreenState
           'Registration successful! Please login',
         );
         Navigator.of(context).pop();
+      } else if (next.status == AuthStatus.authenticated) {
+        MySnackbar.showSuccess(
+          context,
+          'Google sign-in successful. Please login to continue.',
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (context) => const VolunteerLoginScreen(),
+          ),
+        );
       } else if (next.status == AuthStatus.error) {
-        MySnackbar.showError(context, 'Registration failed. Please try again');
+        final msg =
+            next.errorMessage ?? 'Registration failed. Please try again';
+        MySnackbar.showError(context, msg);
       }
     });
     final _gap = SizedBox(height: 15);
@@ -220,7 +233,12 @@ class _VolunteerRegisterScreenState
                 ),
 
                 MyButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await ref
+                        .read(authVolunteerViewmodelProvider.notifier)
+                        .googleSignIn(registerMode: true);
+                  },
+                  isLoading: volunteerAuthState.status == AuthStatus.loading,
                   text: "Continue with Google",
                   color: Colors.white,
                   textColor: Colors.black,

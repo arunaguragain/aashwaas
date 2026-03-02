@@ -29,6 +29,7 @@ class ApiEndpoints {
   // ============ Donor Endpoints ============
   static const String donor = '/auth/register';
   static const String donorLogin = '/auth/login';
+  static const String googleAuth = '/auth/google';
   // static const String donorRegister = '/register';
   static String donorById(String id) => '/auth/$id';
   static String donorPhoto(String id) => '/auth/$id';

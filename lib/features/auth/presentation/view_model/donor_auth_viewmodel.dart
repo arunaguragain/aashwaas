@@ -5,7 +5,12 @@ import 'package:aashwaas/features/auth/domain/usecases/donor_register_usecase.da
 import 'package:aashwaas/features/auth/domain/usecases/donor_update_profile_usecase.dart';
 import 'package:aashwaas/features/auth/domain/usecases/donor_upload_profile_photo_usecase.dart';
 import 'package:aashwaas/features/auth/presentation/state/donor_auth_state.dart';
+import 'package:aashwaas/core/api/api_client.dart';
+import 'package:aashwaas/core/services/storage/token_service.dart';
+import 'package:aashwaas/features/auth/data/models/donor_auth_api_model.dart';
+import 'package:aashwaas/core/services/google_sign_in_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aashwaas/core/api/api_endpoints.dart';
 
 final authDonorViewmodelProvider =
     NotifierProvider<DonorAuthViewmodel, DonorAuthState>(
@@ -56,6 +61,74 @@ class DonorAuthViewmodel extends Notifier<DonorAuthState> {
         state = state.copyWith(status: AuthStatus.registered);
       },
     );
+  }
+
+  // Sign in with Google and exchange idToken with backend
+  /// If [registerMode] is true, the backend should treat this request as a
+  /// registration attempt. Backend is expected to return an error if the
+  /// email already exists when registerMode == true.
+  Future<void> googleSignIn({bool registerMode = false}) async {
+    state = state.copyWith(status: AuthStatus.loading);
+    try {
+      final googleService = GoogleSignInService();
+      // Force account chooser to appear
+      final idToken = await googleService.signInAndGetIdToken(
+        forceAccountSelection: true,
+      );
+      if (idToken == null) {
+        state = state.copyWith(status: AuthStatus.unauthenticated);
+        return;
+      }
+      if (idToken == null) {
+        state = state.copyWith(
+          status: AuthStatus.error,
+          errorMessage: 'Unable to obtain Google idToken',
+        );
+        return;
+      }
+
+      final apiClient = ref.read(apiClientProvider);
+      final tokenService = ref.read(tokenServiceProvider);
+      final userSessionService = ref.read(userSessionServiceProvider);
+
+      final response = await apiClient.post(
+        ApiEndpoints.googleAuth,
+        data: {'idToken': idToken, if (registerMode) 'action': 'register'},
+      );
+
+      if (response.data['success'] == true) {
+        final data = response.data['data'] as Map<String, dynamic>;
+        final userModel = DonorAuthApiModel.fromJson(data);
+
+        final token = response.data['token'] as String?;
+        if (token != null) await tokenService.saveToken(token);
+
+        await userSessionService.saveUserSession(
+          userId: userModel.id!,
+          email: userModel.email,
+          fullName: userModel.fullName,
+          phoneNumber: userModel.phoneNumber,
+          profileImage: userModel.profilePicture,
+          createdAt: userModel.createdAt?.toIso8601String(),
+          role: 'donor',
+        );
+
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          authEntity: userModel.toEntity(),
+        );
+      } else {
+        state = state.copyWith(
+          status: AuthStatus.error,
+          errorMessage: response.data['message'] ?? 'Google login failed',
+        );
+      }
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: e.toString(),
+      );
+    }
   }
 
   //login

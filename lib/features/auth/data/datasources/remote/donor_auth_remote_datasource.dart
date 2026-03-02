@@ -75,14 +75,11 @@ class AuthDonorRemoteDatasource implements IDonorAuthRemoteDataSource {
 
   @override
   Future<DonorAuthApiModel> registerDonor(DonorAuthApiModel user) async {
-    final response = await _apiClient.post(
-      ApiEndpoints.donor,
-      data: {
-        ...user.toJson(),
-        'confirmPassword': user.password,
-        'role': 'donor',
-      },
-    );
+    final payload = Map<String, dynamic>.from(user.toJson());
+    payload.removeWhere((key, value) => value == null);
+    payload.addAll({'confirmPassword': user.password, 'role': 'donor'});
+
+    final response = await _apiClient.post(ApiEndpoints.donor, data: payload);
 
     if (response.data['success'] == true) {
       final data = response.data['data'] as Map<String, dynamic>;

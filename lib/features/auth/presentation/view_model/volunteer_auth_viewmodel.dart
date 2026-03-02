@@ -6,6 +6,11 @@ import 'package:aashwaas/features/auth/domain/usecases/volunteer_update_profile_
 import 'package:aashwaas/features/auth/domain/usecases/volunteer_upload_profile_photo_usecase.dart';
 import 'package:aashwaas/features/auth/presentation/state/volunteer_auth_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aashwaas/core/api/api_client.dart';
+import 'package:aashwaas/core/services/storage/token_service.dart';
+import 'package:aashwaas/features/auth/data/models/volunteer_auth_api_model.dart';
+import 'package:aashwaas/core/services/google_sign_in_service.dart';
+import 'package:aashwaas/core/api/api_endpoints.dart';
 
 final authVolunteerViewmodelProvider =
     NotifierProvider<VolunteerAuthViewmodel, VolunteerAuthState>(
@@ -25,7 +30,9 @@ class VolunteerAuthViewmodel extends Notifier<VolunteerAuthState> {
     _loginUsecase = ref.read(volunteerLoginUsecaseProvider);
     _logoutUsecase = ref.read(logoutVolunteerUsecaseProvider);
     _updateProfileUsecase = ref.read(updateVolunteerProfileUsecaseProvider);
-    _uploadProfilePhotoUsecase = ref.read(uploadVolunteerProfilePhotoUsecaseProvider);
+    _uploadProfilePhotoUsecase = ref.read(
+      uploadVolunteerProfilePhotoUsecaseProvider,
+    );
     return VolunteerAuthState();
   }
 
@@ -127,6 +134,65 @@ class VolunteerAuthViewmodel extends Notifier<VolunteerAuthState> {
         return url;
       },
     );
+  }
+
+  // Sign in with Google and exchange idToken with backend
+  /// If [registerMode] is true, backend should reject existing email addresses.
+  Future<void> googleSignIn({bool registerMode = false}) async {
+    state = state.copyWith(status: AuthStatus.loading);
+    try {
+      final googleService = GoogleSignInService();
+      // Force account chooser to appear
+      final idToken = await googleService.signInAndGetIdToken(
+        forceAccountSelection: true,
+      );
+      if (idToken == null) {
+        state = state.copyWith(status: AuthStatus.unauthenticated);
+        return;
+      }
+
+      final apiClient = ref.read(apiClientProvider);
+      final tokenService = ref.read(tokenServiceProvider);
+      final userSessionService = ref.read(userSessionServiceProvider);
+
+      final response = await apiClient.post(
+        ApiEndpoints.googleAuth,
+        data: {'idToken': idToken, if (registerMode) 'action': 'register'},
+      );
+
+      if (response.data['success'] == true) {
+        final data = response.data['data'] as Map<String, dynamic>;
+        final userModel = VolunteerAuthApiModel.fromJson(data);
+
+        final token = response.data['token'] as String?;
+        if (token != null) await tokenService.saveToken(token);
+
+        await userSessionService.saveUserSession(
+          userId: userModel.id!,
+          email: userModel.email,
+          fullName: userModel.fullName,
+          phoneNumber: userModel.phoneNumber,
+          profileImage: userModel.profilePicture,
+          createdAt: userModel.createdAt?.toIso8601String(),
+          role: 'volunteer',
+        );
+
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          authEntity: userModel.toEntity(),
+        );
+      } else {
+        state = state.copyWith(
+          status: AuthStatus.error,
+          errorMessage: response.data['message'] ?? 'Google login failed',
+        );
+      }
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: e.toString(),
+      );
+    }
   }
 
   Future<bool> updateProfile({
