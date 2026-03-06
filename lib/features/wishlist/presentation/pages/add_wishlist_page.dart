@@ -5,6 +5,7 @@ import 'package:aashwaas/features/donation/presentation/widgets/donation_form_fi
 import 'package:aashwaas/features/donation/presentation/widgets/category_dropdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aashwaas/features/wishlist/presentation/view_model/wishlist_viewmodel.dart';
+import 'package:aashwaas/features/sensor/presentation/providers/rotation_navigator.dart';
 
 class AddWishlistPage extends ConsumerStatefulWidget {
   const AddWishlistPage({super.key});
@@ -18,6 +19,8 @@ class _AddWishlistPageState extends ConsumerState<AddWishlistPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _plannedController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+
+  RotationNavigator? _rotNav;
   String? _selectedCategory;
   final List<String> categories = [
     'Clothes',
@@ -32,6 +35,7 @@ class _AddWishlistPageState extends ConsumerState<AddWishlistPage> {
     _titleController.dispose();
     _plannedController.dispose();
     _notesController.dispose();
+    _rotNav?.stop();
     super.dispose();
   }
 
@@ -61,6 +65,15 @@ class _AddWishlistPageState extends ConsumerState<AddWishlistPage> {
     setState(() {
       _selectedCategory = null;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _rotNav = RotationNavigator(
+      onNext: () {},
+      onPrevious: () => Navigator.of(context).maybePop(),
+    )..start();
   }
 
   @override

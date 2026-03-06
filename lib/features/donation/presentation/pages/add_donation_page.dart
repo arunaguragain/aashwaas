@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:aashwaas/features/sensor/presentation/providers/rotation_navigator.dart';
 
 class AddDonationScreen extends ConsumerStatefulWidget {
   final String? initialItemName;
@@ -46,6 +47,9 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
   final _quantityController = TextEditingController();
   final _locationController = TextEditingController();
 
+  // gyroscope-based navigator (twist to go back)
+  RotationNavigator? _rotNav;
+
   String? _selectedCategory;
   String? _selectedCondition;
   final List<File> _selectedMedia = [];
@@ -63,6 +67,11 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
   @override
   void initState() {
     super.initState();
+    // start listening for counter-clockwise twist to pop
+    _rotNav = RotationNavigator(
+      onNext: () {},
+      onPrevious: () => Navigator.of(context).maybePop(),
+    )..start();
     // If initial values provided, populate controllers and selections
     final widgetInitial = widget as AddDonationScreen;
     if (widgetInitial.initialItemName != null) {
@@ -91,6 +100,7 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
     _descriptionController.dispose();
     _quantityController.dispose();
     _locationController.dispose();
+    _rotNav?.stop();
     super.dispose();
   }
 

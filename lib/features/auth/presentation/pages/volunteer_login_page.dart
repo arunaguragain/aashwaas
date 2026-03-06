@@ -57,11 +57,12 @@ class _VolunteerLoginScreenState extends ConsumerState<VolunteerLoginScreen> {
         MySnackbar.showSuccess(context, 'Logged in successfully');
         await Future.delayed(const Duration(milliseconds: 500));
         if (!mounted) return;
-        Navigator.push(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute<void>(
             builder: (context) => const VolunteerHomeScreen(),
           ),
+          (route) => false,
         );
       } else if (next.status == AuthStatus.error && next.errorMessage != null) {
         MySnackbar.showError(context, next.errorMessage!);

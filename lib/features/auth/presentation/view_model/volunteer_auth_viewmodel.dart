@@ -138,12 +138,16 @@ class VolunteerAuthViewmodel extends Notifier<VolunteerAuthState> {
 
   // Sign in with Google and exchange idToken with backend
   /// If [registerMode] is true, backend should reject existing email addresses.
-  Future<void> googleSignIn({bool registerMode = false}) async {
+  /// A [googleService] may be provided for testing purposes.
+  Future<void> googleSignIn({
+    bool registerMode = false,
+    GoogleSignInRemote? googleService,
+  }) async {
     state = state.copyWith(status: AuthStatus.loading);
     try {
-      final googleService = GoogleSignInRemote();
+      final service = googleService ?? GoogleSignInRemote();
       // Force account chooser to appear
-      final idToken = await googleService.signInAndGetIdToken(
+      final idToken = await service.signInAndGetIdToken(
         forceAccountSelection: true,
       );
       if (idToken == null) {
@@ -157,7 +161,10 @@ class VolunteerAuthViewmodel extends Notifier<VolunteerAuthState> {
 
       final response = await apiClient.post(
         ApiEndpoints.googleAuth,
-        data: {'idToken': idToken, if (registerMode) 'action': 'register'},
+        data: {
+          'idToken': idToken,
+          'action': registerMode ? 'register' : 'login',
+        },
       );
 
       if (response.data['success'] == true) {

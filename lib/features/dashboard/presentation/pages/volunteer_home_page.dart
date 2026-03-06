@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aashwaas/core/utils/my_snackbar.dart';
 import 'package:aashwaas/features/task/presentation/view_model/task_viewmodel.dart';
 import 'package:aashwaas/features/task/presentation/state/task_state.dart';
+import 'package:aashwaas/features/sensor/presentation/providers/rotation_navigator.dart';
 
 typedef VolunteerTabChange = void Function(int index);
 
@@ -23,6 +24,9 @@ class _VolunteerHomeScreenState extends ConsumerState<VolunteerHomeScreen> {
   int _selectedIndex = 0;
 
   late final List<Widget> lstBottomScreen;
+
+  // rotation navigator for gyroscope gestures
+  RotationNavigator? _rotNav;
 
   @override
   void initState() {
@@ -43,6 +47,13 @@ class _VolunteerHomeScreenState extends ConsumerState<VolunteerHomeScreen> {
       const HistoryScreen(),
       const ProfileScreen(),
     ];
+
+    // start gyro-based navigation (quick twist left/right)
+    _rotNav = RotationNavigator(
+      onNext: () => _changeTab(_selectedIndex + 1),
+      onPrevious: () => _changeTab(_selectedIndex - 1),
+    )..start();
+
     // ensure we fetch tasks and show snackbars from a single top-level listener
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(taskViewModelProvider.notifier).getMyTasks();
@@ -99,5 +110,22 @@ class _VolunteerHomeScreenState extends ConsumerState<VolunteerHomeScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _rotNav?.stop();
+    super.dispose();
+  }
+
+  void _changeTab(int newIndex) {
+    if (newIndex < 0) newIndex = lstBottomScreen.length - 1;
+    if (newIndex >= lstBottomScreen.length) newIndex = 0;
+
+    if (widget.onTabChange != null) {
+      widget.onTabChange!(newIndex);
+    } else {
+      setState(() => _selectedIndex = newIndex);
+    }
   }
 }

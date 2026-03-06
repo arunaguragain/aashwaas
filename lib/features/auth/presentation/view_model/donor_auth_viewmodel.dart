@@ -67,23 +67,26 @@ class DonorAuthViewmodel extends Notifier<DonorAuthState> {
   /// If [registerMode] is true, the backend should treat this request as a
   /// registration attempt. Backend is expected to return an error if the
   /// email already exists when registerMode == true.
-  Future<void> googleSignIn({bool registerMode = false}) async {
+  /// Performs Google sign‑in and exchanges the returned idToken with the
+  /// backend.  The [registerMode] flag is used to tell the server how to
+  /// treat the request; when `false` the request is explicitly marked as a
+  /// login so the API can reject unknown emails instead of auto‑creating users.
+  ///
+  /// A [googleService] may be injected for testing, otherwise a fresh
+  /// `GoogleSignInRemote` instance will be constructed.
+  Future<void> googleSignIn({
+    bool registerMode = false,
+    GoogleSignInRemote? googleService,
+  }) async {
     state = state.copyWith(status: AuthStatus.loading);
     try {
-      final googleService = GoogleSignInRemote();
+      final service = googleService ?? GoogleSignInRemote();
       // Force account chooser to appear
-      final idToken = await googleService.signInAndGetIdToken(
+      final idToken = await service.signInAndGetIdToken(
         forceAccountSelection: true,
       );
       if (idToken == null) {
         state = state.copyWith(status: AuthStatus.unauthenticated);
-        return;
-      }
-      if (idToken == null) {
-        state = state.copyWith(
-          status: AuthStatus.error,
-          errorMessage: 'Unable to obtain Google idToken',
-        );
         return;
       }
 
@@ -93,7 +96,10 @@ class DonorAuthViewmodel extends Notifier<DonorAuthState> {
 
       final response = await apiClient.post(
         ApiEndpoints.googleAuth,
-        data: {'idToken': idToken, if (registerMode) 'action': 'register'},
+        data: {
+          'idToken': idToken,
+          'action': registerMode ? 'register' : 'login',
+        },
       );
 
       if (response.data['success'] == true) {

@@ -14,9 +14,9 @@ import 'package:aashwaas/features/settings/presentation/widgets/settings_tile.da
 import 'package:aashwaas/features/review/presentation/pages/review_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'dart:io';
-import 'package:light_sensor/light_sensor.dart';
+
 import 'package:aashwaas/features/sensor/presentation/providers/tilt_logout_detector.dart';
+import 'package:aashwaas/features/sensor/presentation/providers/rotation_navigator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -33,10 +33,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
   TiltLogoutDetector? _tiltDetector;
-  StreamSubscription<int>? _luxSub;
-  Timer? _luxDebounceTimer;
-  final int _darkLuxThreshold = 0; // lux below => dark
-  final int _lightLuxThreshold = 150; // lux above => light
+  RotationNavigator? _rotNav;
 
   @override
   void initState() {
@@ -49,45 +46,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
     _tiltDetector!.start();
 
-    // Start listening to ambient light to auto-toggle theme (Android only)
-    if (Platform.isAndroid) {
-      _luxSub = LightSensor.luxStream().listen((int lux) {
-        // Start a single debounce timer when a sustained low/high is first observed.
-        if (lux < _darkLuxThreshold) {
-          // start timer only if not already started
-          _luxDebounceTimer = Timer(const Duration(seconds: 1), () async {
-            _luxDebounceTimer = null;
-            final current = ref.read(themeModeProvider);
-            if (current != ThemeMode.dark) {
-              await ref.read(themeModeProvider.notifier).setDarkMode(true);
-              if (!mounted) return;
-              setState(() => _darkModeEnabled = true);
-            }
-          });
-        } else if (lux > _lightLuxThreshold) {
-          _luxDebounceTimer = Timer(const Duration(seconds: 1), () async {
-            _luxDebounceTimer = null;
-            final current = ref.read(themeModeProvider);
-            if (current != ThemeMode.light) {
-              await ref.read(themeModeProvider.notifier).setDarkMode(false);
-              if (!mounted) return;
-              setState(() => _darkModeEnabled = false);
-            }
-          });
-        } else {
-          // intermediate light — cancel any pending auto-switch
-          _luxDebounceTimer?.cancel();
-          _luxDebounceTimer = null;
-        }
-      }, onError: (_) {});
-    }
+    // gyroscope navigation: twist left to go back
+    _rotNav = RotationNavigator(
+      onNext: () {},
+      onPrevious: () => Navigator.of(context).maybePop(),
+    )..start();
   }
 
   @override
   void dispose() {
     _tiltDetector?.stop();
-    _luxSub?.cancel();
-    _luxDebounceTimer?.cancel();
+
+    _rotNav?.stop();
     super.dispose();
   }
 
